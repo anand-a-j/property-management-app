@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habitroot/core/extension/common.dart';
+import 'package:naseem/core/extension/common.dart';
 
 class ImagePickerCard extends StatelessWidget {
   final VoidCallback onTap;
@@ -10,7 +10,7 @@ class ImagePickerCard extends StatelessWidget {
     super.key,
     required this.onTap,
     this.label = "Add Product Photo",
-    this.subTitle = "P,ortrait (3:4)"
+    this.subTitle = "P,ortrait (3:4)",
   });
 
   @override

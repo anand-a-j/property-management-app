@@ -1,59 +1,59 @@
 # Link in bio store - ecommerce + link in bio (Link you shop)
 
-
-
 # Build Runner
+
 dart pub run build_runner build --delete-conflicting-outputs
 
 # go router
 
 GoRoute(
-  path: '/store/:id',
-  builder: (context, state) {
-    final id = state.pathParameters['id']!;
-    return StoreDetailsScreen(id: id);
-  },
+path: '/store/:id',
+builder: (context, state) {
+final id = state.pathParameters['id']!;
+return StoreDetailsScreen(id: id);
+},
 ),
 🔹 Navigate
 context.go('/store/123');
 
 GoRoute(
-  path: '/products',
-  builder: (context, state) {
-    final search = state.uri.queryParameters['search'];
-    final page = state.uri.queryParameters['page'];
+path: '/products',
+builder: (context, state) {
+final search = state.uri.queryParameters['search'];
+final page = state.uri.queryParameters['page'];
 
     return ProductScreen(
       search: search,
       page: page != null ? int.parse(page) : 1,
     );
-  },
+
+},
 ),
 🔹 Navigate
 context.go('/products?search=shoes&page=2');
 
 class Store {
-  final String id;
-  final String name;
+final String id;
+final String name;
 
-  Store({required this.id, required this.name});
+Store({required this.id, required this.name});
 }
 🔹 Route
 GoRoute(
-  path: '/create-store',
-  pageBuilder: (context, state) {
-    final store = state.extra as Store;
+path: '/create-store',
+pageBuilder: (context, state) {
+final store = state.extra as Store;
 
     return FadeTransitionPage(
       page: CreateStoreDetailsScreen(store: store),
     );
-  },
+
+},
 ),
 
+# Naseem
 
-# StoreRoot
-
-StoreRoot(Create online store MVP) is a simple, mobile-first storefront builder for small sellers who take orders on WhatsApp.
+Naseem(Create online store MVP) is a simple, mobile-first storefront builder for small sellers who take orders on WhatsApp.
 
 It lets sellers create a shareable link where customers can browse products and place orders directly via WhatsApp — no app install, no payment setup, no complexity.
 
@@ -62,6 +62,7 @@ It lets sellers create a shareable link where customers can browse products and 
 ## 🚀 Problem
 
 Many small sellers (home food, clothing, local shops) sell through WhatsApp manually:
+
 - Repeating product details again and again
 - Sending images one by one
 - Managing orders in chat
@@ -77,7 +78,7 @@ Link you shop gives sellers a simple product page link:
 👉 Customers open the link  
 👉 Browse products  
 👉 Add to cart  
-👉 Place order via WhatsApp  
+👉 Place order via WhatsApp
 
 No login. No checkout. No friction.
 

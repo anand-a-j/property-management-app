@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habitroot/core/extension/common.dart';
+import 'package:naseem/core/extension/common.dart';
 
 class DangerOutlinedButton extends StatelessWidget {
   final String label;

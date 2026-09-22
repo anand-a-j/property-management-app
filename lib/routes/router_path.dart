@@ -4,6 +4,12 @@ class RouterPath {
 
   // Sign Up Flow
   static const String signUp = "/signup";
+
+  
+  
+  
+  
+  // ---------------------------------------------------------------------------
   static const String createStoreSlug = "/create-store-slug";
   static const String createStore = "/create-store";
 

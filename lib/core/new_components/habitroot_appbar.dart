@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:habitroot/core/extension/common.dart';
-import 'package:habitroot/core/theme/app_color_scheme.dart';
+import 'package:naseem/core/extension/common.dart';
+import 'package:naseem/core/theme/app_color_scheme.dart';
 
 import '../constants/app_constants.dart';
 import '../constants/assets.dart';

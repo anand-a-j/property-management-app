@@ -1,7 +1,7 @@
 class AppConsts {
   static bool isProd = false;
 
-  static const String appName = "StoreRoot";
+  static const String appName = "Naseem";
 
   // Border Radius
   static const double rMicro = 6.0;

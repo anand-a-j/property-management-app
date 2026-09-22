@@ -1,5 +1,4 @@
 enum BoxType {
-  habit('habits'),
   user('user'),
   store('store'),
   products('products'),
