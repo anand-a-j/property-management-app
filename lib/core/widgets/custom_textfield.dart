@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
     this.enabled = true,
     this.readOnly = false,
     required this.hintText,
+    required this.labelText,
     this.textInputType,
     this.obscureText,
     this.maxLines,
@@ -28,6 +29,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final String hintText;
+  final String labelText;
   final TextInputType? textInputType;
   final bool? obscureText;
   final bool? readOnly;
@@ -47,64 +49,76 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      initialValue: initialValue,
-      onTap: onTap,
-      textAlign: textAlign,
-      enabled: enabled,
-      readOnly: readOnly ?? false,
-      keyboardType: textInputType,
-      obscureText: obscureText ?? false,
-      maxLines: maxLines ?? 1,
-      maxLength: maxLength,
-      validator: validator,
-      onChanged: onChanged,
-      style: context.bodyMedium,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: context.onSecondary,
-        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        isDense: true,
-        hintText: hintText,
-        hintStyle: context.bodyMedium?.copyWith(
-          color: context.onPrimary.withValues(alpha: 0.5),
-          fontWeight: FontWeight.w300,
-        ),
-        suffix: suffix,
-        suffixIcon: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-          child: suffixIcon,
-        ),
-        suffixIconConstraints: const BoxConstraints(maxHeight: 30),
-        errorStyle: hideErrorText
-            ? const TextStyle(fontSize: 0.01)
-            : TextStyle(
-                fontSize: 10,
-                color: context.error,
-                fontWeight: FontWeight.w300,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(labelText, style: context.bodySmall),
+
+        const SizedBox(height: 10),
+
+        TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          initialValue: initialValue,
+          onTap: onTap,
+          textAlign: textAlign,
+          enabled: enabled,
+          readOnly: readOnly ?? false,
+          keyboardType: textInputType,
+          obscureText: obscureText ?? false,
+          maxLines: maxLines ?? 1,
+          maxLength: maxLength,
+          validator: validator,
+          onChanged: onChanged,
+          style: context.bodyMedium,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: context.onSecondary,
+            contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            isDense: true,
+            hintText: hintText,
+            hintStyle: context.bodyMedium?.copyWith(
+              color: context.onPrimary.withValues(alpha: 0.5),
+              fontWeight: FontWeight.w300,
+            ),
+            suffix: suffix,
+            suffixIcon: Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+              child: suffixIcon,
+            ),
+            suffixIconConstraints: const BoxConstraints(maxHeight: 30),
+            errorStyle: hideErrorText
+                ? const TextStyle(fontSize: 0.01)
+                : TextStyle(
+                    fontSize: 10,
+                    color: context.error,
+                    fontWeight: FontWeight.w300,
+                  ),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: context.onSecondaryContainer,
+                width: 1.2,
               ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: context.onSecondaryContainer, width: 1),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: context.onSecondaryContainer,
-            width: 0.5,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: context.onSecondaryContainer,
+                width: 1.2,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: context.onPrimary, width: 1.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: context.error, width: 1.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-          borderRadius: BorderRadius.circular(10),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: context.onPrimary, width: 0.5),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: context.error, width: 0.5),
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
+      ],
     );
   }
 }

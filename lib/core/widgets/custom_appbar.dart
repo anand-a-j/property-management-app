@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:naseem/core/extension/common.dart';
-import 'package:naseem/core/theme/app_color_scheme.dart';
 
-import '../constants/app_constants.dart';
-import '../constants/assets.dart';
+import '../constants/constants.dart';
+import '../theme/app_color_scheme.dart';
 
-class HabitRootAppBar extends StatefulWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String? title;
   final Color backgroundColor;
   final List<Widget>? actions;
@@ -16,8 +15,7 @@ class HabitRootAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool isTabContain;
   final bool isSmallWidth;
 
-  const HabitRootAppBar({
-    super.key,
+  const CustomAppBar({
     this.title,
     this.leadingOnTap,
     this.actions,
@@ -29,14 +27,14 @@ class HabitRootAppBar extends StatefulWidget implements PreferredSizeWidget {
   });
 
   @override
-  State<HabitRootAppBar> createState() => _HabitRootAppBarState();
+  _CustomAppBarState createState() => _CustomAppBarState();
 
   @override
   Size get preferredSize =>
       Size.fromHeight(kToolbarHeight + (isTabContain ? 46 : 0));
 }
 
-class _HabitRootAppBarState extends State<HabitRootAppBar>
+class _CustomAppBarState extends State<CustomAppBar>
     with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
   Animation<Offset>? _offsetAnimation;
@@ -86,7 +84,7 @@ class _HabitRootAppBarState extends State<HabitRootAppBar>
 class _AppBar extends StatelessWidget {
   const _AppBar({required this.widget, required this.isSmallWidth});
 
-  final HabitRootAppBar widget;
+  final CustomAppBar widget;
   final bool isSmallWidth;
 
   @override
@@ -102,18 +100,13 @@ class _AppBar extends StatelessWidget {
               onTap: widget.leadingOnTap,
               child: Padding(
                 padding: EdgeInsetsDirectional.only(
-                  top: 12,
-                  bottom: 12,
+                  top: 5,
+                  bottom: 5,
                   start: isSmallWidth ? AppConsts.pSmall : 20,
                 ),
-                child: SvgPicture.asset(
-                  Assets.arrowLeft,
-                  height: 12,
-                  width: 12,
-                  colorFilter: ColorFilter.mode(
-                    context.secondary,
-                    BlendMode.srcIn,
-                  ),
+                child: Transform.rotate(
+                  angle: 0,
+                  child: SvgPicture.asset(Assets.backArrow),
                 ),
               ),
             )
@@ -129,12 +122,7 @@ class _AppBar extends StatelessWidget {
                     ? AppConsts.pSmall
                     : 20,
               ),
-              child: Text(
-                widget.title!,
-                style: context.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
+              child: Text(widget.title!, style: context.titleSmall),
             )
           : null,
       actions: widget.actions,

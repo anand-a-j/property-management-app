@@ -6,7 +6,7 @@ class AppConsts {
   // Border Radius
   static const double rMicro = 6.0;
   static const double rMacro = 8.0;
-  static const double rSmall = 10.0;
+  static const double rSmall = 10.0; // primary radius
   static const double rMedium = 12.0;
   static const double rCircle = 50.0;
 

@@ -9,13 +9,11 @@ import 'core/constants/app_constants.dart';
 import 'core/service/hive_ce_service.dart';
 import 'core/service/supabase_service.dart';
 import 'core/theme/app_theme.dart';
-import 'core/utils/svg_precache.dart';
 
 import 'routes/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  precacheSvgImages();
   await HiveService.init();
 
   await supabaseService.init();

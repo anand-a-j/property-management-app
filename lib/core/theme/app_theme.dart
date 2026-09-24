@@ -10,13 +10,11 @@ class AppThemes with AppColorScheme {
     colorScheme: const ColorScheme.light(
       primary: AppColorScheme.primary,
       onPrimary: AppColorScheme.onPrimary,
-      primaryContainer: AppColorScheme.primaryContainer,
-      onPrimaryContainer: AppColorScheme.onPrimaryContainer,
+
       secondary: AppColorScheme.secondary,
-      secondaryFixed: AppColorScheme.secondaryFixed,
+
       secondaryContainer: AppColorScheme.secondaryContainer,
-      onSecondary: AppColorScheme.onSecondary,
-      onSecondaryContainer: AppColorScheme.onSecondaryContainer,
+
       error: AppColorScheme.error,
       errorContainer: AppColorScheme.errorContainer,
     ),

@@ -15,15 +15,3 @@ mixin AppColorScheme {
 
   static const Color surface = Color(0XFFB0B0B0);
 }
-
-
-  
-  // static const Color primaryContainer = Color(0XFF9b6c0d); // primary border
-  // static const Color onPrimaryContainer = Color(0XFFF5F5F5); // white variant
-  // static const Color secondaryFixed = Color(0xff18181b); // black varaint
-  // static const Color onSecondary = Color(0XFF0F0F0F); // Black variant
-  // static const Color onSecondaryContainer = Color(
-  //   0XFF3D3D3D
-  // );
-
-  //  static const Color primaryTouchEffect = Color(0XFF56d276);
