@@ -1,13 +1,6 @@
 class InputVaildator {
-  static String? requiredHabitName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Name can’t be empty';
-    }
-    return null;
-  }
-
   // GENERIC REQUIRED
-  static String? requiredField(String? value, {String fieldName = "Field"}) {
+  static String? required(String? value, {String fieldName = "Field"}) {
     if (value == null || value.trim().isEmpty) {
       return "$fieldName can't be empty";
     }
@@ -24,6 +17,24 @@ class InputVaildator {
 
     if (!emailRegex.hasMatch(value.trim())) {
       return "Enter a valid email";
+    }
+
+    return null;
+  }
+
+  // PHONE: Indian and UAE/Dubai mobile and Dubai landline numbers
+  static String? phone(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Phone number can't be empty";
+    }
+
+    final normalized = value.trim().replaceAll(RegExp(r'[\s()-]'), '');
+    final phoneRegex = RegExp(
+      r'^(?:[6-9]\d{9}|(?:\+91|0091)[6-9]\d{9}|05\d{8}|(?:\+971|00971)5\d{8}|04\d{7}|(?:\+971|00971)4\d{7})$',
+    );
+
+    if (!phoneRegex.hasMatch(normalized)) {
+      return "Enter a valid phone number";
     }
 
     return null;

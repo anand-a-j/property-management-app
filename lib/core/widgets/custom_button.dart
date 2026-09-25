@@ -7,6 +7,7 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final EdgeInsetsGeometry padding;
   final bool isLoading;
+  final Color? color;
 
   const CustomButton({
     super.key,
@@ -14,6 +15,7 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.padding = const EdgeInsets.all(0),
     this.isLoading = false,
+    this.color,
   });
 
   @override
@@ -25,7 +27,7 @@ class CustomButton extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: color ?? Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             elevation: 0,
             shape: RoundedRectangleBorder(
