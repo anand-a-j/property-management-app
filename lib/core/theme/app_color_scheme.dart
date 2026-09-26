@@ -14,4 +14,7 @@ mixin AppColorScheme {
   static const Color scaffoldBackgroundColor = Color(0XFFFFFFFF); // Pure Black
 
   static const Color surface = Color(0XFFB0B0B0);
+
+  // Platform Admin
+  static const Color platformAdminAppBar = Color(0xff0D0D1B);
 }

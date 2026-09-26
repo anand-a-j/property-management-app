@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:naseem/core/utils/snackbar_manager.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
+import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import 'core/constants/app_constants.dart';
@@ -18,7 +21,16 @@ void main() async {
 
   await supabaseService.init();
 
-  runApp(MultiProvider(providers: [], child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(authService: AuthService.instance),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

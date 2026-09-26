@@ -5,5 +5,6 @@ class RouterPath {
   // Sign Up Flow
   static const String signUp = "/signup";
 
-  
+  // Platform Admin
+  static const String platformDashboard = "/platform-dashboard";
 }

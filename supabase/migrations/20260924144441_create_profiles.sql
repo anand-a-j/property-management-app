@@ -66,7 +66,10 @@ begin
     coalesce(new.raw_user_meta_data ->> 'name', ''),
     new.email,
     new.raw_user_meta_data ->> 'phone',
-    'resident'
+    coalesce(
+      (new.raw_user_meta_data ->> 'role')::public.user_role,
+      'resident'::public.user_role
+    )
   );
 
   return new;

@@ -1,15 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:naseem/core/constants/app_constants.dart';
+import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
 
 import 'package:naseem/routes/router_path.dart';
 
 import 'package:hive_ce/hive.dart';
-import 'package:provider/provider.dart';
 
 import '../core/enum/box_types.dart';
 
-import 'args/create_store_args.dart';
+import '../core/enum/sign_up_type.dart';
+import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
+import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
+import '../module/auth/splash/splash_screen.dart';
+import '../module/auth/welcome/welcome_screen.dart';
 import 'page_transition.dart';
 
 final Box<dynamic> settings = Hive.box(BoxType.settings.name);
@@ -38,39 +41,45 @@ final GoRouter router = GoRouter(
     return null; // no redirect
   },
   routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      name: 'splash-screen',
+      builder: (BuildContext context, GoRouterState state) {
+        return const SplashScreen();
+      },
+    ),
+    GoRoute(
+      path: RouterPath.welcome,
+      name: 'welcome-screen',
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(page: const WelcomeScreen());
+      },
+    ),
 
-    
-    // GoRoute(
-    //   path: '/',
-    //   name: 'splash-screen',
-    //   builder: (BuildContext context, GoRouterState state) {
-    //     return const SplashScreen();
-    //   },
-    // ),
-    // GoRoute(
-    //   path: RouterPath.welcome,
-    //   name: 'welcome-screen',
-    //   pageBuilder: (context, state) {
-    //     return FadeTransitionPage(page: const WelcomeScreen());
-    //   },
-    // ),
+    GoRoute(
+      path: RouterPath.signIn,
+      name: 'signin-screen',
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(page: const SignInScreen());
+      },
+    ),
 
-    // GoRoute(
-    //   path: RouterPath.signIn,
-    //   name: 'signin-screen',
-    //   pageBuilder: (context, state) {
-    //     return FadeTransitionPage(page: const SignInScreen());
-    //   },
-    // ),
+    GoRoute(
+      path: RouterPath.signUp,
+      name: 'signup-screen',
+      pageBuilder: (context, state) {
+        final type = state.extra as SignUpType? ?? SignUpType.resident;
 
-    // GoRoute(
-    //   path: RouterPath.signUp,
-    //   name: 'signup-screen',
-    //   pageBuilder: (context, state) {
-    //     return FadeTransitionPage(page: const SignUpScreen());
-    //   },
-    // ),
+        return FadeTransitionPage(page: SignUpScreen(type: type));
+      },
+    ),
 
- 
+    GoRoute(
+      path: RouterPath.platformDashboard,
+      name: 'platform-dashboard-screen',
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(page: PlatformDashboardScreen());
+      },
+    ),
   ],
 );

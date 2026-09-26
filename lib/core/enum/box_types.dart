@@ -1,8 +1,6 @@
 enum BoxType {
-  user('user'),
-  store('store'),
-  products('products'),
-  settings('settings');
+  settings('settings'),
+  profile('profile');
 
   final String name;
 
