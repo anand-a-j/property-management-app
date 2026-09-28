@@ -16,9 +16,9 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.storeroot.andorid"
+    namespace = "com.naseem.andorid"
     compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -34,7 +34,7 @@ android {
     defaultConfig {
         multiDexEnabled = true
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.storeroot.andorid"
+        applicationId = "com.naseem.andorid"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24

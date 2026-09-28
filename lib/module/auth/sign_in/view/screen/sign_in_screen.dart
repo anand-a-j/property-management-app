@@ -22,7 +22,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
 
@@ -31,7 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void dispose() {
     _obscurePassword.dispose();
-    _phoneNumberController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -85,16 +85,22 @@ class _SignInScreenState extends State<SignInScreen> {
                     const SizedBox(height: AppConsts.pMedium),
 
                     Text(
-                      'Sign in to your Account',
+                      'Sign in to your\nAccount',
                       style: context.titleLarge?.copyWith(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: AppConsts.pLarge),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Enter your email and password to log in ',
+                      style: context.bodySmall?.copyWith(color: Colors.grey),
+                    ),
 
-                    _phoneNumberTextField(),
+                    const SizedBox(height: 35),
+
+                    _emailTextField(),
 
                     const SizedBox(height: AppConsts.pSide),
 
@@ -157,13 +163,13 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  CustomTextField _phoneNumberTextField() {
+  CustomTextField _emailTextField() {
     return CustomTextField(
-      controller: _phoneNumberController,
-      textInputType: TextInputType.phone,
-      labelText: 'Mobile number',
-      hintText: 'Mobile number',
-      validator: (value) => InputVaildator.phone(value),
+      controller: _emailController,
+      textInputType: TextInputType.emailAddress,
+      labelText: 'Email',
+      hintText: 'Email',
+      validator: (value) => InputVaildator.email(value),
     );
   }
 
@@ -171,7 +177,7 @@ class _SignInScreenState extends State<SignInScreen> {
     FocusScope.of(context).unfocus();
 
     if (_formKey.currentState?.validate() ?? false) {
-      final phone = _phoneNumberController.text.trim();
+      final phone = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
       context.read<AuthBloc>().add(

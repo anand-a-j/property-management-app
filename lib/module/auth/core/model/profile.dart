@@ -19,6 +19,12 @@ abstract class Profile with _$Profile {
     @HiveField(3) String? phone,
 
     @HiveField(4) required UserRole role,
+
+    @HiveField(5) @JsonKey(name: 'created_at') required DateTime createdAt,
+
+    @HiveField(6) @JsonKey(name: 'updated_at') required DateTime updatedAt,
+
+    @HiveField(7) @JsonKey(name: 'deleted_at') DateTime? deletedAt,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, dynamic> json) =>

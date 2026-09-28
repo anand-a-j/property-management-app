@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:naseem/core/constants/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,12 +11,19 @@ class SupabaseService {
   late final SupabaseClient client;
 
   Future<void> init() async {
-    await Supabase.initialize(
-      url: Env.supabaseUrl,
-      publishableKey: Env.supabasePublishableKey,
-    );
+    log("keys test  URL: ${Env.supabaseUrl}");
 
-    client = Supabase.instance.client;
+    log("supabasePublishableKey: ${Env.supabasePublishableKey}");
+    try {
+      await Supabase.initialize(
+        url: "https://papxwknhqckfcyzwurhp.supabase.co",
+        publishableKey: "sb_publishable_smBksUe2Zd-wcqJyICQX6A_JlnOyzel",
+      );
+
+      client = Supabase.instance.client;
+    } catch (e) {
+      log("suppabase connect error : ${e.toString()}");
+    }
   }
 }
 

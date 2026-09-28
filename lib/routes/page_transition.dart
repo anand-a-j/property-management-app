@@ -5,21 +5,18 @@ class FadeTransitionPage extends CustomTransitionPage {
   final Widget page;
 
   FadeTransitionPage({required this.page})
-      : super(
-          child: page,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const curve = Curves.easeInOutBack;
-            var curveTween = CurveTween(curve: curve);
+    : super(
+        child: page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const curve = Curves.easeInOutBack;
+          var curveTween = CurveTween(curve: curve);
 
-            var fadeAnimation = animation.drive(curveTween);
+          var fadeAnimation = animation.drive(curveTween);
 
-            return FadeTransition(
-              opacity: fadeAnimation,
-              child: child,
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 300),
-        );
+          return FadeTransition(opacity: fadeAnimation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      );
 }
 
 class SlideTransitionPage extends CustomTransitionPage {
@@ -31,15 +28,57 @@ class SlideTransitionPage extends CustomTransitionPage {
     required this.beginOffset,
     Duration duration = const Duration(milliseconds: 300),
   }) : super(
-          child: page,
-          transitionDuration: duration,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final tween = Tween<Offset>(begin: beginOffset, end: Offset.zero)
-                .chain(CurveTween(curve: Curves.easeInOut));
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
-        );
+         child: page,
+         transitionDuration: duration,
+         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+           final tween = Tween<Offset>(
+             begin: beginOffset,
+             end: Offset.zero,
+           ).chain(CurveTween(curve: Curves.easeInOut));
+           return SlideTransition(
+             position: animation.drive(tween),
+             child: child,
+           );
+         },
+       );
+}
+
+class PremiumPageTransition extends CustomTransitionPage {
+  final Widget page;
+
+  PremiumPageTransition({required this.page})
+    : super(
+        child: page,
+        transitionDuration: const Duration(milliseconds: 700),
+        reverseTransitionDuration: const Duration(milliseconds: 450),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Smooth fade
+          final fade = CurvedAnimation(
+            parent: animation,
+            curve: const Interval(0.0, 0.75, curve: Curves.easeOut),
+          );
+
+          // Very subtle zoom
+          final scale = Tween<double>(begin: 0.965, end: 1.0).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+          );
+
+          // Slight upward movement
+          final slide =
+              Tween<Offset>(
+                begin: const Offset(0, 0.025),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              );
+
+          return FadeTransition(
+            opacity: fade,
+            child: SlideTransition(
+              position: slide,
+              child: ScaleTransition(scale: scale, child: child),
+            ),
+          );
+        },
+      );
 }

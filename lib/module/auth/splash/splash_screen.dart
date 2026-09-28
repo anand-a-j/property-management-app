@@ -1,13 +1,14 @@
+// ignore_for_file: avoid_returning_null_for_void
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/constants.dart';
+import '../../../core/enum/user_role.dart';
 import '../../../core/extension/common.dart';
-import '../../../core/service/logout_service.dart';
-import '../../../core/theme/app_color_scheme.dart';
-import '../../../core/utils/snackbar_manager.dart';
+
 import '../../../routes/router_path.dart';
+import '../core/controller/service/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +18,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  
   @override
   void initState() {
     super.initState();
@@ -25,43 +25,33 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _init() async {
-    final supabase = Supabase.instance.client;
-
-    /// small delay for logo (optional, 1 sec max)
-    await Future.delayed(const Duration(milliseconds: 800));
+    // Give splash/logo a little time
+    await Future.delayed(const Duration(milliseconds: 1500));
 
     if (!mounted) return;
 
-    final session = supabase.auth.currentSession;
+    final initialized = await AuthService.instance.initialize();
 
-    if (session != null) {
-      /// ✅ User logged in
-      // await _handleLoggedIn();
-    } else {
-      /// ❌ Not logged in
-      _goToLogin();
+    if (!mounted) return;
+
+    if (!initialized) {
+      context.go(RouterPath.welcome);
+      return;
     }
-  }
 
-  // Future<void> _handleLoggedIn() async {
-  //   final userProvider = context.read<UserProvider>();
+    switch (authentication.role) {
+      case UserRole.platformAdmin:
+        return context.go(RouterPath.platformDashboard);
 
-  //   final res = await userProvider.loadUserInitial();
+      case UserRole.manager:
+      case UserRole.resident:
+      case UserRole.security:
+      case UserRole.maintenance:
+        return null;
 
-  //   if (!mounted) return;
-
-  //   if (res == false) {
-  //     Snack.error("Your session expired. Please login again.");
-  //     handleLogout(context);
-  //     return;
-  //   }
-
-
-  //   context.go(RouterPath.home);
-  // }
-
-  void _goToLogin() {
-    context.go(RouterPath.welcome);
+      case null:
+        return;
+    }
   }
 
   @override
@@ -73,9 +63,9 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Center(
           child: Text(
             "Naseem",
-            style: context.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.secondary,
+            style: context.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: context.onPrimary,
             ),
           ),
         ),

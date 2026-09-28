@@ -14,7 +14,7 @@ class AppThemes with AppColorScheme {
       secondary: AppColorScheme.secondary,
 
       secondaryContainer: AppColorScheme.secondaryContainer,
-
+      surface: AppColorScheme.surface,
       error: AppColorScheme.error,
       errorContainer: AppColorScheme.errorContainer,
     ),

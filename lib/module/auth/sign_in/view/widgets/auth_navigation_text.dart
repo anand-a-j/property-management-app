@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/core.dart';
+import '../../../../../core/enum/sign_up_type.dart';
+import '../../../../../routes/router_path.dart';
 
 class AuthNavigationText extends StatelessWidget {
   final bool isFromSignInScreen;
@@ -11,7 +14,11 @@ class AuthNavigationText extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: Add navigation later.
+        if (isFromSignInScreen) {
+           context.push(RouterPath.signUp, extra: {'type': SignUpType.resident});
+        } else {
+          context.push(RouterPath.signIn);
+        }
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -22,7 +29,7 @@ class AuthNavigationText extends StatelessWidget {
                 ? "Don't have an account? "
                 : "Already have an account? ",
             style: context.bodyMedium?.copyWith(
-              color: context.primary,
+              color: context.secondary.withValues(alpha: 0.5),
               fontWeight: FontWeight.w400,
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:naseem/core/enum/sign_up_type.dart';
 import 'package:naseem/module/auth/core/model/profile.dart';
 
 import '../../../../../core/enum/user_role.dart';
@@ -17,15 +18,19 @@ class AuthSignUp extends AuthEvent {
   final String? phone;
   final UserRole role;
 
+  final SignUpType signUpType;
+
   const AuthSignUp({
     required this.email,
     required this.password,
     required this.name,
-    this.phone, required this.role,
+    this.phone,
+    required this.role,
+    required this.signUpType,
   });
 
   @override
-  List<Object?> get props => [email, password, name, phone, role];
+  List<Object?> get props => [email, password, name, phone, role, signUpType];
 }
 
 class AuthSignIn extends AuthEvent {

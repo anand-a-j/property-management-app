@@ -1,13 +1,12 @@
 name: naseem
 description: >
-  HabitBud - This is not a habit tracker. 
-  This is your second brain for building the life you want. 
-  A calming, rewarding, minimal space to build habits without burnout.
+  Naseem - A premium property management platform for modern residential communities.
+  A simple, elegant space to manage properties, residents, leases, payments,
+  maintenance, and visitors with ease.
 
 publish_to: "none" # Prevent accidental publishing to pub.dev
 
-# last updated: 15/01/2026
-version: 1.0.2+6
+version: 1.0.0+1
 
 environment:
   sdk: ^3.8.0
@@ -27,9 +26,7 @@ dependencies:
   uuid: ^4.5.1
   path_provider: ^2.1.5
   intl: ^0.20.2
-  flutter_local_notifications: ^22.3.1
   timezone: ^0.11.1
-  permission_handler: ^13.0.2
   hive_flutter: ^1.1.0
   file_picker: ^13.1.0
   flutter_timezone: ^5.0.1
@@ -37,11 +34,8 @@ dependencies:
   carousel_slider: ^5.1.1
   package_info_plus: ^10.2.1
   # NEW--------------------------------------------------
-  provider: ^6.1.5+1
   supabase_flutter: ^2.12.2
-  flutter_image_compress: ^2.4.0
   image_picker: ^1.2.1
-  pretty_qr_code: ^3.6.0
   cached_network_image: ^3.4.1
   shimmer: ^3.0.0
   flutter_colorpicker: ^1.1.0

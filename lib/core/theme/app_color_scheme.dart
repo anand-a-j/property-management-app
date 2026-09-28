@@ -17,4 +17,6 @@ mixin AppColorScheme {
 
   // Platform Admin
   static const Color platformAdminAppBar = Color(0xff0D0D1B);
+
+  static const Color primaryFixed = Color(0xff4F5962);
 }

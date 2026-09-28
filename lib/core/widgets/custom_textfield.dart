@@ -73,12 +73,12 @@ class CustomTextField extends StatelessWidget {
           style: context.bodyMedium,
           decoration: InputDecoration(
             filled: true,
-            fillColor: context.onSecondary,
+            fillColor: Colors.transparent,
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             isDense: true,
             hintText: hintText,
             hintStyle: context.bodyMedium?.copyWith(
-              color: context.onPrimary.withValues(alpha: 0.5),
+              color: context.secondary.withValues(alpha: 0.5),
               fontWeight: FontWeight.w300,
             ),
             suffix: suffix,
@@ -95,21 +95,15 @@ class CustomTextField extends StatelessWidget {
                     fontWeight: FontWeight.w300,
                   ),
             border: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: context.onSecondaryContainer,
-                width: 1.2,
-              ),
+              borderSide: BorderSide(color: context.surface, width: 1.2),
               borderRadius: BorderRadius.circular(10),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: context.onSecondaryContainer,
-                width: 1.2,
-              ),
+              borderSide: BorderSide(color: context.surface, width: 1.2),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: context.onPrimary, width: 1.2),
+              borderSide: BorderSide(color: context.surface, width: 1.2),
               borderRadius: BorderRadius.circular(10),
             ),
             errorBorder: OutlineInputBorder(

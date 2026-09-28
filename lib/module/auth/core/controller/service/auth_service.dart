@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:naseem/core/enum/sign_up_type.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
@@ -56,23 +59,40 @@ class AuthService {
   // INITIALIZE
   // ---------------------------------------------------------------------------
 
-  Future<void> initialize() async {
-    if (_initialized) return;
-
-    // No active Supabase session
-    if (!isAuthenticated) {
-      _profile = null;
-      _initialized = true;
-      return;
+  Future<bool> initialize() async {
+    if (_initialized) {
+      return isAuthenticated && _profile != null;
     }
 
-    // Load cached profile first
-    _profile = _profileDB.getProfile();
+    try {
+      // No active Supabase session
+      if (!isAuthenticated) {
+        _profile = null;
+        _initialized = true;
+        return false;
+      }
 
-    // Get latest profile from Supabase
-    await refreshProfile();
+      // Load cached profile first
+      _profile = _profileDB.getProfile();
 
-    _initialized = true;
+      // Always verify/load latest profile from Supabase
+      final response = await refreshProfile();
+
+      if (response.error != null || response.data == null) {
+        _profile = null;
+        await _profileDB.deleteProfile();
+
+        _initialized = true;
+        return false;
+      }
+
+      _initialized = true;
+      return true;
+    } catch (e) {
+      _profile = null;
+      _initialized = true;
+      return false;
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -85,6 +105,7 @@ class AuthService {
     required String name,
     String? phone,
     required UserRole role,
+    required SignUpType signUpType,
   }) async {
     final response = await _authRepo.signUp(
       email: email,
@@ -98,7 +119,9 @@ class AuthService {
       return response;
     }
 
-    await refreshProfile();
+    if (role != UserRole.platformAdmin) {
+      await refreshProfile();
+    }
 
     return DataResponse(data: null);
   }
@@ -107,19 +130,25 @@ class AuthService {
   // SIGN IN
   // ---------------------------------------------------------------------------
 
-  Future<DataResponse<void>> signIn({
+  Future<DataResponse<Profile>> signIn({
     required String email,
     required String password,
   }) async {
     final response = await _authRepo.signIn(email: email, password: password);
 
-    if (response.error != null) {
-      return response;
+    if (response.hasError) {
+      return DataResponse(error: response.error);
     }
 
-    await refreshProfile();
+    final profileResponse = await refreshProfile();
 
-    return DataResponse(data: null);
+    if (profileResponse.hasData) {
+      return DataResponse(data: profileResponse.data!);
+    }
+
+    return DataResponse(
+      error: profileResponse.error ?? 'Unable to load profile',
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -138,6 +167,7 @@ class AuthService {
     }
 
     try {
+      log("response data : ${response.data}");
       final profile = Profile.fromJson(response.data!);
 
       // Update memory
@@ -147,7 +177,8 @@ class AuthService {
       await _profileDB.saveProfile(profile);
 
       return DataResponse(data: profile);
-    } catch (e) {
+    } catch (e, s) {
+      log("error : ${e.toString()} ${s.toString()}");
       return DataResponse(error: 'Failed to parse profile');
     }
   }
@@ -220,3 +251,5 @@ class AuthService {
     await _profileDB.deleteProfile();
   }
 }
+
+final authentication = AuthService.instance;

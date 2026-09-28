@@ -18,9 +18,5 @@ String globalError(Object e) {
     return "Check your internet connection";
   }
 
-  if (msg.contains('password')) {
-    return "Password should be at least 6 characters";
-  }
-
   return "Something went wrong";
 }

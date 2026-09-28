@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:naseem/module/auth/core/model/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -47,6 +49,7 @@ class AuthRepo {
     required String password,
   }) async {
     try {
+      log("email : ${email} password : ${password}");
       final response = await _client.auth.signInWithPassword(
         email: email.trim(),
         password: password,

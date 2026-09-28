@@ -1,61 +1,131 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:naseem/core/widgets/floating_add_button.dart';
+import 'package:naseem/module/platform_admin/view/widgets/platform_appbar.dart';
 
 import '../../../core/core.dart';
+import '../../../core/enum/sign_up_type.dart';
+import '../../../routes/router_path.dart';
+import '../../auth/core/controller/bloc/auth_bloc.dart';
+import '../../auth/core/controller/bloc/auth_event.dart';
+import '../../auth/core/controller/bloc/auth_state.dart';
+import '../../auth/core/model/profile.dart';
+import '../controller/bloc/manager_bloc.dart';
+import '../model/manager_response.dart';
 
-
-class PlatformDashboardScreen extends StatelessWidget {
+class PlatformDashboardScreen extends StatefulWidget {
   const PlatformDashboardScreen({super.key});
 
   @override
+  State<PlatformDashboardScreen> createState() =>
+      _PlatformDashboardScreenState();
+}
+
+class _PlatformDashboardScreenState extends State<PlatformDashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ManagerBloc>().add(const FetchManagers());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: 'Platform Admin',
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppConsts.pSide),
-            child: _LogoutButton(
-              onPressed: () {
-                // Logout action handler
-              },
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          context.go(RouterPath.welcome);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: PlatformAppBar(
+          title: 'Platform Admin',
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: AppConsts.pSide),
+              child: _LogoutButton(
+                onPressed: () {
+                  CustomDialog.confirmationDialog(
+                    context: context,
+                    title: 'Sign Out',
+                    subTitle: 'Are you sure you want to sign out?',
+                    cancelTitle: 'Cancel',
+                    sumbitTitle: 'Sign Out',
+                    cancelOnTap: () {
+                      Navigator.pop(context);
+                    },
+                    sumbitOnTap: () {
+                      context.read<AuthBloc>().add(const AuthSignOut());
+                    },
+                  );
+                },
+              ),
             ),
+          ],
+        ),
+
+        body: SafeArea(
+          child: BlocBuilder<ManagerBloc, ManagerState>(
+            builder: (context, state) {
+              if (state is ManagerLoading) {
+                return const _DashboardLoading();
+              }
+
+              if (state is ManagerFailed) {
+                return _DashboardError(
+                  message: state.error,
+                  onRetry: () {
+                    context.read<ManagerBloc>().add(const FetchManagers());
+                  },
+                );
+              }
+
+              if (state is ManagerSuccess) {
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _DashboardHeaderOverview(response: state.response),
+                      const SizedBox(height: AppConsts.pSide),
+                      _ManagerListSection(managers: state.response.managers),
+                    ],
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
           ),
-        ],
-      ),
-    
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              _DashboardHeaderOverview(),
-              SizedBox(height: AppConsts.pSide),
-              _ManagerListSection(),
-            ],
-          ),
+        ),
+        floatingActionButton: FloatingAddButton(
+          title: "Add Manager",
+          onTap: () {
+            context.push(
+              RouterPath.signUp,
+              extra: {'type': SignUpType.manager},
+            );
+          },
         ),
       ),
     );
   }
 }
 
-// =============================================================================
-// HEADER OVERVIEW SECTION
-// =============================================================================
-
 class _DashboardHeaderOverview extends StatelessWidget {
-  const _DashboardHeaderOverview();
+  final ManagerResponse response;
+
+  const _DashboardHeaderOverview({required this.response});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       color: context.secondary,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppConsts.pSide,
-        vertical: AppConsts.pSide,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -65,18 +135,25 @@ class _DashboardHeaderOverview extends StatelessWidget {
               color: context.secondaryContainer,
             ),
           ),
-          const SizedBox(height: AppConsts.pMedium),
+          const SizedBox(height: 15),
           Row(
-            children: const [
+            children: [
               Expanded(
-                child: _StatCard(title: 'Total Manager', value: '12'),
+                child: _StatCard(
+                  title: 'Total Manager',
+                  value: response.totalManagers.toString(),
+                ),
               ),
-              SizedBox(width: AppConsts.pSmall),
+              const SizedBox(width: AppConsts.pSmall),
               Expanded(
-                child: _StatCard(title: 'Active Users', value: '139'),
+                child: _StatCard(
+                  title: 'Total Users',
+                  value: response.activeUsers.toString(),
+                ),
               ),
             ],
           ),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -92,7 +169,7 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppConsts.pMedium),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(10),
@@ -127,12 +204,10 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// =============================================================================
-// MANAGER LIST SECTION
-// =============================================================================
-
 class _ManagerListSection extends StatelessWidget {
-  const _ManagerListSection();
+  final List<Profile> managers;
+
+  const _ManagerListSection({required this.managers});
 
   @override
   Widget build(BuildContext context) {
@@ -142,27 +217,147 @@ class _ManagerListSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Registered Manager',
-            style: context.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+            'Registered Managers',
+            style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: AppConsts.pMedium),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 8,
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppConsts.pSmall),
-            itemBuilder: (context, index) {
-              return const _ManagerCard(
-                name: 'Daniel Mathew',
-                date: '05-09-2026',
-                propertiesCount: 62,
-                isActive: true,
-              );
-            },
-          ),
+          if (managers.isEmpty)
+            const _EmptyManagers()
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: managers.length,
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: AppConsts.pSmall),
+              itemBuilder: (context, index) {
+                final manager = managers[index];
+
+                return _ManagerCard(
+                  name: manager.name,
+                  date: _formatDate(manager.createdAt),
+                  propertiesCount: 0,
+                  isActive: manager.deletedAt == null,
+                );
+              },
+            ),
           const SizedBox(height: AppConsts.pExtraLarge),
         ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
+
+    return '${date.day.toString().padLeft(2, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.year}';
+  }
+}
+
+class _DashboardLoading extends StatelessWidget {
+  const _DashboardLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppConsts.pSide),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: AppConsts.pMedium),
+            Text('Loading dashboard...', style: context.bodyMedium),
+            const SizedBox(height: AppConsts.pSmall),
+            Text(
+              'Please wait while we fetch the latest manager details.',
+              textAlign: TextAlign.center,
+              style: context.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DashboardError extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _DashboardError({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppConsts.pSide),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.cloud_off_rounded,
+              size: 48,
+              color: context.colorScheme.error,
+            ),
+            const SizedBox(height: AppConsts.pMedium),
+            Text(
+              'Unable to load dashboard',
+              textAlign: TextAlign.center,
+              style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: AppConsts.pSmall),
+            Text(
+              'We couldn’t load the manager details right now. '
+              'Please try again.',
+              textAlign: TextAlign.center,
+              style: context.bodyMedium,
+            ),
+            const SizedBox(height: AppConsts.pSmall),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: context.bodySmall,
+            ),
+            const SizedBox(height: AppConsts.pMedium),
+            ElevatedButton(onPressed: onRetry, child: const Text('Try Again')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyManagers extends StatelessWidget {
+  const _EmptyManagers();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppConsts.pExtraLarge),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(
+              Icons.people_outline_rounded,
+              size: 48,
+              color: context.colorScheme.outline,
+            ),
+            const SizedBox(height: AppConsts.pMedium),
+            Text(
+              'No managers yet',
+              style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: AppConsts.pSmall),
+            Text(
+              'Add a manager to get started.',
+              textAlign: TextAlign.center,
+              style: context.bodyMedium,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -288,56 +483,4 @@ class _LogoutButton extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Fallback standard CustomAppBar component adhering to the design context spec
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final Color? backgroundColor;
-  final List<Widget>? actions;
-  final VoidCallback? leadingOnTap;
-  final PreferredSizeWidget? bottom;
-  final bool isAnimate;
-  final bool isTabContain;
-  final bool isSmallWidth;
-
-  const CustomAppBar({
-    super.key,
-    required this.title,
-    this.backgroundColor,
-    this.actions,
-    this.leadingOnTap,
-    this.bottom,
-    this.isAnimate = false,
-    this.isTabContain = false,
-    this.isSmallWidth = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        title,
-        style: context.titleLarge?.copyWith(
-          color: context.onPrimary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      backgroundColor: backgroundColor ?? context.secondary,
-      elevation: 0,
-      centerTitle: false,
-      actions: actions,
-      bottom: bottom,
-      leading: leadingOnTap != null
-          ? IconButton(
-              icon: Icon(Icons.arrow_back, color: context.onPrimary),
-              onPressed: leadingOnTap,
-            )
-          : null,
-    );
-  }
-
-  @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0.0));
 }

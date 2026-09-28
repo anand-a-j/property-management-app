@@ -122,7 +122,12 @@ class _AppBar extends StatelessWidget {
                     ? AppConsts.pSmall
                     : 20,
               ),
-              child: Text(widget.title!, style: context.titleSmall),
+              child: Text(
+                widget.title!,
+                style: context.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
             )
           : null,
       actions: widget.actions,

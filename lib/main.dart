@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naseem/core/bloc/cubit/app_cubit.dart';
 
 import 'package:naseem/core/utils/snackbar_manager.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
+import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
+import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
 import 'package:provider/provider.dart';
 
 import 'core/constants/app_constants.dart';
@@ -24,8 +27,12 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        BlocProvider<AppCubit>(create: (context) => AppCubit()),
         BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(authService: AuthService.instance),
+          create: (context) => AuthBloc(authService: authentication),
+        ),
+        BlocProvider<ManagerBloc>(
+          create: (context) => ManagerBloc(repo: ManagerRepo()),
         ),
       ],
       child: const MyApp(),

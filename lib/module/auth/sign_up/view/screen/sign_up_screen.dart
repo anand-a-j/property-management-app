@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/enum/sign_up_type.dart';
@@ -6,6 +8,7 @@ import '../../../../../core/core.dart';
 import '../../../../../core/enum/user_role.dart';
 import '../../../../../core/utils/input_vaildator.dart';
 import '../../../../../core/utils/snackbar_manager.dart';
+import '../../../../platform_admin/controller/bloc/manager_bloc.dart';
 import '../../../core/controller/bloc/auth_bloc.dart';
 import '../../../core/controller/bloc/auth_event.dart';
 import '../../../core/controller/bloc/auth_state.dart';
@@ -100,12 +103,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  String get _buttonTitle {
+    switch (widget.type) {
+      case SignUpType.resident:
+        return 'Create your Account';
+
+      case SignUpType.manager:
+        return 'Create';
+
+      case SignUpType.staff:
+        return 'Create';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    log("Sign up type : ${widget.type}");
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          // Navigate / pop here
+          if (widget.type == SignUpType.manager) {
+            context.read<ManagerBloc>().add(const FetchManagers());
+            Snack.success("Success");
+            Navigator.pop(context);
+          } else {
+            Snack.success("Sign up success, more features coming soon");
+          }
         }
 
         if (state is AuthFailed) {
@@ -186,16 +209,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CustomButton(
-                  label: 'Create account',
+                  label: _buttonTitle,
                   isLoading: context.select<AuthBloc, bool>(
                     (bloc) => bloc.state is AuthLoading,
                   ),
                   onPressed: _signUpRequest,
                 ),
+                if (widget.type == SignUpType.resident) ...[
+                  const SizedBox(height: AppConsts.pMedium),
 
-                const SizedBox(height: AppConsts.pMedium),
-
-                const AuthNavigationText(isFromSignInScreen: false),
+                  const AuthNavigationText(isFromSignInScreen: false),
+                ],
 
                 const SizedBox(height: AppConsts.pLarge),
               ],
@@ -273,7 +297,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       textInputType: TextInputType.phone,
       labelText: 'Mobile number',
       hintText: 'Mobile number',
-      validator: (value) => InputVaildator.phone(value),
+      validator: (value) => InputVaildator.required(value),
     );
   }
 
@@ -373,6 +397,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         name: fullName,
         phone: phone.isNotEmpty ? phone : null,
         role: _userRole,
+        signUpType: widget.type,
       ),
     );
   }

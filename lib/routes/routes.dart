@@ -9,6 +9,7 @@ import 'package:hive_ce/hive.dart';
 import '../core/enum/box_types.dart';
 
 import '../core/enum/sign_up_type.dart';
+import '../module/admin/home/view/admin_home_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
@@ -52,7 +53,7 @@ final GoRouter router = GoRouter(
       path: RouterPath.welcome,
       name: 'welcome-screen',
       pageBuilder: (context, state) {
-        return FadeTransitionPage(page: const WelcomeScreen());
+        return PremiumPageTransition(page: const WelcomeScreen());
       },
     ),
 
@@ -60,7 +61,10 @@ final GoRouter router = GoRouter(
       path: RouterPath.signIn,
       name: 'signin-screen',
       pageBuilder: (context, state) {
-        return FadeTransitionPage(page: const SignInScreen());
+        return SlideTransitionPage(
+          beginOffset: Offset(0, 1),
+          page: const SignInScreen(),
+        );
       },
     ),
 
@@ -68,9 +72,14 @@ final GoRouter router = GoRouter(
       path: RouterPath.signUp,
       name: 'signup-screen',
       pageBuilder: (context, state) {
-        final type = state.extra as SignUpType? ?? SignUpType.resident;
+        final extra = state.extra as Map<String, dynamic>?;
 
-        return FadeTransitionPage(page: SignUpScreen(type: type));
+        final type = extra?['type'] as SignUpType? ?? SignUpType.resident;
+
+        return SlideTransitionPage(
+          beginOffset: Offset(0, -1),
+          page: SignUpScreen(type: type),
+        );
       },
     ),
 
@@ -79,6 +88,23 @@ final GoRouter router = GoRouter(
       name: 'platform-dashboard-screen',
       pageBuilder: (context, state) {
         return FadeTransitionPage(page: PlatformDashboardScreen());
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.platformDashboard,
+      name: 'platform-dashboard-screen',
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(page: PlatformDashboardScreen());
+      },
+    ),
+
+    
+    GoRoute(
+      path: RouterPath.adminHome,
+      name: 'admin-home-screen',
+      pageBuilder: (context, state) {
+        return FadeTransitionPage(page: AdminHomeScreen());
       },
     ),
   ],
