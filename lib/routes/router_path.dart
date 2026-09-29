@@ -7,7 +7,9 @@ class RouterPath {
 
   // Platform Admin
   static const String platformDashboard = "/platform-dashboard";
-
-    // Platform Admin
   static const String adminHome = "/admin-home";
+
+  // Admin
+  static const String addCommunity = "/add-community";
+  static const String addUnit = "/add-unit";
 }

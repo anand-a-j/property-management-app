@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naseem/module/admin/community/view/add_community_screen.dart';
+import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
 
 import 'package:naseem/routes/router_path.dart';
@@ -99,12 +101,32 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    
     GoRoute(
       path: RouterPath.adminHome,
       name: 'admin-home-screen',
       pageBuilder: (context, state) {
         return FadeTransitionPage(page: AdminHomeScreen());
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.addCommunity,
+      name: 'add-community-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: Offset(0, 1),
+          page: AddCommunityScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterPath.addUnit,
+      name: 'add-unit-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: Offset(0, 1),
+          page: AddUnitScreen(),
+        );
       },
     ),
   ],

@@ -7,3 +7,4 @@ export 'custom_textfield.dart';
 export 'form_scaffold.dart';
 export 'search_textfield.dart';
 export 'svg_build.dart';
+export 'floating_add_button.dart';
