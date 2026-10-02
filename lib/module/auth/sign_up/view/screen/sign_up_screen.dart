@@ -390,6 +390,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final phone = _phoneNumberController.text.trim();
     final password = _passwordController.text.trim();
 
+    log("sign up role test : ${_userRole}");
+
     context.read<AuthBloc>().add(
       AuthSignUp(
         email: email,

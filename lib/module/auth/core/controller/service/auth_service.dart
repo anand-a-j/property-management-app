@@ -107,6 +107,8 @@ class AuthService {
     required UserRole role,
     required SignUpType signUpType,
   }) async {
+ 
+
     final response = await _authRepo.signUp(
       email: email,
       password: password,

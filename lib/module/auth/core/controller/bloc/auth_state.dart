@@ -34,3 +34,12 @@ class AuthFailed extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+class AuthLogoutSuccess extends AuthState {
+
+  const AuthLogoutSuccess();
+
+  @override
+  List<Object?> get props => [];
+}
+

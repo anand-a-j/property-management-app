@@ -44,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
         return context.go(RouterPath.platformDashboard);
 
       case UserRole.manager:
+        return context.go(RouterPath.adminHome);
       case UserRole.resident:
       case UserRole.security:
       case UserRole.maintenance:

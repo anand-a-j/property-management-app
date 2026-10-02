@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/api/data_response.dart';
 import '../../../../core/utils/error_log.dart';
 import '../../../auth/core/model/profile.dart';
 import '../../model/manager_response.dart';
-
 
 class ManagerRepo {
   final SupabaseClient _client = Supabase.instance.client;
@@ -40,7 +41,7 @@ class ManagerRepo {
       final managers = (managersData as List)
           .map((json) => Profile.fromJson(Map<String, dynamic>.from(json)))
           .toList();
-
+      log("LOGINITIALTEST Manager Repo : ${managersData}");
       return DataResponse(
         data: ManagerResponse(
           managers: managers,

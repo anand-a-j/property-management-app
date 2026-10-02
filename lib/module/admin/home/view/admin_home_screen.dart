@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naseem/module/admin/community/view/community_list_screen.dart';
+import 'package:naseem/module/admin/home/view/admin_dashboard_screen.dart';
+import 'package:naseem/module/admin/settings/view/settings_screen.dart';
 
 import '../../../../core/bloc/cubit/app_cubit.dart';
 import '../../../../core/core.dart';
@@ -76,11 +79,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               physics: const NeverScrollableScrollPhysics(),
               allowImplicitScrolling: false,
               children: const [
-                Scaffold(body: Text("Home")),
-                Scaffold(body: Text("Property")),
+                AdminDashboardScreen(),
+                CommunityListScreen(),
                 Scaffold(body: Text("Resident")),
                 Scaffold(body: Text("Payment")),
-                Scaffold(body: Text("More")),
+                SettingsScreen(),
               ],
             ),
             bottomNavigationBar: SafeArea(

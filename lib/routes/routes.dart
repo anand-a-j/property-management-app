@@ -84,7 +84,7 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-
+    // Platform Admin-----------------------------------------------------------
     GoRoute(
       path: RouterPath.platformDashboard,
       name: 'platform-dashboard-screen',
@@ -92,15 +92,7 @@ final GoRouter router = GoRouter(
         return FadeTransitionPage(page: PlatformDashboardScreen());
       },
     ),
-
-    GoRoute(
-      path: RouterPath.platformDashboard,
-      name: 'platform-dashboard-screen',
-      pageBuilder: (context, state) {
-        return FadeTransitionPage(page: PlatformDashboardScreen());
-      },
-    ),
-
+    // Admin--------------------------------------------------------------------
     GoRoute(
       path: RouterPath.adminHome,
       name: 'admin-home-screen',

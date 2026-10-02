@@ -1,1 +1,4 @@
 alter table stores add constraint unique_slug unique (store_slug);
+
+log("LOGINITIALTEST
+")

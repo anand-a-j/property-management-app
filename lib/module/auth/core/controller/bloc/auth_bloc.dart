@@ -81,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    emit(const AuthSuccess());
+    emit(const AuthLogoutSuccess());
   }
 
   // ---------------------------------------------------------------------------

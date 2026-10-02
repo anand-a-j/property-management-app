@@ -36,7 +36,7 @@ class _PlatformDashboardScreenState extends State<PlatformDashboardScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthLogoutSuccess) {
           context.go(RouterPath.welcome);
         }
       },
