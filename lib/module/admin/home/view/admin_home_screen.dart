@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/module/admin/community/view/community_list_screen.dart';
 import 'package:naseem/module/admin/home/view/admin_dashboard_screen.dart';
+import 'package:naseem/module/admin/resident/view/resident_list_screen.dart';
 import 'package:naseem/module/admin/settings/view/settings_screen.dart';
 
 import '../../../../core/bloc/cubit/app_cubit.dart';
@@ -81,8 +82,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               children: const [
                 AdminDashboardScreen(),
                 CommunityListScreen(),
-                Scaffold(body: Text("Resident")),
-                Scaffold(body: Text("Payment")),
+                ResidentListScreen(),
+                Scaffold(body: Text("")),
                 SettingsScreen(),
               ],
             ),

@@ -18,6 +18,8 @@ class AuthRepo {
     required String name,
     String? phone,
     required UserRole role,
+    // pass only when a manager creates resident/security/maintenance
+    String? orgId,
   }) async {
     try {
       final response = await _client.auth.signUp(
@@ -27,16 +29,14 @@ class AuthRepo {
           'name': name.trim(),
           'role': role.value,
           if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
+          if (orgId != null && orgId.isNotEmpty) 'org_id': orgId,
         },
       );
 
       if (response.user == null) {
         return DataResponse(error: globalError('Signup failed'));
       }
-
-      // Profile is automatically created by
-      // public.handle_new_user() trigger.
-
+      // Profile (and org for managers) is created by handle_new_user().
       return DataResponse(data: null);
     } catch (e, stack) {
       return DataResponse(error: errorlog('AuthRepo.signUp', e, stack));

@@ -1,6 +1,11 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naseem/module/admin/community/controller/repo/community_repo.dart';
 import 'package:naseem/module/admin/community/view/add_community_screen.dart';
+import 'package:naseem/module/admin/resident/controller/bloc/resident_bloc.dart'
+    show ResidentBloc;
+import 'package:naseem/module/admin/resident/controller/repo/resident_repo.dart';
 import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
 
@@ -11,6 +16,7 @@ import 'package:hive_ce/hive.dart';
 import '../core/enum/box_types.dart';
 
 import '../core/enum/sign_up_type.dart';
+import '../module/admin/community/controller/bloc/community_bloc.dart';
 import '../module/admin/home/view/admin_home_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
@@ -97,7 +103,20 @@ final GoRouter router = GoRouter(
       path: RouterPath.adminHome,
       name: 'admin-home-screen',
       pageBuilder: (context, state) {
-        return FadeTransitionPage(page: AdminHomeScreen());
+        return FadeTransitionPage(
+          page: MultiBlocProvider(
+            providers: [
+              BlocProvider<CommunityBloc>(
+                create: (context) =>
+                    CommunityBloc(communityRepo: CommunityRepo()),
+              ),
+              BlocProvider<ResidentBloc>(
+                create: (context) => ResidentBloc(repo: ResidentRepo()),
+              ),
+            ],
+            child: AdminHomeScreen(),
+          ),
+        );
       },
     ),
 
@@ -107,7 +126,10 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) {
         return SlideTransitionPage(
           beginOffset: Offset(0, 1),
-          page: AddCommunityScreen(),
+          page: BlocProvider<CommunityBloc>(
+            create: (context) => CommunityBloc(communityRepo: CommunityRepo()),
+            child: AddCommunityScreen(),
+          ),
         );
       },
     ),

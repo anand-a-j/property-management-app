@@ -214,7 +214,7 @@ class _CustomDropdownFieldState<T extends Object>
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: context.onSecondary,
+                      fillColor: Colors.transparent,
 
                       contentPadding: const EdgeInsets.fromLTRB(
                         20.0,
@@ -228,7 +228,7 @@ class _CustomDropdownFieldState<T extends Object>
                       hintText: widget.hintText,
 
                       hintStyle: context.bodyMedium?.copyWith(
-                        color: context.onPrimary.withValues(alpha: 0.5),
+                        color: context.secondary.withValues(alpha: 0.5),
                         fontWeight: FontWeight.w300,
                       ),
 
@@ -241,7 +241,7 @@ class _CustomDropdownFieldState<T extends Object>
                           duration: const Duration(milliseconds: 150),
                           child: Icon(
                             Icons.keyboard_arrow_down_rounded,
-                            color: context.onPrimary,
+                            color: context.secondary,
                           ),
                         ),
                       ),
@@ -260,7 +260,7 @@ class _CustomDropdownFieldState<T extends Object>
 
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: context.onSecondaryContainer,
+                          color: context.surface,
                           width: 1.2,
                         ),
                         borderRadius: BorderRadius.circular(10),
@@ -268,7 +268,7 @@ class _CustomDropdownFieldState<T extends Object>
 
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: context.onSecondaryContainer,
+                          color: context.surface,
                           width: 1.2,
                         ),
                         borderRadius: BorderRadius.circular(10),
@@ -276,7 +276,7 @@ class _CustomDropdownFieldState<T extends Object>
 
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: context.onPrimary,
+                          color: context.surface,
                           width: 1.2,
                         ),
                         borderRadius: BorderRadius.circular(10),
@@ -336,7 +336,8 @@ class _DropdownOptions<T extends Object> extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Material(
-              elevation: 4,
+              elevation: 6,
+              color: context.onPrimary,
               borderRadius: BorderRadius.circular(10),
               clipBehavior: Clip.antiAlias,
               child: ConstrainedBox(
@@ -353,7 +354,10 @@ class _DropdownOptions<T extends Object> extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         shrinkWrap: true,
                         itemCount: options.length,
-                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        separatorBuilder: (_, _) => Divider(
+                          height: 0.8,
+                          color: context.secondary.withValues(alpha: 0.1),
+                        ),
                         itemBuilder: (context, index) {
                           final item = options[index];
                           final isSelected = item == selectedItem;

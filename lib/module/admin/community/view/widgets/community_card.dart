@@ -1,31 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:naseem/module/admin/community/model/community.dart';
 
 import '../../../../../core/core.dart';
 
 class CommunityCard extends StatelessWidget {
-  final String title;
-  final String? type;
-  final String location;
-  final int totalUnits;
-  final int occupiedUnits;
-  final int vacantUnits;
-  final VoidCallback? onTap;
+  final Community community;
 
-  const CommunityCard({
-    super.key,
-    required this.title,
-    this.type,
-    required this.location,
-    required this.totalUnits,
-    required this.occupiedUnits,
-    required this.vacantUnits,
-    this.onTap,
-  });
+  const CommunityCard({super.key, required this.community});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {},
       child: Container(
         decoration: BoxDecoration(
           color: context.scaffoldBackgroundColor,
@@ -68,18 +54,18 @@ class CommunityCard extends StatelessWidget {
                     children: [
                       // Title
                       Text(
-                        title,
+                        community.name,
                         style: context.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (type != null && type!.isNotEmpty) ...[
+                      if (community.communityType.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         // Property Type
                         Text(
-                          type!,
+                          community.communityType,
                           style: context.bodySmall?.copyWith(
                             color: context.secondaryContainer,
                           ),
@@ -90,7 +76,7 @@ class CommunityCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       // Location
                       Text(
-                        location,
+                        community.address,
                         style: context.bodySmall?.copyWith(
                           color: context.secondaryContainer,
                         ),
@@ -102,19 +88,15 @@ class CommunityCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          _buildStatColumn(context, count: "0", label: 'Units'),
                           _buildStatColumn(
                             context,
-                            count: totalUnits.toString(),
-                            label: 'Units',
-                          ),
-                          _buildStatColumn(
-                            context,
-                            count: occupiedUnits.toString(),
+                            count: "0",
                             label: 'Occupied',
                           ),
                           _buildStatColumn(
                             context,
-                            count: vacantUnits.toString(),
+                            count: "0",
                             label: 'Vacant',
                           ),
                         ],

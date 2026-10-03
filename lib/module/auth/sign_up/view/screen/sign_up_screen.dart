@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/enum/sign_up_type.dart';
+import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/enum/user_role.dart';
@@ -76,7 +77,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String get _title {
     switch (widget.type) {
       case SignUpType.resident:
-        return 'Create your Account';
+        return authentication.isAuthenticated
+            ? 'Add New Resident'
+            : 'Create your Account';
 
       case SignUpType.manager:
         return 'Add New Manager';
@@ -93,7 +96,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String get _subtitle {
     switch (widget.type) {
       case SignUpType.resident:
-        return 'Enter your details to create a new account';
+        return authentication.isAuthenticated
+            ? 'Enter the resident details to add them to your community'
+            : 'Enter your details to create a new account';
 
       case SignUpType.manager:
         return 'Enter details to set up a new property manager account';
@@ -106,7 +111,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String get _buttonTitle {
     switch (widget.type) {
       case SignUpType.resident:
-        return 'Create your Account';
+        return authentication.isAuthenticated
+            ? 'Create'
+            : 'Create your Account';
 
       case SignUpType.manager:
         return 'Create';
@@ -215,7 +222,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   onPressed: _signUpRequest,
                 ),
-                if (widget.type == SignUpType.resident) ...[
+                if (widget.type == SignUpType.resident &&
+                    !authentication.isAuthenticated) ...[
                   const SizedBox(height: AppConsts.pMedium),
 
                   const AuthNavigationText(isFromSignInScreen: false),
@@ -390,7 +398,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final phone = _phoneNumberController.text.trim();
     final password = _passwordController.text.trim();
 
-    log("sign up role test : ${_userRole}");
+    final role = _userRole;
+
+    final String? orgId = switch (role) {
+      UserRole.resident ||
+      UserRole.security ||
+      UserRole.maintenance => authentication.profile?.orgId,
+
+      UserRole.manager || UserRole.platformAdmin => null,
+    };
+
+    // Organization is required for resident/staff signup.
+    if (role == UserRole.resident ||
+        role == UserRole.security ||
+        role == UserRole.maintenance) {
+      if (orgId == null || orgId.isEmpty) {
+        Snack.error(
+          'Manager information is missing. Please select a valid manager and try again.',
+        );
+        return;
+      }
+    }
+
+    log('sign up role: $role');
+    log('sign up orgId: $orgId');
 
     context.read<AuthBloc>().add(
       AuthSignUp(
@@ -398,8 +429,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: password,
         name: fullName,
         phone: phone.isNotEmpty ? phone : null,
-        role: _userRole,
+        role: role,
         signUpType: widget.type,
+        orgId: orgId,
       ),
     );
   }

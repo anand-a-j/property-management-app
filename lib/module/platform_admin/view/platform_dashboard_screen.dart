@@ -218,7 +218,7 @@ class _ManagerListSection extends StatelessWidget {
         children: [
           Text(
             'Registered Managers',
-            style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            style: context.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: AppConsts.pMedium),
           if (managers.isEmpty)

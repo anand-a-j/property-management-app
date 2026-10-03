@@ -19,6 +19,7 @@ class AuthSignUp extends AuthEvent {
   final UserRole role;
 
   final SignUpType signUpType;
+  final String? orgId;
 
   const AuthSignUp({
     required this.email,
@@ -27,6 +28,7 @@ class AuthSignUp extends AuthEvent {
     this.phone,
     required this.role,
     required this.signUpType,
+    this.orgId,
   });
 
   @override

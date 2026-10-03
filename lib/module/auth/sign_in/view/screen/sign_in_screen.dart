@@ -50,6 +50,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 break;
 
               case UserRole.manager:
+                context.go(RouterPath.adminHome);
                 break;
 
               case UserRole.resident:

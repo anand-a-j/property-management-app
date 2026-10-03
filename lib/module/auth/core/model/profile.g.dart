@@ -25,13 +25,14 @@ class ProfileAdapter extends TypeAdapter<Profile> {
       createdAt: fields[5] as DateTime,
       updatedAt: fields[6] as DateTime,
       deletedAt: fields[7] as DateTime?,
+      orgId: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Profile obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class ProfileAdapter extends TypeAdapter<Profile> {
       ..writeByte(6)
       ..write(obj.updatedAt)
       ..writeByte(7)
-      ..write(obj.deletedAt);
+      ..write(obj.deletedAt)
+      ..writeByte(8)
+      ..write(obj.orgId);
   }
 
   @override
@@ -76,6 +79,7 @@ _Profile _$ProfileFromJson(Map<String, dynamic> json) => _Profile(
   deletedAt: json['deleted_at'] == null
       ? null
       : DateTime.parse(json['deleted_at'] as String),
+  orgId: json['org_id'] as String?,
 );
 
 Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
@@ -87,6 +91,7 @@ Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
+  'org_id': instance.orgId,
 };
 
 const _$UserRoleEnumMap = {

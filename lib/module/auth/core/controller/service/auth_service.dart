@@ -106,15 +106,15 @@ class AuthService {
     String? phone,
     required UserRole role,
     required SignUpType signUpType,
+    String? orgId,
   }) async {
- 
-
     final response = await _authRepo.signUp(
       email: email,
       password: password,
       name: name,
       phone: phone,
       role: role,
+      orgId: orgId,
     );
 
     if (response.error != null) {

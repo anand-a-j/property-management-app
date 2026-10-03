@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/core.dart';
 
-
 class UnitListScreen extends StatelessWidget {
   const UnitListScreen({super.key});
 
@@ -12,10 +11,7 @@ class UnitListScreen extends StatelessWidget {
       appBar: const CustomAppBar(title: 'Units'),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: SearchTextField(),
-          ),
+          SearchTextField(title: "Search Units", onChanged: (query) {}),
 
           Expanded(
             child: ListView.builder(

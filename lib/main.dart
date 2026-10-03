@@ -17,7 +17,6 @@ import 'core/service/hive_ce_service.dart';
 import 'core/service/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 
-import 'core/utils/bloc_observer.dart';
 import 'routes/routes.dart';
 
 void main() async {
