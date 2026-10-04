@@ -13,7 +13,7 @@ class SettingsCard extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.icon,
-    this.showTrailingIcon = false,
+    this.showTrailingIcon = true,
   });
 
   @override
@@ -29,10 +29,10 @@ class SettingsCard extends StatelessWidget {
           vertical: 5.0,
         ),
         leading: Container(
-          width: 40,
-          height: 40,
+          width: 45,
+          height: 45,
           decoration: BoxDecoration(
-            color: context.surface,
+            color: context.surface.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(50.0),
           ),
           child: Icon(icon ?? Icons.circle, color: context.secondary, size: 20),

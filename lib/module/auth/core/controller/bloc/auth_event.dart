@@ -32,7 +32,7 @@ class AuthSignUp extends AuthEvent {
   });
 
   @override
-  List<Object?> get props => [email, password, name, phone, role, signUpType];
+  List<Object?> get props => [email, password, name, phone, role, signUpType, orgId,];
 }
 
 class AuthSignIn extends AuthEvent {

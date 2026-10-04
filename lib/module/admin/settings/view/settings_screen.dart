@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:naseem/core/bloc/cubit/app_cubit.dart';
+import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
+import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/core.dart';
+import '../../../auth/core/controller/bloc/auth_bloc.dart';
+import '../../../auth/core/controller/bloc/auth_event.dart';
+import '../../../auth/core/controller/bloc/auth_state.dart';
 import 'widgets/settings_card.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -39,7 +47,9 @@ class SettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Sai Kumar',
+                          authentication.profile?.role.name != null
+                              ? '${authentication.profile?.role.name[0].toUpperCase()}${authentication.profile?.role.name.substring(1)}'
+                              : '',
                           style: context.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -80,33 +90,61 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 15), // pMedium = 15
               // Navigation Card Options List
               SettingsCard(
-                icon: Icons.person_outline,
+                icon: Icons.badge_outlined,
                 title: 'Staffs',
-                onTap: () {},
+                onTap: () {
+                  context.push(RouterPath.staffList);
+                },
               ),
-              const SizedBox(height: 10), // pSmall = 10
+
+              const SizedBox(height: 10),
+
               SettingsCard(
-                icon: Icons.supervisor_account_outlined,
+                icon: Icons.manage_accounts_outlined,
                 title: 'Visors',
                 onTap: () {},
               ),
-              const SizedBox(height: 10), // pSmall = 10
+
+              const SizedBox(height: 10),
+
               SettingsCard(
-                icon: Icons.groups_outlined,
+                icon: Icons.assignment_turned_in_outlined,
                 title: 'Manage Lease',
                 showTrailingIcon: true,
                 onTap: () {},
               ),
-
               const Spacer(),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: CustomButton(
-        label: "LogOut",
-        onPressed: () {},
-        padding: const EdgeInsetsGeometry.all(AppConsts.pSide),
+      bottomNavigationBar: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthLogoutSuccess) {
+            context.go(RouterPath.welcome);
+          }
+        },
+        child: CustomButton(
+          label: "Logout",
+          color: context.error,
+          onPressed: () {
+            CustomDialog.confirmationDialog(
+              context: context,
+              title: 'Sign Out',
+              subTitle: 'Are you sure you want to sign out?',
+              cancelTitle: 'Cancel',
+              sumbitTitle: 'Sign Out',
+              cancelOnTap: () {
+                Navigator.pop(context);
+              },
+              sumbitOnTap: () {
+                context.read<AppCubit>().setAdminDashIndex(0);
+                context.read<AuthBloc>().add(const AuthSignOut());
+              },
+            );
+          },
+          padding: const EdgeInsetsGeometry.all(AppConsts.pSide),
+        ),
       ),
     );
   }

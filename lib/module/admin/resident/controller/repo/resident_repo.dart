@@ -15,6 +15,7 @@ class ResidentRepo {
           .from('profiles')
           .select()
           .eq('org_id', orgId)
+          .eq('role', 'resident')
           .limit(20);
 
       final residents = (data as List)

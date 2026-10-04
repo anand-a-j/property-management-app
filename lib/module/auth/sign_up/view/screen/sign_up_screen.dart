@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/enum/sign_up_type.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
+import 'package:naseem/module/staff/controller/bloc/staff_bloc.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/enum/user_role.dart';
@@ -129,11 +130,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          if (widget.type == SignUpType.manager) {
+          if (widget.type == SignUpType.staff) {
+            context.read<StaffBloc>().add(
+              FetchStaffs(orgId: authentication.profile?.orgId ?? ""),
+            );
+            Snack.success("Success");
+            Navigator.pop(context);
+          } else if (widget.type == SignUpType.manager) {
             context.read<ManagerBloc>().add(const FetchManagers());
             Snack.success("Success");
             Navigator.pop(context);
-          } else {
+          }else if(widget.type == SignUpType.resident) {
+            
+          }  else {
             Snack.success("Sign up success, more features coming soon");
           }
         }

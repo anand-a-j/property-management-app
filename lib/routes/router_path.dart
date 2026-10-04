@@ -15,4 +15,7 @@ class RouterPath {
 
   // Settings
   static const String settings = "/settings";
+
+  // Staff
+  static const String staffList = "/staff-list";
 }

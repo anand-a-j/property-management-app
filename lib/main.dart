@@ -10,6 +10,8 @@ import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
 import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
+import 'package:naseem/module/staff/controller/bloc/staff_bloc.dart';
+import 'package:naseem/module/staff/controller/repo/staff_repo.dart';
 import 'package:provider/provider.dart';
 
 import 'core/constants/app_constants.dart';
@@ -17,6 +19,8 @@ import 'core/service/hive_ce_service.dart';
 import 'core/service/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 
+import 'module/admin/resident/controller/bloc/resident_bloc.dart';
+import 'module/admin/resident/controller/repo/resident_repo.dart';
 import 'routes/routes.dart';
 
 void main() async {
@@ -35,6 +39,14 @@ void main() async {
         ),
         BlocProvider<ManagerBloc>(
           create: (context) => ManagerBloc(repo: ManagerRepo()),
+        ),
+
+        // Migrate the bloc later
+        BlocProvider<ResidentBloc>(
+          create: (context) => ResidentBloc(repo: ResidentRepo()),
+        ),
+        BlocProvider<StaffBloc>(
+          create: (context) => StaffBloc(repo: StaffRepo()),
         ),
       ],
       child: const MyApp(),

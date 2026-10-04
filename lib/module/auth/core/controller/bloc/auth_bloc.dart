@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       phone: event.phone?.trim(),
       role: event.role,
       signUpType: event.signUpType,
-      
+      orgId: event.orgId,
     );
 
     if (response.error != null) {

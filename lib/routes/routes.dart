@@ -8,6 +8,7 @@ import 'package:naseem/module/admin/resident/controller/bloc/resident_bloc.dart'
 import 'package:naseem/module/admin/resident/controller/repo/resident_repo.dart';
 import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
+import 'package:naseem/module/staff/view/staff_list/staff_list_screen.dart';
 
 import 'package:naseem/routes/router_path.dart';
 
@@ -110,9 +111,7 @@ final GoRouter router = GoRouter(
                 create: (context) =>
                     CommunityBloc(communityRepo: CommunityRepo()),
               ),
-              BlocProvider<ResidentBloc>(
-                create: (context) => ResidentBloc(repo: ResidentRepo()),
-              ),
+             
             ],
             child: AdminHomeScreen(),
           ),
@@ -140,6 +139,17 @@ final GoRouter router = GoRouter(
         return SlideTransitionPage(
           beginOffset: Offset(0, 1),
           page: AddUnitScreen(),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.staffList,
+      name: 'staff-list-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: Offset(1, 0),
+          page: StaffListScreen(),
         );
       },
     ),
