@@ -23,6 +23,7 @@ import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
+import 'args/add_unit_args.dart';
 import 'page_transition.dart';
 
 final Box<dynamic> settings = Hive.box(BoxType.settings.name);
@@ -111,7 +112,6 @@ final GoRouter router = GoRouter(
                 create: (context) =>
                     CommunityBloc(communityRepo: CommunityRepo()),
               ),
-             
             ],
             child: AdminHomeScreen(),
           ),
@@ -136,9 +136,14 @@ final GoRouter router = GoRouter(
       path: RouterPath.addUnit,
       name: 'add-unit-screen',
       pageBuilder: (context, state) {
+        final args = state.extra as AddUnitArgs;
         return SlideTransitionPage(
           beginOffset: Offset(0, 1),
-          page: AddUnitScreen(),
+          page: AddUnitScreen(
+            community: args.community,
+            isEdit: args.isEdit,
+            unit: args.unit,
+          ),
         );
       },
     ),

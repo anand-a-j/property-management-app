@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naseem/module/admin/community/model/community.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/utils/input_vaildator.dart';
+import '../../controller/bloc/unit_bloc.dart';
+import '../../model/unit.dart';
 
 class AddUnitScreen extends StatefulWidget {
-  const AddUnitScreen({super.key});
+  const AddUnitScreen({
+    super.key,
+    required this.community,
+    required this.unit,
+    required this.isEdit,
+  });
+
+  final Community community;
+  final Unit? unit;
+  final bool isEdit;
 
   @override
   State<AddUnitScreen> createState() => _AddUnitScreenState();
@@ -14,13 +27,19 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _unitNameController = TextEditingController();
-
   final TextEditingController _sizeAreaController = TextEditingController();
-
   final TextEditingController _descriptionController = TextEditingController();
 
-  // TODO: Replace this with the actual community name/data later.
-  final String _communityName = 'Community Name';
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isEdit) {
+      _unitNameController.text = widget.unit?.name ?? "";
+      _sizeAreaController.text = widget.unit?.area ?? "";
+      _descriptionController.text = widget.unit?.description ?? "";
+    }
+  }
 
   @override
   void dispose() {
@@ -32,71 +51,108 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Back',
-        leadingOnTap: () => Navigator.of(context).pop(),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppConsts.pSide),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: AppConsts.pMedium),
+    return BlocListener<UnitBloc, UnitState>(
+      listener: (context, state) {
+        if (state is UnitAddSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Unit created successfully')),
+          );
 
-                  Text(
-                    'Add Unit',
-                    style: context.titleLarge?.copyWith(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+          if (context.mounted) {
+            Navigator.of(context).pop(state.unit);
+          }
+        }
+
+        if (state is UnitUpdateSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Unit updated successfully')),
+          );
+
+          if (context.mounted) {
+            Navigator.of(context).pop(state.unit);
+          }
+        }
+
+        if (state is UnitFailed) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: 'Back',
+          leadingOnTap: () => Navigator.of(context).pop(),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppConsts.pSide),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppConsts.pMedium),
+
+                    Text(
+                      widget.isEdit ? 'Edit Unit' : 'Add Unit',
+                      style: context.titleLarge?.copyWith(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: AppConsts.pSmall),
+                    const SizedBox(height: AppConsts.pSmall),
 
-                  Text(
-                    'Enter the details to create a new unit',
-                    style: context.bodyMedium?.copyWith(
-                      color: context.secondaryContainer,
+                    Text(
+                      widget.isEdit
+                          ? 'Update the unit details'
+                          : 'Enter the details to create a new unit',
+                      style: context.bodyMedium?.copyWith(
+                        color: context.secondaryContainer,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: AppConsts.pLarge),
+                    const SizedBox(height: AppConsts.pLarge),
 
-                  _communityField(),
+                    _communityField(),
 
-                  const SizedBox(height: AppConsts.pSide),
+                    const SizedBox(height: AppConsts.pSide),
 
-                  _unitNameField(),
+                    _unitNameField(),
 
-                  const SizedBox(height: AppConsts.pSide),
+                    const SizedBox(height: AppConsts.pSide),
 
-                  _sizeAreaField(),
+                    _sizeAreaField(),
 
-                  const SizedBox(height: AppConsts.pSide),
+                    const SizedBox(height: AppConsts.pSide),
 
-                  _descriptionField(),
+                    _descriptionField(),
 
-                  const SizedBox(height: AppConsts.pLarge),
-                ],
+                    const SizedBox(height: AppConsts.pLarge),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppConsts.pSide),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomButton(label: 'Create Unit', onPressed: _createUnit),
-              const SizedBox(height: AppConsts.pLarge),
-            ],
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppConsts.pSide),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomButton(
+                  label: widget.isEdit ? 'Update Unit' : 'Create Unit',
+                  isLoading: context.select<UnitBloc, bool>(
+                    (bloc) => bloc.state is UnitLoading,
+                  ),
+                  onPressed: _submit,
+                ),
+                const SizedBox(height: AppConsts.pLarge),
+              ],
+            ),
           ),
         ),
       ),
@@ -105,7 +161,7 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
 
   Widget _communityField() {
     return CustomTextField(
-      controller: TextEditingController(text: _communityName),
+      controller: TextEditingController(text: widget.community.name),
       textInputType: TextInputType.text,
       labelText: 'Community',
       hintText: 'Community',
@@ -144,18 +200,38 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
     );
   }
 
-  void _createUnit() {
+  void _submit() {
     FocusScope.of(context).unfocus();
 
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
 
-    final community = _communityName;
+    final communityId = widget.community.id;
     final unitName = _unitNameController.text.trim();
     final sizeArea = _sizeAreaController.text.trim();
     final description = _descriptionController.text.trim();
 
-    // TODO: Connect to Bloc/API later.
+    if (widget.isEdit) {
+      context.read<UnitBloc>().add(
+        UpdateUnit(
+          unitId: widget.unit?.id ?? "",
+          communityId: communityId,
+          name: unitName,
+          area: sizeArea,
+          description: description,
+        ),
+      );
+      return;
+    }
+
+    context.read<UnitBloc>().add(
+      AddUnit(
+        communityId: communityId,
+        name: unitName,
+        area: sizeArea,
+        description: description,
+      ),
+    );
   }
 }

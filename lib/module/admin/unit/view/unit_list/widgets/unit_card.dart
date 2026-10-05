@@ -5,6 +5,7 @@ import '../../../../../../core/core.dart';
 class UnitCard extends StatelessWidget {
   const UnitCard({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     // Dummy values representing the design context and image
