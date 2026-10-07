@@ -19,10 +19,13 @@ import '../core/enum/box_types.dart';
 import '../core/enum/sign_up_type.dart';
 import '../module/admin/community/controller/bloc/community_bloc.dart';
 import '../module/admin/home/view/admin_home_screen.dart';
+import '../module/admin/lease/view/add/add_lease_screen.dart';
+import '../module/admin/lease/view/list/lease_list_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
+import 'args/add_lease_args.dart';
 import 'args/add_unit_args.dart';
 import 'page_transition.dart';
 
@@ -143,6 +146,34 @@ final GoRouter router = GoRouter(
             community: args.community,
             isEdit: args.isEdit,
             unit: args.unit,
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.leaseList,
+      name: 'lease-list-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: const LeaseListScreen(),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.addLease,
+      name: 'add-lease-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as AddLeaseArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: AddLeaseScreen(
+            unit: args.unit,
+            lease: args.lease,
+            isEdit: args.isEdit,
           ),
         );
       },

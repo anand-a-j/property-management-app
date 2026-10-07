@@ -6,6 +6,8 @@ import 'package:naseem/core/utils/bloc_observer.dart';
 import 'package:naseem/core/utils/snackbar_manager.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:naseem/module/admin/lease/controller/bloc/lease_bloc.dart';
+import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
 import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
@@ -26,7 +28,7 @@ import 'routes/routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService.init();
- 
+
   await supabaseService.init();
 
   Bloc.observer = SimpleBlocObserver();
@@ -47,6 +49,9 @@ void main() async {
         ),
         BlocProvider<StaffBloc>(
           create: (context) => StaffBloc(repo: StaffRepo()),
+        ),
+        BlocProvider<LeaseBloc>(
+          create: (context) => LeaseBloc(leaseRepo: LeaseRepo()),
         ),
       ],
       child: const MyApp(),
