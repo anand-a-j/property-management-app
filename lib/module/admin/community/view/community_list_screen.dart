@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/module/admin/community/view/widgets/community_card.dart';
+import 'package:naseem/module/admin/unit/view/unit_list/unit_list_screen.dart';
+import 'package:naseem/routes/args/unit_list_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/core.dart';
@@ -65,7 +67,15 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                       itemBuilder: (context, index) {
                         final community = communities[index];
 
-                        return CommunityCard(community: community);
+                        return GestureDetector(
+                          onTap: () {
+                            context.push(
+                              RouterPath.unitList,
+                              extra: UnitListArgs(community: community),
+                            );
+                          },
+                          child: CommunityCard(community: community),
+                        );
                       },
                     ),
                   );

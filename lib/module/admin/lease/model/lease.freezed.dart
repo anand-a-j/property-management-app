@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Lease {
 
- String get id;@JsonKey(name: 'lease_number') String get leaseNumber;@JsonKey(name: 'unit_id') String get unitId;@JsonKey(name: 'resident_id') String get residentId;@JsonKey(name: 'start_date') DateTime get startDate;@JsonKey(name: 'end_date') DateTime get endDate;@JsonKey(name: 'annual_rent') double get annualRent;@JsonKey(name: 'security_deposit') double get securityDeposit;@JsonKey(name: 'payment_frequency') PaymentFrequency get paymentFrequency;@JsonKey(name: 'number_of_cheques') int get numberOfCheques; LeaseStatus get status; String? get description;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt;
+ String get id;@JsonKey(name: 'lease_number') String get leaseNumber;@JsonKey(name: 'unit_id') String get unitId;@JsonKey(name: 'resident_id') String get residentId;@JsonKey(name: 'start_date') DateTime get startDate;@JsonKey(name: 'end_date') DateTime get endDate;@JsonKey(name: 'annual_rent') double get annualRent;@JsonKey(name: 'security_deposit') double get securityDeposit;@JsonKey(name: 'payment_frequency') PaymentFrequency get paymentFrequency;@JsonKey(name: 'number_of_cheques') int get numberOfCheques; LeaseStatus get status; String? get description;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt; Profile? get resident;
 /// Create a copy of Lease
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $LeaseCopyWith<Lease> get copyWith => _$LeaseCopyWithImpl<Lease>(this as Lease, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Lease&&(identical(other.id, id) || other.id == id)&&(identical(other.leaseNumber, leaseNumber) || other.leaseNumber == leaseNumber)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.annualRent, annualRent) || other.annualRent == annualRent)&&(identical(other.securityDeposit, securityDeposit) || other.securityDeposit == securityDeposit)&&(identical(other.paymentFrequency, paymentFrequency) || other.paymentFrequency == paymentFrequency)&&(identical(other.numberOfCheques, numberOfCheques) || other.numberOfCheques == numberOfCheques)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Lease&&(identical(other.id, id) || other.id == id)&&(identical(other.leaseNumber, leaseNumber) || other.leaseNumber == leaseNumber)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.annualRent, annualRent) || other.annualRent == annualRent)&&(identical(other.securityDeposit, securityDeposit) || other.securityDeposit == securityDeposit)&&(identical(other.paymentFrequency, paymentFrequency) || other.paymentFrequency == paymentFrequency)&&(identical(other.numberOfCheques, numberOfCheques) || other.numberOfCheques == numberOfCheques)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.resident, resident) || other.resident == resident));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,leaseNumber,unitId,residentId,startDate,endDate,annualRent,securityDeposit,paymentFrequency,numberOfCheques,status,description,createdAt,updatedAt,deletedAt);
+int get hashCode => Object.hash(runtimeType,id,leaseNumber,unitId,residentId,startDate,endDate,annualRent,securityDeposit,paymentFrequency,numberOfCheques,status,description,createdAt,updatedAt,deletedAt,resident);
 
 @override
 String toString() {
-  return 'Lease(id: $id, leaseNumber: $leaseNumber, unitId: $unitId, residentId: $residentId, startDate: $startDate, endDate: $endDate, annualRent: $annualRent, securityDeposit: $securityDeposit, paymentFrequency: $paymentFrequency, numberOfCheques: $numberOfCheques, status: $status, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+  return 'Lease(id: $id, leaseNumber: $leaseNumber, unitId: $unitId, residentId: $residentId, startDate: $startDate, endDate: $endDate, annualRent: $annualRent, securityDeposit: $securityDeposit, paymentFrequency: $paymentFrequency, numberOfCheques: $numberOfCheques, status: $status, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, resident: $resident)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $LeaseCopyWith<$Res>  {
   factory $LeaseCopyWith(Lease value, $Res Function(Lease) _then) = _$LeaseCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'lease_number') String leaseNumber,@JsonKey(name: 'unit_id') String unitId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'start_date') DateTime startDate,@JsonKey(name: 'end_date') DateTime endDate,@JsonKey(name: 'annual_rent') double annualRent,@JsonKey(name: 'security_deposit') double securityDeposit,@JsonKey(name: 'payment_frequency') PaymentFrequency paymentFrequency,@JsonKey(name: 'number_of_cheques') int numberOfCheques, LeaseStatus status, String? description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt
+ String id,@JsonKey(name: 'lease_number') String leaseNumber,@JsonKey(name: 'unit_id') String unitId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'start_date') DateTime startDate,@JsonKey(name: 'end_date') DateTime endDate,@JsonKey(name: 'annual_rent') double annualRent,@JsonKey(name: 'security_deposit') double securityDeposit,@JsonKey(name: 'payment_frequency') PaymentFrequency paymentFrequency,@JsonKey(name: 'number_of_cheques') int numberOfCheques, LeaseStatus status, String? description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, Profile? resident
 });
 
 
-
+$ProfileCopyWith<$Res>? get resident;
 
 }
 /// @nodoc
@@ -65,7 +65,7 @@ class _$LeaseCopyWithImpl<$Res>
 
 /// Create a copy of Lease
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? leaseNumber = null,Object? unitId = null,Object? residentId = null,Object? startDate = null,Object? endDate = null,Object? annualRent = null,Object? securityDeposit = null,Object? paymentFrequency = null,Object? numberOfCheques = null,Object? status = null,Object? description = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? leaseNumber = null,Object? unitId = null,Object? residentId = null,Object? startDate = null,Object? endDate = null,Object? annualRent = null,Object? securityDeposit = null,Object? paymentFrequency = null,Object? numberOfCheques = null,Object? status = null,Object? description = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? resident = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,leaseNumber: null == leaseNumber ? _self.leaseNumber : leaseNumber // ignore: cast_nullable_to_non_nullable
@@ -82,10 +82,23 @@ as LeaseStatus,description: freezed == description ? _self.description : descrip
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,resident: freezed == resident ? _self.resident : resident // ignore: cast_nullable_to_non_nullable
+as Profile?,
   ));
 }
+/// Create a copy of Lease
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProfileCopyWith<$Res>? get resident {
+    if (_self.resident == null) {
+    return null;
+  }
 
+  return $ProfileCopyWith<$Res>(_self.resident!, (value) {
+    return _then(_self.copyWith(resident: value));
+  });
+}
 }
 
 
@@ -167,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'lease_number')  String leaseNumber, @JsonKey(name: 'unit_id')  String unitId, @JsonKey(name: 'resident_id')  String residentId, @JsonKey(name: 'start_date')  DateTime startDate, @JsonKey(name: 'end_date')  DateTime endDate, @JsonKey(name: 'annual_rent')  double annualRent, @JsonKey(name: 'security_deposit')  double securityDeposit, @JsonKey(name: 'payment_frequency')  PaymentFrequency paymentFrequency, @JsonKey(name: 'number_of_cheques')  int numberOfCheques,  LeaseStatus status,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'lease_number')  String leaseNumber, @JsonKey(name: 'unit_id')  String unitId, @JsonKey(name: 'resident_id')  String residentId, @JsonKey(name: 'start_date')  DateTime startDate, @JsonKey(name: 'end_date')  DateTime endDate, @JsonKey(name: 'annual_rent')  double annualRent, @JsonKey(name: 'security_deposit')  double securityDeposit, @JsonKey(name: 'payment_frequency')  PaymentFrequency paymentFrequency, @JsonKey(name: 'number_of_cheques')  int numberOfCheques,  LeaseStatus status,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  Profile? resident)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Lease() when $default != null:
-return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.startDate,_that.endDate,_that.annualRent,_that.securityDeposit,_that.paymentFrequency,_that.numberOfCheques,_that.status,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt);case _:
+return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.startDate,_that.endDate,_that.annualRent,_that.securityDeposit,_that.paymentFrequency,_that.numberOfCheques,_that.status,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.resident);case _:
   return orElse();
 
 }
@@ -188,10 +201,10 @@ return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'lease_number')  String leaseNumber, @JsonKey(name: 'unit_id')  String unitId, @JsonKey(name: 'resident_id')  String residentId, @JsonKey(name: 'start_date')  DateTime startDate, @JsonKey(name: 'end_date')  DateTime endDate, @JsonKey(name: 'annual_rent')  double annualRent, @JsonKey(name: 'security_deposit')  double securityDeposit, @JsonKey(name: 'payment_frequency')  PaymentFrequency paymentFrequency, @JsonKey(name: 'number_of_cheques')  int numberOfCheques,  LeaseStatus status,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'lease_number')  String leaseNumber, @JsonKey(name: 'unit_id')  String unitId, @JsonKey(name: 'resident_id')  String residentId, @JsonKey(name: 'start_date')  DateTime startDate, @JsonKey(name: 'end_date')  DateTime endDate, @JsonKey(name: 'annual_rent')  double annualRent, @JsonKey(name: 'security_deposit')  double securityDeposit, @JsonKey(name: 'payment_frequency')  PaymentFrequency paymentFrequency, @JsonKey(name: 'number_of_cheques')  int numberOfCheques,  LeaseStatus status,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  Profile? resident)  $default,) {final _that = this;
 switch (_that) {
 case _Lease():
-return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.startDate,_that.endDate,_that.annualRent,_that.securityDeposit,_that.paymentFrequency,_that.numberOfCheques,_that.status,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt);case _:
+return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.startDate,_that.endDate,_that.annualRent,_that.securityDeposit,_that.paymentFrequency,_that.numberOfCheques,_that.status,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.resident);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +221,10 @@ return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'lease_number')  String leaseNumber, @JsonKey(name: 'unit_id')  String unitId, @JsonKey(name: 'resident_id')  String residentId, @JsonKey(name: 'start_date')  DateTime startDate, @JsonKey(name: 'end_date')  DateTime endDate, @JsonKey(name: 'annual_rent')  double annualRent, @JsonKey(name: 'security_deposit')  double securityDeposit, @JsonKey(name: 'payment_frequency')  PaymentFrequency paymentFrequency, @JsonKey(name: 'number_of_cheques')  int numberOfCheques,  LeaseStatus status,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'lease_number')  String leaseNumber, @JsonKey(name: 'unit_id')  String unitId, @JsonKey(name: 'resident_id')  String residentId, @JsonKey(name: 'start_date')  DateTime startDate, @JsonKey(name: 'end_date')  DateTime endDate, @JsonKey(name: 'annual_rent')  double annualRent, @JsonKey(name: 'security_deposit')  double securityDeposit, @JsonKey(name: 'payment_frequency')  PaymentFrequency paymentFrequency, @JsonKey(name: 'number_of_cheques')  int numberOfCheques,  LeaseStatus status,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  Profile? resident)?  $default,) {final _that = this;
 switch (_that) {
 case _Lease() when $default != null:
-return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.startDate,_that.endDate,_that.annualRent,_that.securityDeposit,_that.paymentFrequency,_that.numberOfCheques,_that.status,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt);case _:
+return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.startDate,_that.endDate,_that.annualRent,_that.securityDeposit,_that.paymentFrequency,_that.numberOfCheques,_that.status,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.resident);case _:
   return null;
 
 }
@@ -220,10 +233,10 @@ return $default(_that.id,_that.leaseNumber,_that.unitId,_that.residentId,_that.s
 }
 
 /// @nodoc
+@JsonSerializable()
 
-@JsonSerializable(explicitToJson: true)
 class _Lease implements Lease {
-  const _Lease({required this.id, @JsonKey(name: 'lease_number') required this.leaseNumber, @JsonKey(name: 'unit_id') required this.unitId, @JsonKey(name: 'resident_id') required this.residentId, @JsonKey(name: 'start_date') required this.startDate, @JsonKey(name: 'end_date') required this.endDate, @JsonKey(name: 'annual_rent') required this.annualRent, @JsonKey(name: 'security_deposit') this.securityDeposit = 0, @JsonKey(name: 'payment_frequency') required this.paymentFrequency, @JsonKey(name: 'number_of_cheques') this.numberOfCheques = 1, this.status = LeaseStatus.draft, this.description, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'deleted_at') this.deletedAt});
+  const _Lease({required this.id, @JsonKey(name: 'lease_number') required this.leaseNumber, @JsonKey(name: 'unit_id') required this.unitId, @JsonKey(name: 'resident_id') required this.residentId, @JsonKey(name: 'start_date') required this.startDate, @JsonKey(name: 'end_date') required this.endDate, @JsonKey(name: 'annual_rent') required this.annualRent, @JsonKey(name: 'security_deposit') this.securityDeposit = 0, @JsonKey(name: 'payment_frequency') required this.paymentFrequency, @JsonKey(name: 'number_of_cheques') this.numberOfCheques = 1, this.status = LeaseStatus.draft, this.description, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'deleted_at') this.deletedAt, this.resident});
   factory _Lease.fromJson(Map<String, dynamic> json) => _$LeaseFromJson(json);
 
 @override final  String id;
@@ -241,6 +254,7 @@ class _Lease implements Lease {
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 @override@JsonKey(name: 'deleted_at') final  DateTime? deletedAt;
+@override final  Profile? resident;
 
 /// Create a copy of Lease
 /// with the given fields replaced by the non-null parameter values.
@@ -255,16 +269,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Lease&&(identical(other.id, id) || other.id == id)&&(identical(other.leaseNumber, leaseNumber) || other.leaseNumber == leaseNumber)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.annualRent, annualRent) || other.annualRent == annualRent)&&(identical(other.securityDeposit, securityDeposit) || other.securityDeposit == securityDeposit)&&(identical(other.paymentFrequency, paymentFrequency) || other.paymentFrequency == paymentFrequency)&&(identical(other.numberOfCheques, numberOfCheques) || other.numberOfCheques == numberOfCheques)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Lease&&(identical(other.id, id) || other.id == id)&&(identical(other.leaseNumber, leaseNumber) || other.leaseNumber == leaseNumber)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.annualRent, annualRent) || other.annualRent == annualRent)&&(identical(other.securityDeposit, securityDeposit) || other.securityDeposit == securityDeposit)&&(identical(other.paymentFrequency, paymentFrequency) || other.paymentFrequency == paymentFrequency)&&(identical(other.numberOfCheques, numberOfCheques) || other.numberOfCheques == numberOfCheques)&&(identical(other.status, status) || other.status == status)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.resident, resident) || other.resident == resident));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,leaseNumber,unitId,residentId,startDate,endDate,annualRent,securityDeposit,paymentFrequency,numberOfCheques,status,description,createdAt,updatedAt,deletedAt);
+int get hashCode => Object.hash(runtimeType,id,leaseNumber,unitId,residentId,startDate,endDate,annualRent,securityDeposit,paymentFrequency,numberOfCheques,status,description,createdAt,updatedAt,deletedAt,resident);
 
 @override
 String toString() {
-  return 'Lease(id: $id, leaseNumber: $leaseNumber, unitId: $unitId, residentId: $residentId, startDate: $startDate, endDate: $endDate, annualRent: $annualRent, securityDeposit: $securityDeposit, paymentFrequency: $paymentFrequency, numberOfCheques: $numberOfCheques, status: $status, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+  return 'Lease(id: $id, leaseNumber: $leaseNumber, unitId: $unitId, residentId: $residentId, startDate: $startDate, endDate: $endDate, annualRent: $annualRent, securityDeposit: $securityDeposit, paymentFrequency: $paymentFrequency, numberOfCheques: $numberOfCheques, status: $status, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, resident: $resident)';
 }
 
 
@@ -275,11 +289,11 @@ abstract mixin class _$LeaseCopyWith<$Res> implements $LeaseCopyWith<$Res> {
   factory _$LeaseCopyWith(_Lease value, $Res Function(_Lease) _then) = __$LeaseCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'lease_number') String leaseNumber,@JsonKey(name: 'unit_id') String unitId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'start_date') DateTime startDate,@JsonKey(name: 'end_date') DateTime endDate,@JsonKey(name: 'annual_rent') double annualRent,@JsonKey(name: 'security_deposit') double securityDeposit,@JsonKey(name: 'payment_frequency') PaymentFrequency paymentFrequency,@JsonKey(name: 'number_of_cheques') int numberOfCheques, LeaseStatus status, String? description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt
+ String id,@JsonKey(name: 'lease_number') String leaseNumber,@JsonKey(name: 'unit_id') String unitId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'start_date') DateTime startDate,@JsonKey(name: 'end_date') DateTime endDate,@JsonKey(name: 'annual_rent') double annualRent,@JsonKey(name: 'security_deposit') double securityDeposit,@JsonKey(name: 'payment_frequency') PaymentFrequency paymentFrequency,@JsonKey(name: 'number_of_cheques') int numberOfCheques, LeaseStatus status, String? description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, Profile? resident
 });
 
 
-
+@override $ProfileCopyWith<$Res>? get resident;
 
 }
 /// @nodoc
@@ -292,7 +306,7 @@ class __$LeaseCopyWithImpl<$Res>
 
 /// Create a copy of Lease
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? leaseNumber = null,Object? unitId = null,Object? residentId = null,Object? startDate = null,Object? endDate = null,Object? annualRent = null,Object? securityDeposit = null,Object? paymentFrequency = null,Object? numberOfCheques = null,Object? status = null,Object? description = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? leaseNumber = null,Object? unitId = null,Object? residentId = null,Object? startDate = null,Object? endDate = null,Object? annualRent = null,Object? securityDeposit = null,Object? paymentFrequency = null,Object? numberOfCheques = null,Object? status = null,Object? description = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? resident = freezed,}) {
   return _then(_Lease(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,leaseNumber: null == leaseNumber ? _self.leaseNumber : leaseNumber // ignore: cast_nullable_to_non_nullable
@@ -309,11 +323,24 @@ as LeaseStatus,description: freezed == description ? _self.description : descrip
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,resident: freezed == resident ? _self.resident : resident // ignore: cast_nullable_to_non_nullable
+as Profile?,
   ));
 }
 
+/// Create a copy of Lease
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProfileCopyWith<$Res>? get resident {
+    if (_self.resident == null) {
+    return null;
+  }
 
+  return $ProfileCopyWith<$Res>(_self.resident!, (value) {
+    return _then(_self.copyWith(resident: value));
+  });
+}
 }
 
 // dart format on

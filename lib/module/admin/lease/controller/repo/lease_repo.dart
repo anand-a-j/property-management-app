@@ -75,7 +75,16 @@ class LeaseRepo {
     try {
       final data = await _client
           .from('leases')
-          .select()
+          .select('''
+          *,
+          resident:profiles!leases_resident_id_fkey(
+            id,
+            name,
+            email,
+            phone,
+            role
+          )
+        ''')
           .eq('org_id', orgId)
           .eq('unit_id', unitId)
           .eq('status', 'active')

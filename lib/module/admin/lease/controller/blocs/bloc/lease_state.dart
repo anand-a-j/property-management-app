@@ -46,28 +46,6 @@ class LeaseFailed extends LeaseState {
   List<Object?> get props => [message];
 }
 
-class ActiveLeaseLoading extends LeaseState {
-  const ActiveLeaseLoading();
-}
-
-class ActiveLeaseSuccess extends LeaseState {
-  final Lease? lease;
-
-  const ActiveLeaseSuccess(this.lease);
-
-  @override
-  List<Object?> get props => [lease];
-}
-
-class ActiveLeaseFailed extends LeaseState {
-  final String message;
-
-  const ActiveLeaseFailed(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
 class LeasesLoading extends LeaseState {
   const LeasesLoading();
 }

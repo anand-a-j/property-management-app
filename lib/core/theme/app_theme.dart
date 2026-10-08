@@ -103,5 +103,27 @@ class AppThemes with AppColorScheme {
       // weight: 100,
       // grade: -25,
     ),
+    tabBarTheme: const TabBarThemeData(
+      labelColor: AppColorScheme.primary,
+      unselectedLabelColor: AppColorScheme.secondaryContainer,
+
+      labelStyle: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+
+      unselectedLabelStyle: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+      ),
+
+      indicatorColor: AppColorScheme.primary,
+
+      indicatorSize: TabBarIndicatorSize.label,
+
+      dividerColor: AppColorScheme.surface,
+    ),
   );
 }

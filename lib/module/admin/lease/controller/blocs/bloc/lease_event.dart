@@ -106,16 +106,6 @@ class AssignLeaseToUnit extends LeaseEvent {
   List<Object?> get props => [leaseId, unitId];
 }
 
-class GetActiveLease extends LeaseEvent {
-  final String orgId;
-  final String unitId;
-
-  const GetActiveLease({required this.orgId, required this.unitId});
-
-  @override
-  List<Object?> get props => [orgId, unitId];
-}
-
 class GetLeases extends LeaseEvent {
   final String orgId;
   final String? unitId;

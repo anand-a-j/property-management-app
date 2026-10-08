@@ -1,9 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
+import 'package:naseem/core/widgets/load_more_button.dart';
 import 'package:naseem/module/admin/community/model/community.dart';
 import 'package:naseem/module/admin/unit/view/unit_list/widgets/unit_card.dart';
+import 'package:naseem/routes/args/add_unit_args.dart';
+import 'package:naseem/routes/args/unit_details_args.dart';
+import 'package:naseem/routes/router_path.dart';
 
 import '../../../../../core/core.dart';
 import '../../controller/bloc/unit_bloc.dart';
@@ -18,28 +25,11 @@ class UnitListScreen extends StatefulWidget {
 }
 
 class _UnitListScreenState extends State<UnitListScreen> {
-  late final ScrollController _scrollController;
-
   @override
   void initState() {
     super.initState();
 
-    _scrollController = ScrollController();
-
-    _scrollController.addListener(_onScroll);
-
-    // Initial load
     context.read<UnitBloc>().add(GetUnits(communityId: widget.community.id));
-  }
-
-  void _onScroll() {
-    // Start loading when user gets near the bottom.
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      context.read<UnitBloc>().add(
-        LoadMoreUnits(communityId: widget.community.id),
-      );
-    }
   }
 
   void _onSearch(String query) {
@@ -48,19 +38,19 @@ class _UnitListScreenState extends State<UnitListScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-
-    super.dispose();
+  void _loadMore() {
+    context.read<UnitBloc>().add(
+      LoadMoreUnits(communityId: widget.community.id),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Units'),
+      appBar: CustomAppBar(
+        title: 'Units',
+        leadingOnTap: () => Navigator.pop(context),
+      ),
 
       body: Column(
         children: [
@@ -92,27 +82,46 @@ class _UnitListScreenState extends State<UnitListScreen> {
 
                   // Empty
                   if (units.isEmpty) {
-                    return EmptyStateView(message: "Unit not found");
+                    return const EmptyStateView(message: 'Unit not found');
                   }
 
                   return ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                    itemCount: units.length + (state.isLoadingMore ? 1 : 0),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppConsts.pSide,
+                      15,
+                      AppConsts.pSide,
+                      0,
+                    ),
+                    itemCount: units.length + 1,
                     itemBuilder: (context, index) {
-                      // Pagination loader at bottom
                       if (index == units.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
+                        if (!state.hasMore) {
+                          return const SizedBox(height: 20);
+                        }
+
+                        return LoadMoreButton(
+                          onTap: () {
+                            if (state.isLoadingMore) {
+                              _loadMore();
+                            }
+                          },
                         );
                       }
 
                       final unit = units[index];
 
-                      return UnitCard(
-                        // Pass unit if your UnitCard accepts it.
-                        // unit: unit,
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          context.push(
+                            RouterPath.unitDetails,
+                            extra: UnitDetailsArgs(
+                              unit: unit,
+                              community: widget.community,
+                            ),
+                          );
+                        },
+                        child: UnitCard(unit: unit),
                       );
                     },
                   );
@@ -128,7 +137,10 @@ class _UnitListScreenState extends State<UnitListScreen> {
       floatingActionButton: FloatingAddButton(
         title: 'Add Unit',
         onTap: () {
-          // Add unit action
+          context.push(
+            RouterPath.addUnit,
+            extra: AddUnitArgs(community: widget.community),
+          );
         },
       ),
     );

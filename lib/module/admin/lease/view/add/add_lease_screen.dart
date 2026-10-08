@@ -9,7 +9,7 @@ import '../../../../../core/enum/payment_frequency.dart';
 import '../../../../../core/utils/generate_lease_number.dart';
 import '../../../../../core/utils/input_vaildator.dart';
 import '../../../unit/model/unit.dart';
-import '../../controller/bloc/lease_bloc.dart';
+import '../../controller/blocs/bloc/lease_bloc.dart';
 import '../../model/lease.dart';
 
 class AddLeaseScreen extends StatefulWidget {

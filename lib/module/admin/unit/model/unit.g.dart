@@ -17,6 +17,7 @@ _Unit _$UnitFromJson(Map<String, dynamic> json) => _Unit(
   deletedAt: json['deleted_at'] == null
       ? null
       : DateTime.parse(json['deleted_at'] as String),
+  status: $enumDecodeNullable(_$UnitStatusEnumMap, json['status']),
 );
 
 Map<String, dynamic> _$UnitToJson(_Unit instance) => <String, dynamic>{
@@ -28,4 +29,12 @@ Map<String, dynamic> _$UnitToJson(_Unit instance) => <String, dynamic>{
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
+  'status': _$UnitStatusEnumMap[instance.status],
+};
+
+const _$UnitStatusEnumMap = {
+  UnitStatus.unassigned: 'unassigned',
+  UnitStatus.occupied: 'occupied',
+  UnitStatus.vacant: 'vacant',
+  UnitStatus.maintenance: 'maintenance',
 };

@@ -29,7 +29,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               children: [
                 const SizedBox(height: 15),
                 Text(
-                  StringUtils.getGreeting(),
+                  StrHelper.getGreeting(),
                   style: context.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),

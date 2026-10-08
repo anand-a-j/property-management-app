@@ -18,7 +18,7 @@ class EmptyStateView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: isHalf ? 220 : null,
+      height: isHalf ? 180 : null,
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(AppConsts.pLarge),

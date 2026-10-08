@@ -11,7 +11,9 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
   final UnitRepo _unitRepo;
 
   int _currentPage = 1;
-  final int _limit = 20;
+
+  // Fetch only 8 units per request.
+  static const int _limit = 8;
 
   String _communityId = '';
   String _searchQuery = '';
@@ -32,10 +34,18 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
     on<SearchUnits>(_onSearchUnits);
   }
 
+  // =========================================================
+  // GET UNITS
+  // =========================================================
+
   Future<void> _onGetUnits(GetUnits event, Emitter<UnitState> emit) async {
     _communityId = event.communityId.trim();
     _currentPage = 1;
     _searchQuery = event.searchQuery?.trim() ?? '';
+
+    _units = [];
+    _hasMore = true;
+    _isLoadingMore = false;
 
     emit(const UnitLoading());
 
@@ -49,25 +59,50 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
     if (response.hasData) {
       _units = response.data ?? [];
 
-      // If returned items < limit, there is no next page.
+      // If fewer than 8 were returned,
+      // there is no next page.
       _hasMore = _units.length == _limit;
 
-      emit(UnitLoadSuccess(units: _units, hasMore: _hasMore));
+      emit(
+        UnitLoadSuccess(
+          units: List.unmodifiable(_units),
+          hasMore: _hasMore,
+          isLoadingMore: false,
+        ),
+      );
     } else {
       emit(UnitFailed(response.error ?? 'Something went wrong'));
     }
   }
 
+  // =========================================================
+  // LOAD MORE
+  // =========================================================
+
   Future<void> _onLoadMoreUnits(
     LoadMoreUnits event,
     Emitter<UnitState> emit,
   ) async {
-    if (_isLoadingMore || !_hasMore) return;
+    // Prevent duplicate requests.
+    if (_isLoadingMore || !_hasMore) {
+      return;
+    }
+
+    // Make sure pagination belongs to the current community.
+    final communityId = event.communityId.trim();
+
+    if (communityId != _communityId) {
+      return;
+    }
 
     _isLoadingMore = true;
 
     emit(
-      UnitLoadSuccess(units: _units, hasMore: _hasMore, isLoadingMore: true),
+      UnitLoadSuccess(
+        units: List.unmodifiable(_units),
+        hasMore: _hasMore,
+        isLoadingMore: true,
+      ),
     );
 
     final nextPage = _currentPage + 1;
@@ -86,51 +121,79 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
 
       _units.addAll(newUnits);
 
+      // If fewer than 8 came back,
+      // this was the last page.
       _hasMore = newUnits.length == _limit;
+
       _isLoadingMore = false;
 
       emit(
-        UnitLoadSuccess(units: _units, hasMore: _hasMore, isLoadingMore: false),
+        UnitLoadSuccess(
+          units: List.unmodifiable(_units),
+          hasMore: _hasMore,
+          isLoadingMore: false,
+        ),
       );
     } else {
       _isLoadingMore = false;
 
+      // Keep the existing list visible.
       emit(
-        UnitLoadSuccess(units: _units, hasMore: _hasMore, isLoadingMore: false),
+        UnitLoadSuccess(
+          units: List.unmodifiable(_units),
+          hasMore: _hasMore,
+          isLoadingMore: false,
+        ),
       );
     }
   }
+
+  // =========================================================
+  // SEARCH
+  // =========================================================
 
   Future<void> _onSearchUnits(
     SearchUnits event,
     Emitter<UnitState> emit,
   ) async {
-    // Search is basically a new pagination session.
+    _communityId = event.communityId.trim();
     _searchQuery = event.searchQuery.trim();
+
+    // Start a new pagination session.
     _currentPage = 1;
     _hasMore = true;
+    _isLoadingMore = false;
     _units = [];
 
     emit(const UnitLoading());
 
     final response = await _unitRepo.getUnits(
-      communityId: event.communityId.trim(),
-      page: 1,
+      communityId: _communityId,
+      page: _currentPage,
       limit: _limit,
       searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
     );
 
     if (response.hasData) {
-      final units = response.data ?? [];
+      _units = response.data ?? [];
 
-      _units = units;
-      _hasMore = units.length == _limit;
+      _hasMore = _units.length == _limit;
 
-      emit(UnitLoadSuccess(units: _units, hasMore: _hasMore));
+      emit(
+        UnitLoadSuccess(
+          units: List.unmodifiable(_units),
+          hasMore: _hasMore,
+          isLoadingMore: false,
+        ),
+      );
     } else {
       emit(UnitFailed(response.error ?? 'Something went wrong'));
     }
   }
+
+  // =========================================================
+  // ADD UNIT
+  // =========================================================
 
   Future<void> _onAddUnit(AddUnit event, Emitter<UnitState> emit) async {
     emit(const UnitLoading());
@@ -149,6 +212,10 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
     }
   }
 
+  // =========================================================
+  // UPDATE UNIT
+  // =========================================================
+
   Future<void> _onUpdateUnit(UpdateUnit event, Emitter<UnitState> emit) async {
     emit(const UnitLoading());
 
@@ -166,6 +233,10 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
       emit(UnitFailed(response.error ?? 'Something went wrong'));
     }
   }
+
+  // =========================================================
+  // DELETE UNIT
+  // =========================================================
 
   Future<void> _onDeleteUnit(DeleteUnit event, Emitter<UnitState> emit) async {
     emit(const UnitLoading());

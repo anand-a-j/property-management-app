@@ -29,6 +29,9 @@ _Lease _$LeaseFromJson(Map<String, dynamic> json) => _Lease(
   deletedAt: json['deleted_at'] == null
       ? null
       : DateTime.parse(json['deleted_at'] as String),
+  resident: json['resident'] == null
+      ? null
+      : Profile.fromJson(json['resident'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$LeaseToJson(_Lease instance) => <String, dynamic>{
@@ -47,6 +50,7 @@ Map<String, dynamic> _$LeaseToJson(_Lease instance) => <String, dynamic>{
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
+  'resident': instance.resident,
 };
 
 const _$PaymentFrequencyEnumMap = {

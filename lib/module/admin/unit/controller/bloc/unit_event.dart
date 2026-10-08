@@ -6,31 +6,41 @@ abstract class UnitEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
+
 class GetUnits extends UnitEvent {
   final String communityId;
   final int page;
   final int limit;
   final String? searchQuery;
 
-  GetUnits({
+  const GetUnits({
     required this.communityId,
     this.page = 1,
     this.limit = 20,
     this.searchQuery,
   });
+
+  @override
+  List<Object?> get props => [communityId, page, limit, searchQuery];
 }
 
 class LoadMoreUnits extends UnitEvent {
+  const LoadMoreUnits({required this.communityId});
+
   final String communityId;
 
-  LoadMoreUnits({required this.communityId});
+  @override
+  List<Object?> get props => [communityId];
 }
 
 class SearchUnits extends UnitEvent {
   final String communityId;
   final String searchQuery;
 
-  SearchUnits({required this.communityId, required this.searchQuery});
+  const SearchUnits({required this.communityId, required this.searchQuery});
+
+  @override
+  List<Object?> get props => [communityId, searchQuery];
 }
 
 class AddUnit extends UnitEvent {

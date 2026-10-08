@@ -4,6 +4,7 @@ import 'package:naseem/module/admin/community/model/community.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/utils/input_vaildator.dart';
+import '../../../../../core/utils/snackbar_manager.dart';
 import '../../controller/bloc/unit_bloc.dart';
 import '../../model/unit.dart';
 
@@ -54,35 +55,29 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
     return BlocListener<UnitBloc, UnitState>(
       listener: (context, state) {
         if (state is UnitAddSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Unit created successfully')),
-          );
+          Snack.success('Unit created successfully');
 
           if (context.mounted) {
-            Navigator.of(context).pop(state.unit);
+            Navigator.pop(context);
           }
         }
 
         if (state is UnitUpdateSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Unit updated successfully')),
-          );
+          Snack.success('Unit updated successfully');
 
           if (context.mounted) {
-            Navigator.of(context).pop(state.unit);
+            Navigator.pop(context);
           }
         }
 
         if (state is UnitFailed) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          Snack.error(state.message);
         }
       },
       child: Scaffold(
         appBar: CustomAppBar(
           title: 'Back',
-          leadingOnTap: () => Navigator.of(context).pop(),
+          leadingOnTap: () => Navigator.pop(context),
         ),
         body: SafeArea(
           child: Padding(

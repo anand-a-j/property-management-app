@@ -2,117 +2,105 @@ import 'package:flutter/material.dart';
 import 'package:naseem/core/widgets/status_tag.dart';
 
 import '../../../../../../core/core.dart';
+import '../../../../../../core/enum/unit_status.dart';
+import '../../../model/unit.dart';
 
 class UnitCard extends StatelessWidget {
-  const UnitCard({super.key});
+  final Unit unit;
+
+  const UnitCard({super.key, required this.unit});
 
   @override
   Widget build(BuildContext context) {
-    // Dummy values representing the design context and image
-    const String unitNumber = 'MH-023';
-    const String unitType = 'Studio';
-    const String bedCount = '3 Bed Room';
-    const String tenantName = 'Ram Kumar Sai Home';
-    const String statusText = 'Occupied';
-
     return Container(
+      margin: EdgeInsets.only(top: 8, bottom: 8),
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: context.surface, width: 1.0),
+        border: Border.all(color: context.surface, width: 1),
       ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Left side grey image placeholder
-            Expanded(
-              flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: context.surface.withOpacity(0.2),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8 - 1),
-                    bottomLeft: Radius.circular(8 - 1),
-                  ),
-                ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image / placeholder
+          Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              color: context.surface.withValues(alpha: 0.2),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(7),
+                bottomLeft: Radius.circular(7),
               ),
             ),
+            child: Center(
+              child: Icon(
+                Icons.apartment,
+                size: 36,
+                color: context.secondaryContainer,
+              ),
+            ),
+          ),
 
-            // Right side details section
-            Expanded(
-              flex: 7,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Unit Code/Number
-                        Expanded(
-                          child: Text(
-                            unitNumber,
-                            style: context.titleSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+          // Details
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Unit name + status
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          unit.name,
+                          style: context.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: 10),
-                        // Status Badge/Chip
-                        StatusTag(status: "Active", color: Colors.green),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.green.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Text(
-                            statusText,
-                            style: context.labelLarge?.copyWith(
-                              color: Colors.green,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    // Room Specs
-                    Text(
-                      '$unitType  |  $bedCount',
-                      style: context.bodySmall?.copyWith(
-                        color: context.secondaryContainer,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    // Resident / Tenant Name
-                    Text(
-                      tenantName,
-                      style: context.bodySmall?.copyWith(
-                        color: context.secondaryContainer,
+
+                      const SizedBox(width: 8),
+
+                      StatusTag(
+                        status: unit.status?.label ?? 'Unassigned',
+                        color: unit.status?.color ?? Colors.grey,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    ],
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Area / Size
+                  Text(
+                    unit.area,
+                    style: context.bodySmall?.copyWith(
+                      color: context.secondary.withValues(alpha: 0.5),
                     ),
-                  ],
-                ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Description
+                  Text(
+                    unit.description,
+                    style: context.bodySmall?.copyWith(
+                      color: context.secondary.withValues(alpha: 0.5),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

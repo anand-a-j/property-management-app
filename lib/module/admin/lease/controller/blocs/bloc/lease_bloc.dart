@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
 
-import '../../model/lease.dart';
+import '../../../model/lease.dart';
 
 part 'lease_event.dart';
 part 'lease_state.dart';
@@ -28,7 +28,6 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
     on<AddLease>(_onAddLease);
     on<UpdateLease>(_onUpdateLease);
     on<AssignLeaseToUnit>(_onAssignLeaseToUnit);
-    on<GetActiveLease>(_onGetActiveLease);
     on<GetLeases>(_onGetLeases);
     on<LoadMoreLeases>(_onLoadMoreLeases);
     on<SearchLeases>(_onSearchLeases);
@@ -101,24 +100,6 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
       emit(const LeaseAssignSuccess());
     } else {
       emit(LeaseFailed(response.error ?? 'Something went wrong'));
-    }
-  }
-
-  Future<void> _onGetActiveLease(
-    GetActiveLease event,
-    Emitter<LeaseState> emit,
-  ) async {
-    emit(const ActiveLeaseLoading());
-
-    final response = await _leaseRepo.getActiveLease(
-      orgId: event.orgId.trim(),
-      unitId: event.unitId.trim(),
-    );
-
-    if (response.hasData) {
-      emit(ActiveLeaseSuccess(response.data));
-    } else {
-      emit(ActiveLeaseFailed(response.error ?? 'Something went wrong'));
     }
   }
 

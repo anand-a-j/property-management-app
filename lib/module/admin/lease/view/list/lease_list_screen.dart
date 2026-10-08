@@ -6,7 +6,7 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
-import '../../controller/bloc/lease_bloc.dart';
+import '../../controller/blocs/bloc/lease_bloc.dart';
 
 class LeaseListScreen extends StatefulWidget {
   const LeaseListScreen({super.key});

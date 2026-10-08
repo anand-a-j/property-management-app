@@ -10,103 +10,101 @@ class CommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: context.surface, width: 1.0),
-        ),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Left side thumbnail placeholder
-              Expanded(
-                flex: 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: context.surface.withOpacity(0.2),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
+    return Container(
+      margin: const EdgeInsets.only(top: 8, bottom: 8),
+      decoration: BoxDecoration(
+        color: context.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: context.surface, width: 1.0),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Left side thumbnail placeholder
+            Expanded(
+              flex: 3,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.surface.withOpacity(0.2),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
                   ),
-                  child: Center(
-                    child: Icon(
-                      Icons.apartment_rounded,
-                      size: 40,
-                      color: context.secondaryContainer,
-                    ),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.apartment_rounded,
+                    size: 40,
+                    color: context.secondaryContainer,
                   ),
                 ),
               ),
-
-              // Right side content
-              Expanded(
-                flex: 7,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Title
-                      Text(
-                        community.name,
-                        style: context.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+            ),
+    
+            // Right side content
+            Expanded(
+              flex: 7,
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Title
+                    Text(
+                      community.name,
+                      style: context.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      if (community.communityType.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        // Property Type
-                        Text(
-                          community.communityType,
-                          style: context.bodySmall?.copyWith(
-                            color: context.secondaryContainer,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (community.communityType.isNotEmpty) ...[
                       const SizedBox(height: 2),
-                      // Location
+                      // Property Type
                       Text(
-                        community.address,
+                        community.communityType,
                         style: context.bodySmall?.copyWith(
                           color: context.secondaryContainer,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 15),
-                      // Metrics Row (Units, Occupied, Vacant)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildStatColumn(context, count: "0", label: 'Units'),
-                          _buildStatColumn(
-                            context,
-                            count: "0",
-                            label: 'Occupied',
-                          ),
-                          _buildStatColumn(
-                            context,
-                            count: "0",
-                            label: 'Vacant',
-                          ),
-                        ],
-                      ),
                     ],
-                  ),
+                    const SizedBox(height: 2),
+                    // Location
+                    Text(
+                      community.address,
+                      style: context.bodySmall?.copyWith(
+                        color: context.secondaryContainer,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 15),
+                    // Metrics Row (Units, Occupied, Vacant)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildStatColumn(context, count: "0", label: 'Units'),
+                        _buildStatColumn(
+                          context,
+                          count: "0",
+                          label: 'Occupied',
+                        ),
+                        _buildStatColumn(
+                          context,
+                          count: "0",
+                          label: 'Vacant',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

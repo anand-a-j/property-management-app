@@ -7,6 +7,7 @@ import 'package:naseem/module/admin/resident/controller/bloc/resident_bloc.dart'
     show ResidentBloc;
 import 'package:naseem/module/admin/resident/controller/repo/resident_repo.dart';
 import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
+import 'package:naseem/module/admin/unit/view/unit_details/unit_details_screen.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
 import 'package:naseem/module/staff/view/staff_list/staff_list_screen.dart';
 
@@ -21,12 +22,15 @@ import '../module/admin/community/controller/bloc/community_bloc.dart';
 import '../module/admin/home/view/admin_home_screen.dart';
 import '../module/admin/lease/view/add/add_lease_screen.dart';
 import '../module/admin/lease/view/list/lease_list_screen.dart';
+import '../module/admin/unit/view/unit_list/unit_list_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
 import 'args/add_lease_args.dart';
 import 'args/add_unit_args.dart';
+import 'args/unit_details_args.dart';
+import 'args/unit_list_args.dart';
 import 'page_transition.dart';
 
 final Box<dynamic> settings = Hive.box(BoxType.settings.name);
@@ -147,6 +151,32 @@ final GoRouter router = GoRouter(
             isEdit: args.isEdit,
             unit: args.unit,
           ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.unitList,
+      name: 'unit-list-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as UnitListArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: UnitListScreen(community: args.community),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.unitDetails,
+      name: 'unit-details-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as UnitDetailsArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: UnitDetailsScreen(unit: args.unit, community: args.community),
         );
       },
     ),

@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/enum/lease_status.dart';
 import '../../../../core/enum/payment_frequency.dart';
+import '../../../auth/core/model/profile.dart';
 
 part 'lease.freezed.dart';
 part 'lease.g.dart';
@@ -25,6 +26,7 @@ abstract class Lease with _$Lease {
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
+    Profile? resident,
   }) = _Lease;
 
   factory Lease.fromJson(Map<String, dynamic> json) => _$LeaseFromJson(json);

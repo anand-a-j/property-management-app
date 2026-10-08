@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/enum/unit_status.dart';
+
 part 'unit.freezed.dart';
 part 'unit.g.dart';
 
@@ -19,6 +21,7 @@ abstract class Unit with _$Unit {
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
 
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
+    UnitStatus? status,
   }) = _Unit;
 
   factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);

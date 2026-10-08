@@ -1,7 +1,7 @@
+import 'package:intl/intl.dart';
 
-
-class StringUtils {
- static String getGreeting() {
+class StrHelper {
+  static String getGreeting() {
     final hour = DateTime.now().hour;
 
     switch (hour) {
@@ -14,5 +14,25 @@ class StringUtils {
       default:
         return 'Good Night';
     }
+  }
+
+  static String formatCurrency(
+    num amount, {
+    String currency = 'AED',
+    bool showDecimals = false,
+  }) {
+    final formatter = NumberFormat.currency(
+      locale: 'en_AE',
+      symbol: '$currency ',
+      decimalDigits: showDecimals ? 2 : 0,
+    );
+
+    return formatter.format(amount);
+  }
+
+  static String formatLeaseFromTo(DateTime from, DateTime to) {
+    final formatter = DateFormat('dd MMM yyyy');
+
+    return '${formatter.format(from)} - ${formatter.format(to)}';
   }
 }

@@ -11,7 +11,12 @@ class RouterPath {
 
   // Admin
   static const String addCommunity = "/add-community";
+
   static const String addUnit = "/add-unit";
+  static const String unitList = "/unit-list";
+
+  static const String unitDetails = "/unit-details";
+
   static const String leaseList = "/lease-list";
   static const String addLease = "/add-lease";
 
