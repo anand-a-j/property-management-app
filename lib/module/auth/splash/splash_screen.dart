@@ -48,6 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
       case UserRole.resident:
       case UserRole.security:
       case UserRole.maintenance:
+      
         return null;
 
       case null:

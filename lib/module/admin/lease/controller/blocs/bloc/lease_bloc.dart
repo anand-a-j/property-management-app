@@ -27,7 +27,7 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
       super(const LeaseInitial()) {
     on<AddLease>(_onAddLease);
     on<UpdateLease>(_onUpdateLease);
-    on<AssignLeaseToUnit>(_onAssignLeaseToUnit);
+  
     on<GetLeases>(_onGetLeases);
     on<LoadMoreLeases>(_onLoadMoreLeases);
     on<SearchLeases>(_onSearchLeases);
@@ -85,23 +85,7 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
     }
   }
 
-  Future<void> _onAssignLeaseToUnit(
-    AssignLeaseToUnit event,
-    Emitter<LeaseState> emit,
-  ) async {
-    emit(const LeaseLoading());
 
-    final response = await _leaseRepo.assignLeaseToUnit(
-      leaseId: event.leaseId.trim(),
-      unitId: event.unitId.trim(),
-    );
-
-    if (response.hasData) {
-      emit(const LeaseAssignSuccess());
-    } else {
-      emit(LeaseFailed(response.error ?? 'Something went wrong'));
-    }
-  }
 
   Future<void> _onGetLeases(GetLeases event, Emitter<LeaseState> emit) async {
     _orgId = event.orgId.trim();

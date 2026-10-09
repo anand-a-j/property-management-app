@@ -21,7 +21,9 @@ import '../core/enum/sign_up_type.dart';
 import '../module/admin/community/controller/bloc/community_bloc.dart';
 import '../module/admin/home/view/admin_home_screen.dart';
 import '../module/admin/lease/view/add/add_lease_screen.dart';
+import '../module/admin/lease/view/details/lease_details_screen.dart';
 import '../module/admin/lease/view/list/lease_list_screen.dart';
+import '../module/admin/resident/view/resident_list_screen.dart';
 import '../module/admin/unit/view/unit_list/unit_list_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
@@ -29,6 +31,7 @@ import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
 import 'args/add_lease_args.dart';
 import 'args/add_unit_args.dart';
+import 'args/lease_details_args.dart';
 import 'args/unit_details_args.dart';
 import 'args/unit_list_args.dart';
 import 'page_transition.dart';
@@ -127,6 +130,19 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
+      path: RouterPath.residentList,
+      name: 'resident-list-screen',
+      pageBuilder: (context, state) {
+        final isSelectionMode = state.extra as bool? ?? false;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: ResidentListScreen(isSelectionMode: isSelectionMode),
+        );
+      },
+    ),
+
+    GoRoute(
       path: RouterPath.addCommunity,
       name: 'add-community-screen',
       pageBuilder: (context, state) {
@@ -185,9 +201,10 @@ final GoRouter router = GoRouter(
       path: RouterPath.leaseList,
       name: 'lease-list-screen',
       pageBuilder: (context, state) {
+        final isSelectionMode = state.extra as bool? ?? false;
         return SlideTransitionPage(
           beginOffset: const Offset(1, 0),
-          page: const LeaseListScreen(),
+          page: LeaseListScreen(isSelectionMode: isSelectionMode),
         );
       },
     ),
@@ -204,6 +221,24 @@ final GoRouter router = GoRouter(
             unit: args.unit,
             lease: args.lease,
             isEdit: args.isEdit,
+            community: args.community,
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.leaseDetails,
+      name: 'lease-details-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as LeaseDetailsArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: LeaseDetailsScreen(
+            lease: args.lease,
+            unit: args.unit,
+            community: args.community,
           ),
         );
       },

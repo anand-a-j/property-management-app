@@ -9,10 +9,13 @@ import '../../../../core/core.dart';
 import '../../../../core/enum/sign_up_type.dart';
 import '../../../../core/widgets/empty_state_view.dart';
 import '../../../../routes/router_path.dart';
+import '../../../auth/core/model/profile.dart';
 import '../controller/bloc/resident_bloc.dart';
 
 class ResidentListScreen extends StatefulWidget {
-  const ResidentListScreen({super.key});
+  const ResidentListScreen({super.key, this.isSelectionMode = false});
+
+  final bool isSelectionMode;
 
   @override
   State<ResidentListScreen> createState() => _ResidentListScreenState();
@@ -37,7 +40,9 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Residents'),
+      appBar: CustomAppBar(
+        title: widget.isSelectionMode ? 'Select Resident' : 'Residents',
+      ),
       body: Column(
         children: [
           SearchTextField(title: "Search Residents", onChanged: (query) {}),
@@ -64,7 +69,14 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
                     itemBuilder: (context, index) {
                       final resident = state.residents[index];
 
-                      return ResidentCard(profile: resident);
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.isSelectionMode) {
+                            context.pop<Profile>(resident);
+                          }
+                        },
+                        child: ResidentCard(profile: resident),
+                      );
                     },
                   );
                 }

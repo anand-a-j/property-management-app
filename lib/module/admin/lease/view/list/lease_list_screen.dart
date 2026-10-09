@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/error_state_view.dart' show ErrorStateView;
 import 'package:naseem/module/admin/lease/view/list/widgets/lease_card.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
@@ -7,9 +8,12 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../controller/blocs/bloc/lease_bloc.dart';
+import '../../model/lease.dart';
 
 class LeaseListScreen extends StatefulWidget {
-  const LeaseListScreen({super.key});
+  const LeaseListScreen({super.key, this.isSelectionMode = false});
+
+  final bool isSelectionMode;
 
   @override
   State<LeaseListScreen> createState() => _LeaseListScreenState();
@@ -59,7 +63,9 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Leases'),
+      appBar: CustomAppBar(
+        title: widget.isSelectionMode ? 'Select Lease' : 'Leases',
+      ),
 
       body: Column(
         children: [
@@ -96,7 +102,12 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
 
                   return ListView.builder(
                     controller: _scrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppConsts.pSide,
+                      15,
+                      AppConsts.pSide,
+                      10,
+                    ),
                     itemCount: leases.length + (state.isLoadingMore ? 1 : 0),
                     itemBuilder: (context, index) {
                       // Pagination loader
@@ -109,7 +120,12 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
 
                       final lease = leases[index];
 
-                      return LeaseCard(lease: lease);
+                      return GestureDetector(
+                        onTap: () {
+                          context.pop<Lease>(lease);
+                        },
+                        child: LeaseCard(lease: lease),
+                      );
                     },
                   );
                 }
@@ -119,13 +135,6 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
             ),
           ),
         ],
-      ),
-
-      floatingActionButton: FloatingAddButton(
-        title: 'Add Lease',
-        onTap: () {
-          // Navigate to AddLeaseScreen
-        },
       ),
     );
   }

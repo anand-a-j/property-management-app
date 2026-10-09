@@ -65,20 +65,8 @@ class AuthService {
     }
 
     try {
-      // No active Supabase session
+      // No active Supabase session.
       if (!isAuthenticated) {
-        _profile = null;
-        _initialized = true;
-        return false;
-      }
-
-      // Load cached profile first
-      _profile = _profileDB.getProfile();
-
-      // Always verify/load latest profile from Supabase
-      final response = await refreshProfile();
-
-      if (response.error != null || response.data == null) {
         _profile = null;
         await _profileDB.deleteProfile();
 
@@ -86,12 +74,40 @@ class AuthService {
         return false;
       }
 
-      _initialized = true;
-      return true;
+      // Load the cached profile before making a network request.
+      _profile = _profileDB.getProfile();
+      final cachedProfile = _profile;
+
+      // Try to load the latest profile from Supabase.
+      final response = await refreshProfile();
+
+      if (response.hasData) {
+        _initialized = true;
+        return true;
+      }
+
+      // Network/profile refresh failed, but a cached profile exists.
+      // Preserve it and allow the user to enter the app.
+      if (cachedProfile != null && isAuthenticated) {
+        _profile = cachedProfile;
+        _initialized = true;
+        return true;
+      }
+
+      // No cached profile is available, so let the splash screen
+      // display its retry/error UI.
+      _initialized = false;
+
+      throw Exception(response.error ?? 'Unable to initialize authentication.');
     } catch (e) {
-      _profile = null;
-      _initialized = true;
-      return false;
+      // Preserve a cached profile if the session is still present.
+      if (_profile != null && isAuthenticated) {
+        _initialized = true;
+        return true;
+      }
+
+      _initialized = false;
+      rethrow;
     }
   }
 

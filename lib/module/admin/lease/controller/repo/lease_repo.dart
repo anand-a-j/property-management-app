@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
@@ -49,17 +51,21 @@ class LeaseRepo {
   }
 
   // ASSIGN LEASE TO UNIT
-  Future<DataResponse<void>> assignLeaseToUnit({
+  Future<DataResponse<bool>> assignLeaseToUnit({
     required String leaseId,
     required String unitId,
   }) async {
     try {
       await _client
           .from('leases')
-          .update({'unit_id': unitId})
+          .update({
+            'unit_id': unitId,
+            'status': 'active',
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
           .eq('id', leaseId);
 
-      return DataResponse(data: null);
+      return DataResponse(data: true);
     } catch (e, stack) {
       return DataResponse(
         error: errorlog("LeaseRepo.assignLeaseToUnit", e, stack),
@@ -90,6 +96,8 @@ class LeaseRepo {
           .eq('status', 'active')
           .isFilter('deleted_at', null)
           .maybeSingle();
+
+      log("active lease : ${data} unit : ${unitId}");
 
       if (data == null) {
         return DataResponse(data: null);
@@ -187,7 +195,16 @@ class LeaseRepo {
 
       var query = _client
           .from('leases')
-          .select()
+          .select('''
+             *,
+          resident:profiles!leases_resident_id_fkey(
+            id,
+            name,
+            email,
+            phone,
+            role
+          )
+          ''')
           .eq('org_id', orgId)
           .isFilter('deleted_at', null);
 
@@ -202,6 +219,8 @@ class LeaseRepo {
       final data = await query
           .order('created_at', ascending: false)
           .range(from, to);
+
+      log("lease data : ${data.toString()}");
 
       final leases = (data as List)
           .map((json) => Lease.fromJson(json))

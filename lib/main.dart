@@ -8,6 +8,8 @@ import 'package:naseem/core/utils/snackbar_manager.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_bloc.dart';
+import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_movement_bloc.dart';
+import 'package:naseem/module/admin/lease/controller/repo/lease_movement_repo.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/unit_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/repo/unit_repo.dart';
@@ -61,6 +63,10 @@ void main() async {
         ),
         BlocProvider<ActiveLeaseBloc>(
           create: (context) => ActiveLeaseBloc(leaseRepo: LeaseRepo()),
+        ),
+        BlocProvider<LeaseMovementBloc>(
+          create: (context) =>
+              LeaseMovementBloc(repository: LeaseMovementRepo()),
         ),
       ],
       child: const MyApp(),

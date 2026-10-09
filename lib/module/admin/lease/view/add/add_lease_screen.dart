@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/utils/snackbar_manager.dart';
+import 'package:naseem/module/admin/community/model/community.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../../core/core.dart';
@@ -8,7 +10,10 @@ import '../../../../../core/enum/lease_status.dart';
 import '../../../../../core/enum/payment_frequency.dart';
 import '../../../../../core/utils/generate_lease_number.dart';
 import '../../../../../core/utils/input_vaildator.dart';
+import '../../../../../routes/router_path.dart';
+import '../../../../auth/core/model/profile.dart';
 import '../../../unit/model/unit.dart';
+import '../../controller/blocs/bloc/active_lease_bloc.dart';
 import '../../controller/blocs/bloc/lease_bloc.dart';
 import '../../model/lease.dart';
 
@@ -16,11 +21,13 @@ class AddLeaseScreen extends StatefulWidget {
   const AddLeaseScreen({
     super.key,
     required this.unit,
+    required this.community,
     this.lease,
     required this.isEdit,
   });
 
   final Unit unit;
+  final Community community;
   final Lease? lease;
   final bool isEdit;
 
@@ -33,7 +40,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
 
   final TextEditingController _leaseNumberController = TextEditingController();
 
-  final TextEditingController _residentIdController = TextEditingController();
+  final TextEditingController _residentController = TextEditingController();
 
   final TextEditingController _startDateController = TextEditingController();
 
@@ -54,6 +61,8 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
 
   PaymentFrequency? _paymentFrequency;
 
+  Profile? _selectedResident;
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +72,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
   @override
   void dispose() {
     _leaseNumberController.dispose();
-    _residentIdController.dispose();
+    _residentController.dispose();
     _startDateController.dispose();
     _endDateController.dispose();
     _annualRentController.dispose();
@@ -81,11 +90,41 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
         if (state is LeaseAddSuccess) {
           Snack.success('Lease added successfully');
 
+          context.read<ActiveLeaseBloc>().add(
+            GetActiveLease(
+              orgId: authentication.profile?.orgId ?? "",
+              unitId: widget.unit.id,
+            ),
+          );
+
+          context.read<LeaseBloc>().add(
+            GetLeases(
+              orgId: authentication.profile?.orgId ?? "",
+              unitId: widget.unit.id,
+              searchQuery: "",
+            ),
+          );
+
           Navigator.pop(context);
         }
 
         if (state is LeaseUpdateSuccess) {
           Snack.success('Lease updated successfully');
+
+          context.read<ActiveLeaseBloc>().add(
+            GetActiveLease(
+              orgId: authentication.profile?.orgId ?? "",
+              unitId: widget.unit.id,
+            ),
+          );
+
+          context.read<LeaseBloc>().add(
+            GetLeases(
+              orgId: authentication.profile?.orgId ?? "",
+              unitId: widget.unit.id,
+              searchQuery: "",
+            ),
+          );
 
           Navigator.pop(context);
         }
@@ -197,10 +236,9 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
   }
 
   Widget _unitDetailsCard() {
-    // Replace this with your UnitDetails card later.
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppConsts.pSide),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.surface),
@@ -210,10 +248,10 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
         children: [
           Text(
             'Unit Details',
-            style: context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: context.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
-          Text(widget.unit.name),
+          Text("${widget.unit.name} - ${widget.community.name}"),
         ],
       ),
     );
@@ -232,11 +270,25 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
 
   Widget _residentIdField() {
     return CustomTextField(
-      controller: _residentIdController,
+      controller: _residentController,
       textInputType: TextInputType.text,
-      labelText: 'Resident ID',
-      hintText: 'Enter resident ID',
-      validator: (value) => InputVaildator.required(value),
+      labelText: 'Resident',
+      hintText: 'Select the Resident',
+      suffixIcon: Icon(Icons.arrow_forward_ios),
+      readOnly: true,
+      onTap: () async {
+        final resident = await context.push<Profile>(
+          RouterPath.residentList,
+          extra: true,
+        );
+
+        if (resident != null && mounted) {
+          setState(() {
+            _selectedResident = resident;
+            _residentController.text = resident.id;
+          });
+        }
+      },
     );
   }
 
@@ -244,6 +296,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
     return CustomTextField(
       controller: _startDateController,
       textInputType: TextInputType.datetime,
+      suffixIcon: const Icon(Icons.calendar_month_outlined),
       labelText: 'Start Date',
       hintText: 'Select start date',
       readOnly: true,
@@ -256,6 +309,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
     return CustomTextField(
       controller: _endDateController,
       textInputType: TextInputType.datetime,
+      suffixIcon: const Icon(Icons.calendar_month_outlined),
       labelText: 'End Date',
       hintText: 'Select end date',
       readOnly: true,
@@ -450,8 +504,13 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
       return;
     }
 
+    if (_selectedResident == null) {
+      Snack.error("Select Resident");
+      return;
+    }
+
     final leaseNumber = _leaseNumberController.text.trim();
-    final residentId = _residentIdController.text.trim();
+    final residentId = _selectedResident?.id;
 
     final annualRent = double.parse(_annualRentController.text.trim());
 
@@ -486,7 +545,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
         AddLease(
           orgId: authentication.profile?.orgId ?? "",
           unitId: widget.unit.id,
-          residentId: residentId,
+          residentId: residentId ?? "",
           leaseNumber: leaseNumber,
           startDate: _startDate!,
           endDate: _endDate!,

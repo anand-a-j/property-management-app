@@ -149,6 +149,7 @@ context.labelLarge
 
 instead of directly referencing Theme.of(context).textTheme inside UI widgets where the context extension is available.
 
+
 Border Radius
 rMicro = 6.0;
 rMacro = 8.0;
@@ -164,6 +165,7 @@ pLarge = 25;
 pExtraLarge = 30;
 pUltra = 35;
 pUltraLarge = 40;
+Use this as AppConsts.rMicro, AppConsts.pSmall
 Primary Button
 
 Component: CustomButton

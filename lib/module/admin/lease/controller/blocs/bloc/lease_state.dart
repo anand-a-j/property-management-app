@@ -33,9 +33,7 @@ class LeaseUpdateSuccess extends LeaseState {
   List<Object?> get props => [lease];
 }
 
-class LeaseAssignSuccess extends LeaseState {
-  const LeaseAssignSuccess();
-}
+
 
 class LeaseFailed extends LeaseState {
   final String message;
