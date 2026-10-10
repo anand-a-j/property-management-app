@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/module/admin/community/view/community_list_screen.dart';
 import 'package:naseem/module/admin/home/view/admin_dashboard_screen.dart';
+import 'package:naseem/module/admin/payment/view/screen/list/payment_list_screen.dart';
 import 'package:naseem/module/admin/resident/view/resident_list_screen.dart';
 import 'package:naseem/module/admin/settings/view/settings_screen.dart';
 
@@ -83,7 +84,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 AdminDashboardScreen(),
                 CommunityListScreen(),
                 ResidentListScreen(),
-                Scaffold(body: Text("")),
+                PaymentListScreen(),
                 SettingsScreen(),
               ],
             ),

@@ -37,7 +37,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Staffs'),
+      appBar: CustomAppBar(title: 'Staffs', leadingOnTap: () => context.pop()),
       body: Column(
         children: [
           SearchTextField(title: "Search Staffs", onChanged: (query) {}),

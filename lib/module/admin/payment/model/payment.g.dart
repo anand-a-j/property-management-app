@@ -8,6 +8,7 @@ part of 'payment.dart';
 
 _Payment _$PaymentFromJson(Map<String, dynamic> json) => _Payment(
   id: json['id'] as String,
+  orgId: json['org_id'] as String,
   paymentNumber: json['payment_number'] as String,
   leaseId: json['lease_id'] as String,
   dueDate: DateTime.parse(json['due_date'] as String),
@@ -27,10 +28,14 @@ _Payment _$PaymentFromJson(Map<String, dynamic> json) => _Payment(
   deletedAt: json['deleted_at'] == null
       ? null
       : DateTime.parse(json['deleted_at'] as String),
+  lease: json['lease'] == null
+      ? null
+      : LeasePaymentDetails.fromJson(json['lease'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PaymentToJson(_Payment instance) => <String, dynamic>{
   'id': instance.id,
+  'org_id': instance.orgId,
   'payment_number': instance.paymentNumber,
   'lease_id': instance.leaseId,
   'due_date': instance.dueDate.toIso8601String(),
@@ -44,6 +49,7 @@ Map<String, dynamic> _$PaymentToJson(_Payment instance) => <String, dynamic>{
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
+  'lease': instance.lease,
 };
 
 const _$PaymentTypeEnumMap = {PaymentType.cheque: 'cheque'};

@@ -65,6 +65,7 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: widget.isSelectionMode ? 'Select Lease' : 'Leases',
+        leadingOnTap: () => context.pop(),
       ),
 
       body: Column(

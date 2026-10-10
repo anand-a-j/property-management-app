@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/bloc/cubit/app_cubit.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
+import 'package:naseem/routes/args/visitor_list_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/core.dart';
@@ -20,28 +21,23 @@ class SettingsScreen extends StatelessWidget {
       appBar: CustomAppBar(title: 'Settings'),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0, // pSide = 20
-            vertical: 15.0, // pMedium = 15
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // User Profile Header Section
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Profile Avatar
                   Container(
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
                       color: context.surface,
-                      borderRadius: BorderRadius.circular(12.0), // rMedium = 12
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  const SizedBox(width: 15), // pMedium = 15
-                  // User Details
+                  const SizedBox(width: 15),
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 5), // pMicro = 5
+                        const SizedBox(height: 5),
                         Text(
                           'Manager',
                           style: context.bodyMedium?.copyWith(
@@ -64,11 +60,9 @@ class SettingsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Edit Action Text Button
+
                   GestureDetector(
-                    onTap: () {
-                      // Handle edit action
-                    },
+                    onTap: () {},
                     child: Text(
                       'Edit',
                       style: context.titleSmall?.copyWith(
@@ -79,16 +73,16 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 25), // pLarge = 25
-              // "More" Section Header
+              const SizedBox(height: 25),
+
               Text(
                 'Management',
                 style: context.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 15), // pMedium = 15
-              // Navigation Card Options List
+              const SizedBox(height: 15),
+
               SettingsCard(
                 icon: Icons.badge_outlined,
                 title: 'Staffs',
@@ -102,7 +96,14 @@ class SettingsScreen extends StatelessWidget {
               SettingsCard(
                 icon: Icons.manage_accounts_outlined,
                 title: 'Visors',
-                onTap: () {},
+                onTap: () {
+                  context.push(
+                    RouterPath.visitorList,
+                    extra: VisitorListArgs(
+                      orgId: authentication.profile?.orgId ?? "",
+                    ),
+                  );
+                },
               ),
 
               const SizedBox(height: 10),
@@ -111,7 +112,19 @@ class SettingsScreen extends StatelessWidget {
                 icon: Icons.assignment_turned_in_outlined,
                 title: 'Manage Lease',
                 showTrailingIcon: true,
-                onTap: () {},
+                onTap: () {
+                  context.push(RouterPath.leaseList);
+                },
+              ),
+              const SizedBox(height: 10),
+
+              SettingsCard(
+                icon: Icons.handyman_outlined,
+                title: 'Maintenance',
+                showTrailingIcon: true,
+                onTap: () {
+                  context.push(RouterPath.maintenanceList);
+                },
               ),
               const Spacer(),
             ],

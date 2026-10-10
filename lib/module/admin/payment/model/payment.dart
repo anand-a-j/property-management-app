@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/enum/payment_status.dart';
 import '../../../../core/enum/payment_type.dart';
+import 'lease_payment_details.dart';
 
 part 'payment.freezed.dart';
 part 'payment.g.dart';
@@ -10,6 +11,8 @@ part 'payment.g.dart';
 abstract class Payment with _$Payment {
   const factory Payment({
     required String id,
+
+    @JsonKey(name: 'org_id') required String orgId,
     @JsonKey(name: 'payment_number') required String paymentNumber,
     @JsonKey(name: 'lease_id') required String leaseId,
     @JsonKey(name: 'due_date') required DateTime dueDate,
@@ -23,6 +26,7 @@ abstract class Payment with _$Payment {
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
+    LeasePaymentDetails? lease,
   }) = _Payment;
 
   factory Payment.fromJson(Map<String, dynamic> json) =>

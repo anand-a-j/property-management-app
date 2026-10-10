@@ -11,8 +11,12 @@ import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_bloc.dart'
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_movement_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_movement_repo.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
+import 'package:naseem/module/admin/payment/controller/bloc/payment_bloc.dart';
+import 'package:naseem/module/admin/payment/controller/repo/payment_repo.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/unit_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/repo/unit_repo.dart';
+import 'package:naseem/module/admin/visitor/controller/bloc/visitor_bloc.dart';
+import 'package:naseem/module/admin/visitor/controller/repo/visitor_repo.dart';
 import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
@@ -26,6 +30,8 @@ import 'core/service/hive_ce_service.dart';
 import 'core/service/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 
+import 'module/admin/maintainence/controller/bloc/maintenance_bloc.dart';
+import 'module/admin/maintainence/controller/repo/maintenance_repo.dart';
 import 'module/admin/resident/controller/bloc/resident_bloc.dart';
 import 'module/admin/resident/controller/repo/resident_repo.dart';
 import 'routes/routes.dart';
@@ -67,6 +73,16 @@ void main() async {
         BlocProvider<LeaseMovementBloc>(
           create: (context) =>
               LeaseMovementBloc(repository: LeaseMovementRepo()),
+        ),
+        BlocProvider<PaymentBloc>(
+          create: (context) => PaymentBloc(paymentRepo: PaymentRepo()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              MaintenanceBloc(maintenanceRepo: MaintenanceRepo()),
+        ),
+        BlocProvider<VisitorBloc>(
+          create: (context) => VisitorBloc(visitorRepo: VisitorRepo()),
         ),
       ],
       child: const MyApp(),

@@ -23,17 +23,25 @@ import '../module/admin/home/view/admin_home_screen.dart';
 import '../module/admin/lease/view/add/add_lease_screen.dart';
 import '../module/admin/lease/view/details/lease_details_screen.dart';
 import '../module/admin/lease/view/list/lease_list_screen.dart';
+import '../module/admin/maintainence/view/add/add_maintainence_screen.dart';
+import '../module/admin/maintainence/view/list/maintenance_list_screen.dart';
+import '../module/admin/payment/view/screen/add/payment_add_screen.dart';
 import '../module/admin/resident/view/resident_list_screen.dart';
 import '../module/admin/unit/view/unit_list/unit_list_screen.dart';
+import '../module/admin/visitor/view/add/add_visitor_screen.dart';
+import '../module/admin/visitor/view/list/visitor_list_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
 import 'args/add_lease_args.dart';
+import 'args/add_maintenance_args.dart';
+import 'args/add_payment_args.dart';
 import 'args/add_unit_args.dart';
 import 'args/lease_details_args.dart';
 import 'args/unit_details_args.dart';
 import 'args/unit_list_args.dart';
+import 'args/visitor_list_args.dart';
 import 'page_transition.dart';
 
 final Box<dynamic> settings = Hive.box(BoxType.settings.name);
@@ -240,6 +248,74 @@ final GoRouter router = GoRouter(
             unit: args.unit,
             community: args.community,
           ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.addPayment,
+      name: 'add-payment-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as AddPaymentArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: AddPaymentScreen(
+            lease: args.lease,
+            community: args.community,
+            unit: args.unit,
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.maintenanceList,
+      name: 'maintenance-list-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: const MaintenanceListScreen(),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.addMaintenance,
+      name: 'add-maintenance-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as AddMaintenanceArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: AddMaintenanceScreen(
+            unit: args.unit,
+            community: args.community,
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.visitorList,
+      name: 'visitor-list-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as VisitorListArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: VisitorListScreen(orgId: args.orgId, unitId: args.unitId),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.addVisitor,
+      name: 'add-visitor-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: const AddVisitorScreen(),
         );
       },
     ),

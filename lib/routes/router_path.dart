@@ -23,6 +23,14 @@ class RouterPath {
   static const String addLease = "/add-lease";
   static const String leaseDetails = "/lease-details";
 
+  static const String addPayment = "/add-payment";
+
+  static const String maintenanceList = '/maintenance-list';
+  static const String addMaintenance = '/add-maintenance';
+
+  static const String visitorList = '/visitor-list';
+  static const String addVisitor = '/add-visitor';
+
   // Settings
   static const String settings = "/settings";
 
