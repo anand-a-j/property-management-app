@@ -31,7 +31,10 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
 
     // Initial load
     context.read<LeaseBloc>().add(
-      GetLeases(orgId: authentication.profile?.orgId ?? ""),
+      GetLeases(
+        orgId: authentication.profile?.orgId ?? "",
+        isDraftOnly: widget.isSelectionMode,
+      ),
     );
   }
 
@@ -86,7 +89,10 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
                     message: state.message,
                     retryOnTap: () {
                       context.read<LeaseBloc>().add(
-                        GetLeases(orgId: authentication.profile?.orgId ?? ""),
+                        GetLeases(
+                          orgId: authentication.profile?.orgId ?? "",
+                          isDraftOnly: widget.isSelectionMode,
+                        ),
                       );
                     },
                   );
@@ -98,7 +104,7 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
 
                   // Empty
                   if (leases.isEmpty) {
-                    return const EmptyStateView(message: 'Lease not found');
+                    return const EmptyStateView(message:  'Lease not found');
                   }
 
                   return ListView.builder(

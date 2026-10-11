@@ -58,6 +58,9 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
           Snack.success('Unit created successfully');
 
           if (context.mounted) {
+            context.read<UnitBloc>().add(
+              SearchUnits(communityId: widget.community.id, searchQuery: ""),
+            );
             Navigator.pop(context);
           }
         }
@@ -66,6 +69,9 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
           Snack.success('Unit updated successfully');
 
           if (context.mounted) {
+            context.read<UnitBloc>().add(
+              SearchUnits(communityId: widget.community.id, searchQuery: ""),
+            );
             Navigator.pop(context);
           }
         }

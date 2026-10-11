@@ -14,6 +14,7 @@ _AddMaintenance _$AddMaintenanceFromJson(Map<String, dynamic> json) =>
       residentId: json['resident_id'] as String?,
       issueTitle: json['issue_title'] as String,
       issueType: json['issue_type'] as String,
+      ticketNumber: json['ticket_number'] as String,
       description: json['description'] as String,
       priority:
           $enumDecodeNullable(_$MaintenancePriorityEnumMap, json['priority']) ??
@@ -31,6 +32,7 @@ Map<String, dynamic> _$AddMaintenanceToJson(_AddMaintenance instance) =>
       'resident_id': instance.residentId,
       'issue_title': instance.issueTitle,
       'issue_type': instance.issueType,
+      'ticket_number': instance.ticketNumber,
       'description': instance.description,
       'priority': _$MaintenancePriorityEnumMap[instance.priority]!,
       'status': _$MaintenanceStatusEnumMap[instance.status]!,

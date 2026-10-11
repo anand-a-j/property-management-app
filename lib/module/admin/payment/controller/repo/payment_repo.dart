@@ -72,7 +72,7 @@ class PaymentRepo {
     }
   }
 
-// GET ALL PAYMENTS
+  // GET ALL PAYMENTS
   // leaseId == null -> all organization payments
   // leaseId != null -> payments for that lease only
   Future<DataResponse<List<Payment>>> getAllPayments({
@@ -87,7 +87,18 @@ class PaymentRepo {
 
       var query = _client
           .from('payments')
-          .select()
+          .select('''
+          *,
+          lease:leases!payments_lease_id_fkey (
+            id,
+            unit:units!leases_unit_id_fkey (
+              name
+            ),
+            resident:profiles!leases_resident_id_fkey (
+              name
+            )
+          )
+        ''')
           .eq('org_id', orgId)
           .isFilter('deleted_at', null);
 
@@ -103,9 +114,9 @@ class PaymentRepo {
           .map((json) => Payment.fromJson(Map<String, dynamic>.from(json)))
           .toList();
 
-      return DataResponse(data: payments);
+      return DataResponse<List<Payment>>(data: payments);
     } catch (e, stack) {
-      return DataResponse(
+      return DataResponse<List<Payment>>(
         error: errorlog('PaymentRepo.getAllPayments', e, stack),
       );
     }

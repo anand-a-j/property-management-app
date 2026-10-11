@@ -20,6 +20,7 @@ class AuthSignUp extends AuthEvent {
 
   final SignUpType signUpType;
   final String? orgId;
+  final bool isManagedCreation;
 
   const AuthSignUp({
     required this.email,
@@ -28,11 +29,19 @@ class AuthSignUp extends AuthEvent {
     this.phone,
     required this.role,
     required this.signUpType,
-    this.orgId,
+    this.orgId, required this.isManagedCreation,
   });
 
   @override
-  List<Object?> get props => [email, password, name, phone, role, signUpType, orgId,];
+  List<Object?> get props => [
+    email,
+    password,
+    name,
+    phone,
+    role,
+    signUpType,
+    orgId,
+  ];
 }
 
 class AuthSignIn extends AuthEvent {

@@ -115,6 +115,7 @@ class _LeaseHistoryBody extends StatelessWidget {
                   orgId: authentication.profile?.orgId ?? "",
                   unitId: unit.id,
                   searchQuery: "",
+                  isDraftOnly: false,
                 ),
               );
             },

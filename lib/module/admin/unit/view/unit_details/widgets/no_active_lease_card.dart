@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../../../core/core.dart';
 import '../../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../../routes/router_path.dart';
+import '../../../../../auth/core/controller/service/auth_service.dart';
 import '../../../../lease/controller/blocs/bloc/active_lease_bloc.dart';
+import '../../../../lease/controller/blocs/bloc/lease_bloc.dart';
 import '../../../../lease/model/lease.dart';
 import '../../../model/unit.dart';
 
@@ -58,11 +60,7 @@ class NoActiveLeaseCard extends StatelessWidget {
 
           BlocConsumer<ActiveLeaseBloc, ActiveLeaseState>(
             listener: (context, state) {
-              if (state is LeaseAssignSuccess) {
-                Snack.success("Lease assigned to unit successfully.");
-              } else if (state is LeaseAssignFailed) {
-                Snack.error(state.message);
-              }
+              
             },
             builder: (context, state) {
               return CustomButton(

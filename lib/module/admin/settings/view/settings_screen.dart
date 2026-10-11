@@ -140,6 +140,7 @@ class SettingsScreen extends StatelessWidget {
         child: CustomButton(
           label: "Logout",
           color: context.error,
+          padding: const EdgeInsetsGeometry.all(AppConsts.pSide),
           onPressed: () {
             CustomDialog.confirmationDialog(
               context: context,
@@ -156,7 +157,6 @@ class SettingsScreen extends StatelessWidget {
               },
             );
           },
-          padding: const EdgeInsetsGeometry.all(AppConsts.pSide),
         ),
       ),
     );

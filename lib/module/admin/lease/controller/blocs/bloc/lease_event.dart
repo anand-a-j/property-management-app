@@ -96,16 +96,21 @@ class UpdateLease extends LeaseEvent {
   ];
 }
 
-
 class GetLeases extends LeaseEvent {
   final String orgId;
   final String? unitId;
   final String? searchQuery;
+  final bool isDraftOnly;
 
-  const GetLeases({required this.orgId, this.unitId, this.searchQuery});
+  const GetLeases({
+    required this.orgId,
+    this.unitId,
+    this.searchQuery,
+    required this.isDraftOnly,
+  });
 
   @override
-  List<Object?> get props => [orgId, unitId, searchQuery];
+  List<Object?> get props => [orgId, unitId, searchQuery, isDraftOnly];
 }
 
 class LoadMoreLeases extends LeaseEvent {

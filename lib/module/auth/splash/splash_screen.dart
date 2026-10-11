@@ -1,13 +1,17 @@
 // ignore_for_file: avoid_returning_null_for_void
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/bloc/cubit/app_cubit.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/enum/user_role.dart';
 import '../../../core/extension/common.dart';
 
 import '../../../routes/router_path.dart';
+import '../core/controller/bloc/auth_bloc.dart';
+import '../core/controller/bloc/auth_event.dart';
 import '../core/controller/service/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -48,7 +52,6 @@ class _SplashScreenState extends State<SplashScreen> {
       case UserRole.resident:
       case UserRole.security:
       case UserRole.maintenance:
-      
         return null;
 
       case null:
@@ -63,11 +66,17 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Padding(
         padding: const EdgeInsets.all(AppConsts.pSide),
         child: Center(
-          child: Text(
-            "Naseem",
-            style: context.titleLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: context.onPrimary,
+          child: GestureDetector(
+            onTap: () {
+              context.read<AppCubit>().setAdminDashIndex(0);
+              context.read<AuthBloc>().add(const AuthSignOut());
+            },
+            child: Text(
+              "Naseem",
+              style: context.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: context.onPrimary,
+              ),
             ),
           ),
         ),

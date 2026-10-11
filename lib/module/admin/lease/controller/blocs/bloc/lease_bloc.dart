@@ -101,6 +101,7 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
       page: _currentPage,
       limit: _limit,
       searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+      draftOnly: event.isDraftOnly,
     );
 
     if (response.hasData) {

@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
 import '../../../../../core/enum/user_role.dart';
+import '../../../../../core/utils/error_log.dart';
 import '../../model/profile.dart';
 import '../db/profile_db.dart';
 import '../repo/auth_repo.dart';
@@ -111,6 +112,36 @@ class AuthService {
     }
   }
 
+  Future<DataResponse<void>> createManagedUser({
+    required String email,
+    required String password,
+    required String name,
+    String? phone,
+    required UserRole role,
+  }) async {
+    try {
+      log("email : $email , role : ${role.value}");
+
+      final SupabaseClient client = Supabase.instance.client;
+      await client.functions.invoke(
+        'create-managed-user',
+        body: {
+          'email': email.trim(),
+          'password': password,
+          'name': name.trim(),
+          'phone': phone?.trim(),
+          'role': role.value,
+        },
+      );
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('AuthRepo.createManagedUser', e, stack),
+      );
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // SIGN UP
   // ---------------------------------------------------------------------------
@@ -122,8 +153,27 @@ class AuthService {
     String? phone,
     required UserRole role,
     required SignUpType signUpType,
+    required bool isManagedCreation,
     String? orgId,
   }) async {
+    if (isManagedCreation) {
+      // Managed accounts must never use auth.signUp().
+      if (role == UserRole.platformAdmin || orgId == null || orgId.isEmpty) {
+        return DataResponse(
+          error: 'Invalid role or organization for account creation.',
+        );
+      }
+
+      return createManagedUser(
+        email: email,
+        password: password,
+        name: name,
+        phone: phone,
+        role: role,
+      );
+    }
+
+    // Self-signup only.
     final response = await _authRepo.signUp(
       email: email,
       password: password,
@@ -137,8 +187,13 @@ class AuthService {
       return response;
     }
 
+    // Only self-signup should load the newly authenticated user's profile.
     if (role != UserRole.platformAdmin) {
-      await refreshProfile();
+      final profileResponse = await refreshProfile();
+
+      if (profileResponse.error != null) {
+        return DataResponse(error: profileResponse.error);
+      }
     }
 
     return DataResponse(data: null);

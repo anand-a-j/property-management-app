@@ -19,7 +19,10 @@ class ResidentCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(radius: 25, backgroundColor: context.surface),
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: context.surface.withValues(alpha: 0.5),
+          ),
           const SizedBox(width: 10), // pSmall
           Expanded(
             child: Column(
@@ -34,7 +37,7 @@ class ResidentCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '',
+                  profile.phone ?? "",
                   style: context.bodyMedium?.copyWith(
                     color: context.secondaryContainer,
                   ),

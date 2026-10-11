@@ -102,6 +102,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
               orgId: authentication.profile?.orgId ?? "",
               unitId: widget.unit.id,
               searchQuery: "",
+              isDraftOnly: false,
             ),
           );
 
@@ -123,6 +124,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
               orgId: authentication.profile?.orgId ?? "",
               unitId: widget.unit.id,
               searchQuery: "",
+              isDraftOnly: false,
             ),
           );
 
@@ -285,7 +287,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
         if (resident != null && mounted) {
           setState(() {
             _selectedResident = resident;
-            _residentController.text = resident.id;
+            _residentController.text = resident.name;
           });
         }
       },

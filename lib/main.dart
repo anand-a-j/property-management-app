@@ -6,6 +6,7 @@ import 'package:naseem/core/utils/bloc_observer.dart';
 import 'package:naseem/core/utils/snackbar_manager.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:naseem/module/admin/home/controller/repo/dashboard_stats_repo.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_movement_bloc.dart';
@@ -30,6 +31,7 @@ import 'core/service/hive_ce_service.dart';
 import 'core/service/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 
+import 'module/admin/home/controller/cubit/dashboard_stats_cubit.dart';
 import 'module/admin/maintainence/controller/bloc/maintenance_bloc.dart';
 import 'module/admin/maintainence/controller/repo/maintenance_repo.dart';
 import 'module/admin/resident/controller/bloc/resident_bloc.dart';
@@ -83,6 +85,10 @@ void main() async {
         ),
         BlocProvider<VisitorBloc>(
           create: (context) => VisitorBloc(visitorRepo: VisitorRepo()),
+        ),
+        BlocProvider<DashboardStatsCubit>(
+          create: (context) =>
+              DashboardStatsCubit(dashboardStatsRepo: DashboardStatsRepo()),
         ),
       ],
       child: const MyApp(),

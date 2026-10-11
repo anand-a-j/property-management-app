@@ -45,11 +45,11 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
         title: 'Payments',
         leadingOnTap: () => Navigator.pop(context),
       ),
-      body: AppHorizontalPadding(
-        child: Column(
-          children: [
-            // Stats cards remain unchanged.
-            Row(
+      body: Column(
+        children: [
+          // Stats cards remain unchanged.
+          AppHorizontalPadding(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 20,
               children: [
@@ -73,73 +73,73 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                 ),
               ],
             ),
+          ),
 
-            const SizedBox(height: 15),
+          const SizedBox(height: 15),
 
-            Expanded(
-              child: BlocBuilder<PaymentBloc, PaymentState>(
-                builder: (context, state) {
-                  // Initial loading
-                  if (state is PaymentLoading) {
-                    return const Center(child: CircularProgressIndicator());
+          Expanded(
+            child: BlocBuilder<PaymentBloc, PaymentState>(
+              builder: (context, state) {
+                // Initial loading
+                if (state is PaymentLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                // Error
+                if (state is PaymentFailed) {
+                  return ErrorStateView(
+                    retryOnTap: _fetchPayments,
+                    message: state.message,
+                  );
+                }
+
+                // Success with paginated payments
+                if (state is PaymentListLoadSuccess) {
+                  final payments = state.payments;
+
+                  // Empty state
+                  if (payments.isEmpty) {
+                    return const EmptyStateView(message: 'No payments found');
                   }
 
-                  // Error
-                  if (state is PaymentFailed) {
-                    return ErrorStateView(
-                      retryOnTap: _fetchPayments,
-                      message: state.message,
-                    );
-                  }
-
-                  // Success with paginated payments
-                  if (state is PaymentListLoadSuccess) {
-                    final payments = state.payments;
-
-                    // Empty state
-                    if (payments.isEmpty) {
-                      return const EmptyStateView(message: 'No payments found');
-                    }
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(
-                        AppConsts.pSide,
-                        15,
-                        AppConsts.pSide,
-                        0,
-                      ),
-                      itemCount: payments.length + 1,
-                      itemBuilder: (context, index) {
-                        // Pagination footer
-                        if (index == payments.length) {
-                          if (!state.hasMore) {
-                            return const SizedBox(height: 20);
-                          }
-
-                          return LoadMoreButton(
-                            onTap: () {
-                              if (!state.isLoadingMore) {
-                                _loadMore();
-                              }
-                            },
-                          );
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppConsts.pSide,
+                      15,
+                      AppConsts.pSide,
+                      0,
+                    ),
+                    itemCount: payments.length + 1,
+                    itemBuilder: (context, index) {
+                      // Pagination footer
+                      if (index == payments.length) {
+                        if (!state.hasMore) {
+                          return const SizedBox(height: 20);
                         }
 
-                        final payment = payments[index];
+                        return LoadMoreButton(
+                          onTap: () {
+                            if (!state.isLoadingMore) {
+                              _loadMore();
+                            }
+                          },
+                        );
+                      }
 
-                        // Replace PaymentCard with your actual
-                        // payment item widget if its name differs.
-                        return PaymentCard(payment: payment, onTap: () {});
-                      },
-                    );
-                  }
+                      final payment = payments[index];
 
-                  return const SizedBox.shrink();
-                },
-              ),
+                      // Replace PaymentCard with your actual
+                      // payment item widget if its name differs.
+                      return PaymentCard(payment: payment, onTap: () {});
+                    },
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -182,10 +182,12 @@ class LeaseRepo {
   }
 
   // GET ALL LEASES
+  // GET ALL LEASES
   Future<DataResponse<List<Lease>>> getAllLeases({
     required String orgId,
     String? unitId,
     String? searchQuery,
+    bool draftOnly = false,
     int page = 1,
     int limit = 15,
   }) async {
@@ -196,7 +198,7 @@ class LeaseRepo {
       var query = _client
           .from('leases')
           .select('''
-             *,
+          *,
           resident:profiles!leases_resident_id_fkey(
             id,
             name,
@@ -204,12 +206,16 @@ class LeaseRepo {
             phone,
             role
           )
-          ''')
+        ''')
           .eq('org_id', orgId)
           .isFilter('deleted_at', null);
 
       if (unitId != null) {
         query = query.eq('unit_id', unitId);
+      }
+
+      if (draftOnly) {
+        query = query.eq('status', 'draft');
       }
 
       if (searchQuery != null && searchQuery.trim().isNotEmpty) {
@@ -220,15 +226,13 @@ class LeaseRepo {
           .order('created_at', ascending: false)
           .range(from, to);
 
-      log("lease data : ${data.toString()}");
-
       final leases = (data as List)
           .map((json) => Lease.fromJson(json))
           .toList();
 
       return DataResponse(data: leases);
     } catch (e, stack) {
-      return DataResponse(error: errorlog("LeaseRepo.getAllLeases", e, stack));
+      return DataResponse(error: errorlog('LeaseRepo.getAllLeases', e, stack));
     }
   }
 }

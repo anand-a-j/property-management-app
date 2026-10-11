@@ -15,6 +15,7 @@ abstract class AddMaintenance with _$AddMaintenance {
     @JsonKey(name: 'resident_id') String? residentId,
     @JsonKey(name: 'issue_title') required String issueTitle,
     @JsonKey(name: 'issue_type') required String issueType,
+    @JsonKey(name: 'ticket_number') required String ticketNumber,
     required String description,
     @Default(MaintenancePriority.medium) MaintenancePriority priority,
     @Default(MaintenanceStatus.pendingReview) MaintenanceStatus status,

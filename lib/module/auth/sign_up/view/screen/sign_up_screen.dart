@@ -140,9 +140,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             context.read<ManagerBloc>().add(const FetchManagers());
             Snack.success("Success");
             Navigator.pop(context);
-          }else if(widget.type == SignUpType.resident) {
-            
-          }  else {
+          } else if (widget.type == SignUpType.resident) {
+            Snack.success("Success");
+            Navigator.pop(context);
+          } else {
             Snack.success("Sign up success, more features coming soon");
           }
         }
@@ -441,6 +442,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         role: role,
         signUpType: widget.type,
         orgId: orgId,
+        isManagedCreation:
+            authentication.isAuthenticated &&
+                authentication.role == UserRole.manager
+            ? true
+            : false,
       ),
     );
   }

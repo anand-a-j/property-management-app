@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/utils/string_utils.dart';
 
 import '../../../../../core/core.dart';
@@ -68,7 +69,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Add Maintenance')),
+        appBar: CustomAppBar(
+          title: "Add Maintenance",
+          leadingOnTap: () => context.pop(),
+        ),
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -115,27 +119,22 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
           ),
         ),
         bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-            child: BlocBuilder<MaintenanceBloc, MaintenanceState>(
-              builder: (context, state) {
-                final isLoading = state is MaintenanceLoading;
+          child: BlocBuilder<MaintenanceBloc, MaintenanceState>(
+            builder: (context, state) {
+              final isLoading = state is MaintenanceLoading;
 
-                return SizedBox(
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : _submit,
-                    child: isLoading
-                        ? const SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Create Request'),
-                  ),
-                );
-              },
-            ),
+              return CustomButton(
+                label: "Create",
+                padding: const EdgeInsetsGeometry.symmetric(
+                  horizontal: AppConsts.pSide,
+                  vertical: AppConsts.pSide,
+                ),
+                isLoading: isLoading,
+                onPressed: () {
+                  _submit();
+                },
+              );
+            },
           ),
         ),
       ),
@@ -147,7 +146,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).dividerColor),
+        border: Border.all(color: context.surface),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -157,7 +156,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
             'Unit Details',
             style: Theme.of(
               context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           _detailRow('Unit', widget.unit.name),
@@ -311,6 +310,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       description: _descriptionController.text.trim(),
       priority: _selectedPriority,
       status: MaintenanceStatus.pendingReview,
+      ticketNumber: StrHelper.generateMaintenanceTicketNumber(),
     );
 
     context.read<MaintenanceBloc>().add(

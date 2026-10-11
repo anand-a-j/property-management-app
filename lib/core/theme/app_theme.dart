@@ -66,6 +66,78 @@ class AppThemes with AppColorScheme {
         fontWeight: FontWeight.w400,
       ),
     ),
+     // DATE PICKER THEME
+  datePickerTheme: DatePickerThemeData(
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.transparent,
+
+    headerBackgroundColor: AppColorScheme.primary,
+    headerForegroundColor: Colors.white,
+
+    weekdayStyle: const TextStyle(
+      color: Colors.black54,
+    ),
+
+    dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.white;
+      }
+      if (states.contains(WidgetState.disabled)) {
+        return Colors.grey.shade400;
+      }
+      return Colors.black87;
+    }),
+
+    dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
+        return AppColorScheme.primary;
+      }
+      return Colors.transparent;
+    }),
+
+    todayForegroundColor: const WidgetStatePropertyAll(
+      AppColorScheme.primary,
+    ),
+
+    todayBorder: const BorderSide(
+      color: AppColorScheme.primary,
+    ),
+
+    cancelButtonStyle: TextButton.styleFrom(
+      foregroundColor: AppColorScheme.primary,
+    ),
+
+    confirmButtonStyle: TextButton.styleFrom(
+      foregroundColor: AppColorScheme.primary,
+    ),
+  ),
+
+  // TIME PICKER THEME
+  timePickerTheme: TimePickerThemeData(
+    backgroundColor: Colors.white,
+    dialBackgroundColor: const Color(0xFFF0F4FF),
+    dialHandColor: AppColorScheme.primary,
+    dialTextColor: AppColorScheme.secondary,
+
+    hourMinuteColor: const Color(0xFFF0F4FF),
+    hourMinuteTextColor: AppColorScheme.secondary,
+
+    dayPeriodColor: const Color(0xFFE8EEFF),
+    dayPeriodTextColor: AppColorScheme.primary,
+
+    entryModeIconColor: AppColorScheme.primary,
+    helpTextStyle: const TextStyle(
+      color: Colors.black54,
+    ),
+
+    cancelButtonStyle: TextButton.styleFrom(
+      foregroundColor: AppColorScheme.primary,
+    ),
+
+    confirmButtonStyle: TextButton.styleFrom(
+      foregroundColor: AppColorScheme.primary,
+    ),
+  ),
     appBarTheme: const AppBarTheme(
       scrolledUnderElevation: 0.0,
       backgroundColor: Colors.transparent,

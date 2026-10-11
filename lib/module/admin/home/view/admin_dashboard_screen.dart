@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/core.dart';
 import 'package:naseem/core/utils/string_utils.dart';
 import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../core/widgets/stats_card.dart';
+import '../controller/cubit/dashboard_stats_cubit.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -14,6 +16,15 @@ class AdminDashboardScreen extends StatefulWidget {
 }
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<DashboardStatsCubit>().refresh(
+      orgId: authentication.profile?.orgId ?? "",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,82 +62,88 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
-              children: [
-                Expanded(
-                  child: StatCard(
-                    title: "Total Units",
-                    value: "0",
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: context.primary,
-                  ),
-                ),
-                Expanded(
-                  child: StatCard(
-                    title: "Occupied",
-                    value: "0",
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: Colors.green,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
-              children: [
-                Expanded(
-                  child: StatCard(
-                    title: "Vacant",
-                    value: "0",
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: context.error,
-                  ),
-                ),
-                Expanded(
-                  child: StatCard(
-                    title: "Maintaince",
-                    value: "0",
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: context.error,
-                  ),
-                ),
-              ],
-            ),
+            BlocBuilder<DashboardStatsCubit, DashboardStatsState>(
+              builder: (context, state) {
+                final stats = state.stats;
 
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
-              children: [
-                Expanded(
-                  child: StatCard(
-                    title: "Rent Collected",
-                    value: "0 AED",
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: Colors.amber,
-                  ),
-                ),
-                Expanded(
-                  child: StatCard(
-                    title: "Overdue",
-                    value: "0",
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: Colors.red,
-                  ),
-                ),
-              ],
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      spacing: 20,
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            title: "Total Units",
+                            value: "${stats.totalUnits}",
+                            borderColor: context.surface,
+                            titleColor: context.secondary,
+                            valueColor: context.primary,
+                          ),
+                        ),
+                        Expanded(
+                          child: StatCard(
+                            title: "Occupied",
+                            value: "${stats.occupied}",
+                            borderColor: context.surface,
+                            titleColor: context.secondary,
+                            valueColor: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      spacing: 20,
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            title: "Vacant",
+                            value: "${stats.vacant}",
+                            borderColor: context.surface,
+                            titleColor: context.secondary,
+                            valueColor: context.error,
+                          ),
+                        ),
+                        Expanded(
+                          child: StatCard(
+                            title: "Maintenance",
+                            value: "${stats.maintenance}",
+                            borderColor: context.surface,
+                            titleColor: context.secondary,
+                            valueColor: context.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      spacing: 20,
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            title: "Rent Collected",
+                            value: "${stats.rentCollected} AED",
+                            borderColor: context.surface,
+                            titleColor: context.secondary,
+                            valueColor: Colors.amber,
+                          ),
+                        ),
+                        Expanded(
+                          child: StatCard(
+                            title: "Overdue",
+                            value: "${stats.overdueCount}",
+                            borderColor: context.surface,
+                            titleColor: context.secondary,
+                            valueColor: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
-
             const SizedBox(height: 20),
             Text(
               'Recent Activity',

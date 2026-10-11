@@ -8,6 +8,7 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/routes/args/add_lease_args.dart';
 import 'package:naseem/routes/args/add_maintenance_args.dart';
 
+import '../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../routes/router_path.dart';
 import '../../../lease/controller/blocs/bloc/active_lease_bloc.dart';
 import '../../../lease/controller/blocs/bloc/lease_bloc.dart';
@@ -47,7 +48,12 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
     );
 
     context.read<LeaseBloc>().add(
-      GetLeases(orgId: orgId, unitId: widget.unit.id, searchQuery: ''),
+      GetLeases(
+        orgId: orgId,
+        unitId: widget.unit.id,
+        searchQuery: '',
+        isDraftOnly: false,
+      ),
     );
   }
 
@@ -68,53 +74,80 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
   Widget build(BuildContext context) {
     final isMaintenanceTab = _tabController.index == 1;
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Unit',
-        leadingOnTap: () => Navigator.pop(context),
-      ),
-      body: Column(
-        children: [
-          UnitHeaderCard(community: widget.community, unit: widget.unit),
-          TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: 'Overview'),
-              Tab(text: 'Maintenance'),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
+    return BlocListener<ActiveLeaseBloc, ActiveLeaseState>(
+      listener: (context, state) {
+        if (state is LeaseAssignSuccess) {
+          Snack.success("Lease assigned to unit successfully.");
+
+          final orgId = authentication.profile?.orgId ?? '';
+
+          context.read<ActiveLeaseBloc>().add(
+            GetActiveLease(orgId: orgId, unitId: widget.unit.id),
+          );
+
+          context.read<LeaseBloc>().add(
+            GetLeases(
+              orgId: orgId,
+              unitId: widget.unit.id,
+              searchQuery: '',
+              isDraftOnly: false,
+            ),
+          );
+        } else if (state is LeaseAssignFailed) {
+          Snack.error(state.message);
+        }
+      },
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: 'Unit',
+          leadingOnTap: () => Navigator.pop(context),
+        ),
+        body: Column(
+          children: [
+            UnitHeaderCard(community: widget.community, unit: widget.unit),
+            TabBar(
               controller: _tabController,
-              children: [
-                UnitOverviewTab(unit: widget.unit, community: widget.community),
-                UnitMainteanceTab(unitId: widget.unit.id),
+              tabs: const [
+                Tab(text: 'Overview'),
+                Tab(text: 'Maintenance'),
               ],
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingAddButton(
-        title: isMaintenanceTab ? 'Add Maintenance' : 'Add Lease',
-        onTap: () {
-          if (isMaintenanceTab) {
-            context.push(
-              RouterPath.addMaintenance,
-              extra: AddMaintenanceArgs(
-                unit: widget.unit,
-                community: widget.community,
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  UnitOverviewTab(
+                    unit: widget.unit,
+                    community: widget.community,
+                  ),
+                  UnitMainteanceTab(unitId: widget.unit.id),
+                ],
               ),
-            );
-          } else {
-            context.push(
-              RouterPath.addLease,
-              extra: AddLeaseArgs(
-                unit: widget.unit,
-                community: widget.community,
-              ),
-            );
-          }
-        },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingAddButton(
+          title: isMaintenanceTab ? 'Add Maintenance' : 'Add Lease',
+          onTap: () {
+            if (isMaintenanceTab) {
+              context.push(
+                RouterPath.addMaintenance,
+                extra: AddMaintenanceArgs(
+                  unit: widget.unit,
+                  community: widget.community,
+                ),
+              );
+            } else {
+              context.push(
+                RouterPath.addLease,
+                extra: AddLeaseArgs(
+                  unit: widget.unit,
+                  community: widget.community,
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
