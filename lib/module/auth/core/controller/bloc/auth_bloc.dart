@@ -3,7 +3,6 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:naseem/core/enum/sign_up_type.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import 'auth_event.dart';
@@ -38,6 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       signUpType: event.signUpType,
       orgId: event.orgId,
       isManagedCreation: event.isManagedCreation,
+      profileDetails: event.profileDetails,
     );
 
     if (response.error != null) {

@@ -3,6 +3,7 @@ import 'package:naseem/core/enum/sign_up_type.dart';
 import 'package:naseem/module/auth/core/model/profile.dart';
 
 import '../../../../../core/enum/user_role.dart';
+import '../../model/profile_details.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -21,6 +22,7 @@ class AuthSignUp extends AuthEvent {
   final SignUpType signUpType;
   final String? orgId;
   final bool isManagedCreation;
+  final ProfileDetails? profileDetails;
 
   const AuthSignUp({
     required this.email,
@@ -30,6 +32,7 @@ class AuthSignUp extends AuthEvent {
     required this.role,
     required this.signUpType,
     this.orgId, required this.isManagedCreation,
+    this.profileDetails,
   });
 
   @override
@@ -41,6 +44,7 @@ class AuthSignUp extends AuthEvent {
     role,
     signUpType,
     orgId,
+    profileDetails,
   ];
 }
 

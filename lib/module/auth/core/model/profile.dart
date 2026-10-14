@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_ce/hive_ce.dart';
 
 import '../../../../core/enum/user_role.dart';
+import 'profile_details.dart';
 
 part 'profile.freezed.dart';
 part 'profile.g.dart';
@@ -26,6 +27,9 @@ abstract class Profile with _$Profile {
 
     @HiveField(7) @JsonKey(name: 'deleted_at') DateTime? deletedAt,
     @HiveField(8) @JsonKey(name: 'org_id') String? orgId,
+    @HiveField(9)
+    @JsonKey(name: 'profile_details')
+    ProfileDetails? profileDetails,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, dynamic> json) =>

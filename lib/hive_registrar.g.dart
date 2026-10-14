@@ -5,10 +5,12 @@
 import 'package:hive_ce/hive_ce.dart';
 import 'package:naseem/core/enum/user_role.dart';
 import 'package:naseem/module/auth/core/model/profile.dart';
+import 'package:naseem/module/auth/core/model/profile_details.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(ProfileAdapter());
+    registerAdapter(ProfileDetailsAdapter());
     registerAdapter(UserRoleAdapter());
   }
 }
@@ -16,6 +18,7 @@ extension HiveRegistrar on HiveInterface {
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
     registerAdapter(ProfileAdapter());
+    registerAdapter(ProfileDetailsAdapter());
     registerAdapter(UserRoleAdapter());
   }
 }

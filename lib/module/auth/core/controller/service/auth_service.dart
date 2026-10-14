@@ -7,8 +7,10 @@ import '../../../../../core/api/data_response.dart';
 import '../../../../../core/enum/user_role.dart';
 import '../../../../../core/utils/error_log.dart';
 import '../../model/profile.dart';
+import '../../model/profile_details.dart';
 import '../db/profile_db.dart';
 import '../repo/auth_repo.dart';
+import '../repo/profile_repo.dart';
 
 class AuthService {
   AuthService._();
@@ -79,29 +81,28 @@ class AuthService {
       _profile = _profileDB.getProfile();
       final cachedProfile = _profile;
 
-      // Try to load the latest profile from Supabase.
+      // Try to load the latest profile, including resident details.
       final response = await refreshProfile();
 
-      if (response.hasData) {
+      if (response.data != null) {
+        _profile = response.data;
         _initialized = true;
         return true;
       }
 
-      // Network/profile refresh failed, but a cached profile exists.
-      // Preserve it and allow the user to enter the app.
+      // Refresh failed, but a cached profile exists.
       if (cachedProfile != null && isAuthenticated) {
         _profile = cachedProfile;
         _initialized = true;
         return true;
       }
 
-      // No cached profile is available, so let the splash screen
-      // display its retry/error UI.
+      // No cached profile is available.
       _initialized = false;
 
       throw Exception(response.error ?? 'Unable to initialize authentication.');
     } catch (e) {
-      // Preserve a cached profile if the session is still present.
+      // Preserve the cached profile if the session is still present.
       if (_profile != null && isAuthenticated) {
         _initialized = true;
         return true;
@@ -155,6 +156,7 @@ class AuthService {
     required SignUpType signUpType,
     required bool isManagedCreation,
     String? orgId,
+    ProfileDetails? profileDetails,
   }) async {
     if (isManagedCreation) {
       // Managed accounts must never use auth.signUp().
@@ -181,6 +183,7 @@ class AuthService {
       phone: phone,
       role: role,
       orgId: orgId,
+      profileDetails: profileDetails,
     );
 
     if (response.error != null) {
@@ -240,8 +243,24 @@ class AuthService {
     }
 
     try {
-      log("response data : ${response.data}");
-      final profile = Profile.fromJson(response.data!);
+      log('response data: ${response.data}');
+
+      var profile = Profile.fromJson(response.data!);
+
+      // Fetch additional details for residents only
+      if (profile.role == UserRole.resident) {
+        final detailsResponse = await ProfileRepo().getProfileDetails(
+          profileId: profile.id,
+        );
+
+        if (detailsResponse.error != null) {
+          return DataResponse(error: detailsResponse.error);
+        }
+
+        final profileDetails = detailsResponse.data;
+
+        profile = profile.copyWith(profileDetails: profileDetails);
+      }
 
       // Update memory
       _profile = profile;
@@ -251,8 +270,8 @@ class AuthService {
 
       return DataResponse(data: profile);
     } catch (e, s) {
-      log("error : ${e.toString()} ${s.toString()}");
-      return DataResponse(error: 'Failed to parse profile');
+      log('refreshProfile error: $e $s');
+      return DataResponse(error: 'Failed to refresh profile');
     }
   }
 

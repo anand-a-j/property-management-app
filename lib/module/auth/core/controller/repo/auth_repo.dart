@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:naseem/module/auth/core/model/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
 import '../../../../../core/api/global_error.dart';
 import '../../../../../core/enum/user_role.dart';
 import '../../../../../core/utils/error_log.dart';
+import '../../model/profile_details.dart';
 
 class AuthRepo {
   final SupabaseClient _client = Supabase.instance.client;
@@ -18,8 +18,8 @@ class AuthRepo {
     required String name,
     String? phone,
     required UserRole role,
-    // pass only when a manager creates resident/security/maintenance
     String? orgId,
+    ProfileDetails? profileDetails,
   }) async {
     try {
       final response = await _client.auth.signUp(
@@ -30,13 +30,24 @@ class AuthRepo {
           'role': role.value,
           if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
           if (orgId != null && orgId.isNotEmpty) 'org_id': orgId,
+
+          // Additional resident details
+          if (role == UserRole.resident && profileDetails != null) ...{
+            'first_name': profileDetails.firstName.trim(),
+            'last_name': profileDetails.lastName.trim(),
+            if (profileDetails.nickname?.trim().isNotEmpty == true)
+              'nickname': profileDetails.nickname!.trim(),
+            if (profileDetails.emiratesId?.trim().isNotEmpty == true)
+              'emirates_id': profileDetails.emiratesId!.trim(),
+          },
         },
       );
 
       if (response.user == null) {
         return DataResponse(error: globalError('Signup failed'));
       }
-      // Profile (and org for managers) is created by handle_new_user().
+
+      // Profile and profile_details are created by handle_new_user().
       return DataResponse(data: null);
     } catch (e, stack) {
       return DataResponse(error: errorlog('AuthRepo.signUp', e, stack));
