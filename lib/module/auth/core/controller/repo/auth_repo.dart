@@ -54,6 +54,78 @@ class AuthRepo {
     }
   }
 
+  Future<DataResponse<void>> createManagedUser({
+    required String email,
+    required String password,
+    required String name,
+    String? phone,
+    required UserRole role,
+    ProfileDetails? profileDetails,
+  }) async {
+    try {
+      final client = Supabase.instance.client;
+
+      final normalizedEmail = email.trim();
+      final normalizedName = name.trim();
+      final normalizedPhone = phone?.trim();
+
+      // Only these roles can be created by a manager.
+      if (![
+        UserRole.resident,
+        UserRole.security,
+        UserRole.maintenance,
+      ].contains(role)) {
+        return DataResponse(
+          error: 'Invalid role for managed account creation.',
+        );
+      }
+
+      // Resident-specific fields are sent only for residents.
+      final Map<String, dynamic> body = {
+        'email': normalizedEmail,
+        'password': password,
+        'name': normalizedName,
+        'phone': normalizedPhone?.isNotEmpty == true ? normalizedPhone : null,
+        'role': role.value,
+      };
+
+      if (role == UserRole.resident && profileDetails != null) {
+        final details = profileDetails;
+
+        body.addAll({
+          'first_name': details.firstName.trim(),
+          'last_name': details.lastName.trim(),
+          if (details.nickname?.trim().isNotEmpty == true)
+            'nickname': details.nickname!.trim(),
+          if (details.emiratesId?.trim().isNotEmpty == true)
+            'emirates_id': details.emiratesId!.trim(),
+        });
+      }
+
+      final response = await client.functions.invoke(
+        'create-managed-user',
+        body: body,
+      );
+
+      // Edge Functions can return an HTTP error response.
+      if (response.status < 200 || response.status >= 300) {
+        final data = response.data;
+
+        final message = data is Map ? data['error']?.toString() : null;
+
+        return DataResponse(
+          error: message ?? 'Failed to create managed account.',
+        );
+      }
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('AuthRepo.createManagedUser', e, stack),
+      );
+    }
+  }
+
   // SIGN IN
   Future<DataResponse<void>> signIn({
     required String email,

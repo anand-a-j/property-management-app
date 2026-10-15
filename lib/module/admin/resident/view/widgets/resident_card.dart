@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:naseem/module/auth/core/model/profile.dart';
+import 'package:naseem/core/widgets/status_tag.dart';
+import 'package:naseem/module/admin/resident/model/resident_list_response.dart';
 
 import '../../../../../core/core.dart';
+import '../../../../../core/enum/resident_status.dart';
 
 class ResidentCard extends StatelessWidget {
-  final Profile profile;
+  final ResidentListResponse resident;
+  final int index;
 
-  const ResidentCard({super.key, required this.profile});
+  const ResidentCard({super.key, required this.resident, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +21,17 @@ class ResidentCard extends StatelessWidget {
         border: Border.all(color: context.surface, width: 1.0),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 25,
-            backgroundColor: context.surface.withValues(alpha: 0.5),
+            backgroundColor: AppColorScheme.backgroundColor(index),
+            child: Center(
+              child: Icon(
+                Icons.person_2_outlined,
+                color: AppColorScheme.iconColor(index),
+              ),
+            ),
           ),
           const SizedBox(width: 10), // pSmall
           Expanded(
@@ -29,17 +39,37 @@ class ResidentCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "${resident.profileDetails?.firstName ?? ""} ${resident.profileDetails?.lastName}",
+                      style: context.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    StatusTag(
+                      status: resident.residentStatus.label,
+                      color: resident.residentStatus.color,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
                 Text(
-                  profile.name,
-                  style: context.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  resident.profile.phone ?? "",
+                  style: context.bodyMedium?.copyWith(
+                    color: context.secondary.withValues(alpha: 0.75),
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  profile.phone ?? "",
+                  resident.residentStatus == ResidentStatus.onboarding
+                      ? "Getting started"
+                      : resident.residentStatus == ResidentStatus.exited
+                      ? "Former resident"
+                      : "${resident.communityName ?? ""} · ${resident.currentUnitName ?? ""}",
                   style: context.bodyMedium?.copyWith(
-                    color: context.secondaryContainer,
+                    color: context.secondary.withValues(alpha: 0.5),
                   ),
                 ),
               ],

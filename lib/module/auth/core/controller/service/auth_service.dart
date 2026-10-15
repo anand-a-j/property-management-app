@@ -113,36 +113,6 @@ class AuthService {
     }
   }
 
-  Future<DataResponse<void>> createManagedUser({
-    required String email,
-    required String password,
-    required String name,
-    String? phone,
-    required UserRole role,
-  }) async {
-    try {
-      log("email : $email , role : ${role.value}");
-
-      final SupabaseClient client = Supabase.instance.client;
-      await client.functions.invoke(
-        'create-managed-user',
-        body: {
-          'email': email.trim(),
-          'password': password,
-          'name': name.trim(),
-          'phone': phone?.trim(),
-          'role': role.value,
-        },
-      );
-
-      return DataResponse(data: null);
-    } catch (e, stack) {
-      return DataResponse(
-        error: errorlog('AuthRepo.createManagedUser', e, stack),
-      );
-    }
-  }
-
   // ---------------------------------------------------------------------------
   // SIGN UP
   // ---------------------------------------------------------------------------
@@ -166,12 +136,13 @@ class AuthService {
         );
       }
 
-      return createManagedUser(
+      return _authRepo.createManagedUser(
         email: email,
         password: password,
         name: name,
         phone: phone,
         role: role,
+        profileDetails: profileDetails,
       );
     }
 

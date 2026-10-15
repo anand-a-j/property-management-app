@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Payment {
 
- String get id;@JsonKey(name: 'org_id') String get orgId;@JsonKey(name: 'payment_number') String get paymentNumber;@JsonKey(name: 'lease_id') String get leaseId;@JsonKey(name: 'due_date') DateTime get dueDate; double get amount;@JsonKey(name: 'payment_type') PaymentType get paymentType; PaymentStatus get status;@JsonKey(name: 'paid_date') DateTime? get paidDate;@JsonKey(name: 'cheque_number') String? get chequeNumber; String? get description;@JsonKey(name: 'cheque_copy_path') String? get chequeCopyPath;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt; LeasePaymentDetails? get lease;
+ String get id;@JsonKey(name: 'payment_number') String get paymentNumber;@JsonKey(name: 'lease_id') String get leaseId;@JsonKey(name: 'due_date') DateTime get dueDate; double get amount;@JsonKey(name: 'payment_type') PaymentType get paymentType; PaymentStatus get status;@JsonKey(name: 'paid_date') DateTime? get paidDate;@JsonKey(name: 'cheque_number') String? get chequeNumber;@JsonKey(name: 'cheque_copy_path') String? get chequeCopyPath;@JsonKey(name: 'cheque_submitted_at') DateTime? get chequeSubmittedAt;@JsonKey(name: 'bounce_reason') String? get bounceReason; String? get description;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt; LeasePaymentDetails? get lease;
 /// Create a copy of Payment
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PaymentCopyWith<Payment> get copyWith => _$PaymentCopyWithImpl<Payment>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Payment&&(identical(other.id, id) || other.id == id)&&(identical(other.orgId, orgId) || other.orgId == orgId)&&(identical(other.paymentNumber, paymentNumber) || other.paymentNumber == paymentNumber)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.status, status) || other.status == status)&&(identical(other.paidDate, paidDate) || other.paidDate == paidDate)&&(identical(other.chequeNumber, chequeNumber) || other.chequeNumber == chequeNumber)&&(identical(other.description, description) || other.description == description)&&(identical(other.chequeCopyPath, chequeCopyPath) || other.chequeCopyPath == chequeCopyPath)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.lease, lease) || other.lease == lease));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Payment&&(identical(other.id, id) || other.id == id)&&(identical(other.paymentNumber, paymentNumber) || other.paymentNumber == paymentNumber)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.status, status) || other.status == status)&&(identical(other.paidDate, paidDate) || other.paidDate == paidDate)&&(identical(other.chequeNumber, chequeNumber) || other.chequeNumber == chequeNumber)&&(identical(other.chequeCopyPath, chequeCopyPath) || other.chequeCopyPath == chequeCopyPath)&&(identical(other.chequeSubmittedAt, chequeSubmittedAt) || other.chequeSubmittedAt == chequeSubmittedAt)&&(identical(other.bounceReason, bounceReason) || other.bounceReason == bounceReason)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.lease, lease) || other.lease == lease));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,orgId,paymentNumber,leaseId,dueDate,amount,paymentType,status,paidDate,chequeNumber,description,chequeCopyPath,createdAt,updatedAt,deletedAt,lease);
+int get hashCode => Object.hash(runtimeType,id,paymentNumber,leaseId,dueDate,amount,paymentType,status,paidDate,chequeNumber,chequeCopyPath,chequeSubmittedAt,bounceReason,description,createdAt,updatedAt,deletedAt,lease);
 
 @override
 String toString() {
-  return 'Payment(id: $id, orgId: $orgId, paymentNumber: $paymentNumber, leaseId: $leaseId, dueDate: $dueDate, amount: $amount, paymentType: $paymentType, status: $status, paidDate: $paidDate, chequeNumber: $chequeNumber, description: $description, chequeCopyPath: $chequeCopyPath, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, lease: $lease)';
+  return 'Payment(id: $id, paymentNumber: $paymentNumber, leaseId: $leaseId, dueDate: $dueDate, amount: $amount, paymentType: $paymentType, status: $status, paidDate: $paidDate, chequeNumber: $chequeNumber, chequeCopyPath: $chequeCopyPath, chequeSubmittedAt: $chequeSubmittedAt, bounceReason: $bounceReason, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, lease: $lease)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PaymentCopyWith<$Res>  {
   factory $PaymentCopyWith(Payment value, $Res Function(Payment) _then) = _$PaymentCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'org_id') String orgId,@JsonKey(name: 'payment_number') String paymentNumber,@JsonKey(name: 'lease_id') String leaseId,@JsonKey(name: 'due_date') DateTime dueDate, double amount,@JsonKey(name: 'payment_type') PaymentType paymentType, PaymentStatus status,@JsonKey(name: 'paid_date') DateTime? paidDate,@JsonKey(name: 'cheque_number') String? chequeNumber, String? description,@JsonKey(name: 'cheque_copy_path') String? chequeCopyPath,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, LeasePaymentDetails? lease
+ String id,@JsonKey(name: 'payment_number') String paymentNumber,@JsonKey(name: 'lease_id') String leaseId,@JsonKey(name: 'due_date') DateTime dueDate, double amount,@JsonKey(name: 'payment_type') PaymentType paymentType, PaymentStatus status,@JsonKey(name: 'paid_date') DateTime? paidDate,@JsonKey(name: 'cheque_number') String? chequeNumber,@JsonKey(name: 'cheque_copy_path') String? chequeCopyPath,@JsonKey(name: 'cheque_submitted_at') DateTime? chequeSubmittedAt,@JsonKey(name: 'bounce_reason') String? bounceReason, String? description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, LeasePaymentDetails? lease
 });
 
 
@@ -65,10 +65,9 @@ class _$PaymentCopyWithImpl<$Res>
 
 /// Create a copy of Payment
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? orgId = null,Object? paymentNumber = null,Object? leaseId = null,Object? dueDate = null,Object? amount = null,Object? paymentType = null,Object? status = null,Object? paidDate = freezed,Object? chequeNumber = freezed,Object? description = freezed,Object? chequeCopyPath = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? lease = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? paymentNumber = null,Object? leaseId = null,Object? dueDate = null,Object? amount = null,Object? paymentType = null,Object? status = null,Object? paidDate = freezed,Object? chequeNumber = freezed,Object? chequeCopyPath = freezed,Object? chequeSubmittedAt = freezed,Object? bounceReason = freezed,Object? description = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? lease = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,orgId: null == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
 as String,paymentNumber: null == paymentNumber ? _self.paymentNumber : paymentNumber // ignore: cast_nullable_to_non_nullable
 as String,leaseId: null == leaseId ? _self.leaseId : leaseId // ignore: cast_nullable_to_non_nullable
 as String,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
@@ -77,8 +76,10 @@ as double,paymentType: null == paymentType ? _self.paymentType : paymentType // 
 as PaymentType,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as PaymentStatus,paidDate: freezed == paidDate ? _self.paidDate : paidDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,chequeNumber: freezed == chequeNumber ? _self.chequeNumber : chequeNumber // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,chequeCopyPath: freezed == chequeCopyPath ? _self.chequeCopyPath : chequeCopyPath // ignore: cast_nullable_to_non_nullable
+as String?,chequeSubmittedAt: freezed == chequeSubmittedAt ? _self.chequeSubmittedAt : chequeSubmittedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,bounceReason: freezed == bounceReason ? _self.bounceReason : bounceReason // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
@@ -180,10 +181,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'org_id')  String orgId, @JsonKey(name: 'payment_number')  String paymentNumber, @JsonKey(name: 'lease_id')  String leaseId, @JsonKey(name: 'due_date')  DateTime dueDate,  double amount, @JsonKey(name: 'payment_type')  PaymentType paymentType,  PaymentStatus status, @JsonKey(name: 'paid_date')  DateTime? paidDate, @JsonKey(name: 'cheque_number')  String? chequeNumber,  String? description, @JsonKey(name: 'cheque_copy_path')  String? chequeCopyPath, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  LeasePaymentDetails? lease)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'payment_number')  String paymentNumber, @JsonKey(name: 'lease_id')  String leaseId, @JsonKey(name: 'due_date')  DateTime dueDate,  double amount, @JsonKey(name: 'payment_type')  PaymentType paymentType,  PaymentStatus status, @JsonKey(name: 'paid_date')  DateTime? paidDate, @JsonKey(name: 'cheque_number')  String? chequeNumber, @JsonKey(name: 'cheque_copy_path')  String? chequeCopyPath, @JsonKey(name: 'cheque_submitted_at')  DateTime? chequeSubmittedAt, @JsonKey(name: 'bounce_reason')  String? bounceReason,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  LeasePaymentDetails? lease)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Payment() when $default != null:
-return $default(_that.id,_that.orgId,_that.paymentNumber,_that.leaseId,_that.dueDate,_that.amount,_that.paymentType,_that.status,_that.paidDate,_that.chequeNumber,_that.description,_that.chequeCopyPath,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.lease);case _:
+return $default(_that.id,_that.paymentNumber,_that.leaseId,_that.dueDate,_that.amount,_that.paymentType,_that.status,_that.paidDate,_that.chequeNumber,_that.chequeCopyPath,_that.chequeSubmittedAt,_that.bounceReason,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.lease);case _:
   return orElse();
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.orgId,_that.paymentNumber,_that.leaseId,_that.due
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'org_id')  String orgId, @JsonKey(name: 'payment_number')  String paymentNumber, @JsonKey(name: 'lease_id')  String leaseId, @JsonKey(name: 'due_date')  DateTime dueDate,  double amount, @JsonKey(name: 'payment_type')  PaymentType paymentType,  PaymentStatus status, @JsonKey(name: 'paid_date')  DateTime? paidDate, @JsonKey(name: 'cheque_number')  String? chequeNumber,  String? description, @JsonKey(name: 'cheque_copy_path')  String? chequeCopyPath, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  LeasePaymentDetails? lease)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'payment_number')  String paymentNumber, @JsonKey(name: 'lease_id')  String leaseId, @JsonKey(name: 'due_date')  DateTime dueDate,  double amount, @JsonKey(name: 'payment_type')  PaymentType paymentType,  PaymentStatus status, @JsonKey(name: 'paid_date')  DateTime? paidDate, @JsonKey(name: 'cheque_number')  String? chequeNumber, @JsonKey(name: 'cheque_copy_path')  String? chequeCopyPath, @JsonKey(name: 'cheque_submitted_at')  DateTime? chequeSubmittedAt, @JsonKey(name: 'bounce_reason')  String? bounceReason,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  LeasePaymentDetails? lease)  $default,) {final _that = this;
 switch (_that) {
 case _Payment():
-return $default(_that.id,_that.orgId,_that.paymentNumber,_that.leaseId,_that.dueDate,_that.amount,_that.paymentType,_that.status,_that.paidDate,_that.chequeNumber,_that.description,_that.chequeCopyPath,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.lease);case _:
+return $default(_that.id,_that.paymentNumber,_that.leaseId,_that.dueDate,_that.amount,_that.paymentType,_that.status,_that.paidDate,_that.chequeNumber,_that.chequeCopyPath,_that.chequeSubmittedAt,_that.bounceReason,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.lease);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -221,10 +222,10 @@ return $default(_that.id,_that.orgId,_that.paymentNumber,_that.leaseId,_that.due
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'org_id')  String orgId, @JsonKey(name: 'payment_number')  String paymentNumber, @JsonKey(name: 'lease_id')  String leaseId, @JsonKey(name: 'due_date')  DateTime dueDate,  double amount, @JsonKey(name: 'payment_type')  PaymentType paymentType,  PaymentStatus status, @JsonKey(name: 'paid_date')  DateTime? paidDate, @JsonKey(name: 'cheque_number')  String? chequeNumber,  String? description, @JsonKey(name: 'cheque_copy_path')  String? chequeCopyPath, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  LeasePaymentDetails? lease)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'payment_number')  String paymentNumber, @JsonKey(name: 'lease_id')  String leaseId, @JsonKey(name: 'due_date')  DateTime dueDate,  double amount, @JsonKey(name: 'payment_type')  PaymentType paymentType,  PaymentStatus status, @JsonKey(name: 'paid_date')  DateTime? paidDate, @JsonKey(name: 'cheque_number')  String? chequeNumber, @JsonKey(name: 'cheque_copy_path')  String? chequeCopyPath, @JsonKey(name: 'cheque_submitted_at')  DateTime? chequeSubmittedAt, @JsonKey(name: 'bounce_reason')  String? bounceReason,  String? description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  LeasePaymentDetails? lease)?  $default,) {final _that = this;
 switch (_that) {
 case _Payment() when $default != null:
-return $default(_that.id,_that.orgId,_that.paymentNumber,_that.leaseId,_that.dueDate,_that.amount,_that.paymentType,_that.status,_that.paidDate,_that.chequeNumber,_that.description,_that.chequeCopyPath,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.lease);case _:
+return $default(_that.id,_that.paymentNumber,_that.leaseId,_that.dueDate,_that.amount,_that.paymentType,_that.status,_that.paidDate,_that.chequeNumber,_that.chequeCopyPath,_that.chequeSubmittedAt,_that.bounceReason,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.lease);case _:
   return null;
 
 }
@@ -236,11 +237,10 @@ return $default(_that.id,_that.orgId,_that.paymentNumber,_that.leaseId,_that.due
 @JsonSerializable()
 
 class _Payment implements Payment {
-  const _Payment({required this.id, @JsonKey(name: 'org_id') required this.orgId, @JsonKey(name: 'payment_number') required this.paymentNumber, @JsonKey(name: 'lease_id') required this.leaseId, @JsonKey(name: 'due_date') required this.dueDate, required this.amount, @JsonKey(name: 'payment_type') required this.paymentType, this.status = PaymentStatus.pending, @JsonKey(name: 'paid_date') this.paidDate, @JsonKey(name: 'cheque_number') this.chequeNumber, this.description, @JsonKey(name: 'cheque_copy_path') this.chequeCopyPath, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'deleted_at') this.deletedAt, this.lease});
+  const _Payment({required this.id, @JsonKey(name: 'payment_number') required this.paymentNumber, @JsonKey(name: 'lease_id') required this.leaseId, @JsonKey(name: 'due_date') required this.dueDate, required this.amount, @JsonKey(name: 'payment_type') required this.paymentType, this.status = PaymentStatus.draft, @JsonKey(name: 'paid_date') this.paidDate, @JsonKey(name: 'cheque_number') this.chequeNumber, @JsonKey(name: 'cheque_copy_path') this.chequeCopyPath, @JsonKey(name: 'cheque_submitted_at') this.chequeSubmittedAt, @JsonKey(name: 'bounce_reason') this.bounceReason, this.description, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'deleted_at') this.deletedAt, this.lease});
   factory _Payment.fromJson(Map<String, dynamic> json) => _$PaymentFromJson(json);
 
 @override final  String id;
-@override@JsonKey(name: 'org_id') final  String orgId;
 @override@JsonKey(name: 'payment_number') final  String paymentNumber;
 @override@JsonKey(name: 'lease_id') final  String leaseId;
 @override@JsonKey(name: 'due_date') final  DateTime dueDate;
@@ -249,8 +249,10 @@ class _Payment implements Payment {
 @override@JsonKey() final  PaymentStatus status;
 @override@JsonKey(name: 'paid_date') final  DateTime? paidDate;
 @override@JsonKey(name: 'cheque_number') final  String? chequeNumber;
-@override final  String? description;
 @override@JsonKey(name: 'cheque_copy_path') final  String? chequeCopyPath;
+@override@JsonKey(name: 'cheque_submitted_at') final  DateTime? chequeSubmittedAt;
+@override@JsonKey(name: 'bounce_reason') final  String? bounceReason;
+@override final  String? description;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 @override@JsonKey(name: 'deleted_at') final  DateTime? deletedAt;
@@ -269,16 +271,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Payment&&(identical(other.id, id) || other.id == id)&&(identical(other.orgId, orgId) || other.orgId == orgId)&&(identical(other.paymentNumber, paymentNumber) || other.paymentNumber == paymentNumber)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.status, status) || other.status == status)&&(identical(other.paidDate, paidDate) || other.paidDate == paidDate)&&(identical(other.chequeNumber, chequeNumber) || other.chequeNumber == chequeNumber)&&(identical(other.description, description) || other.description == description)&&(identical(other.chequeCopyPath, chequeCopyPath) || other.chequeCopyPath == chequeCopyPath)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.lease, lease) || other.lease == lease));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Payment&&(identical(other.id, id) || other.id == id)&&(identical(other.paymentNumber, paymentNumber) || other.paymentNumber == paymentNumber)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.status, status) || other.status == status)&&(identical(other.paidDate, paidDate) || other.paidDate == paidDate)&&(identical(other.chequeNumber, chequeNumber) || other.chequeNumber == chequeNumber)&&(identical(other.chequeCopyPath, chequeCopyPath) || other.chequeCopyPath == chequeCopyPath)&&(identical(other.chequeSubmittedAt, chequeSubmittedAt) || other.chequeSubmittedAt == chequeSubmittedAt)&&(identical(other.bounceReason, bounceReason) || other.bounceReason == bounceReason)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.lease, lease) || other.lease == lease));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,orgId,paymentNumber,leaseId,dueDate,amount,paymentType,status,paidDate,chequeNumber,description,chequeCopyPath,createdAt,updatedAt,deletedAt,lease);
+int get hashCode => Object.hash(runtimeType,id,paymentNumber,leaseId,dueDate,amount,paymentType,status,paidDate,chequeNumber,chequeCopyPath,chequeSubmittedAt,bounceReason,description,createdAt,updatedAt,deletedAt,lease);
 
 @override
 String toString() {
-  return 'Payment(id: $id, orgId: $orgId, paymentNumber: $paymentNumber, leaseId: $leaseId, dueDate: $dueDate, amount: $amount, paymentType: $paymentType, status: $status, paidDate: $paidDate, chequeNumber: $chequeNumber, description: $description, chequeCopyPath: $chequeCopyPath, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, lease: $lease)';
+  return 'Payment(id: $id, paymentNumber: $paymentNumber, leaseId: $leaseId, dueDate: $dueDate, amount: $amount, paymentType: $paymentType, status: $status, paidDate: $paidDate, chequeNumber: $chequeNumber, chequeCopyPath: $chequeCopyPath, chequeSubmittedAt: $chequeSubmittedAt, bounceReason: $bounceReason, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, lease: $lease)';
 }
 
 
@@ -289,7 +291,7 @@ abstract mixin class _$PaymentCopyWith<$Res> implements $PaymentCopyWith<$Res> {
   factory _$PaymentCopyWith(_Payment value, $Res Function(_Payment) _then) = __$PaymentCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'org_id') String orgId,@JsonKey(name: 'payment_number') String paymentNumber,@JsonKey(name: 'lease_id') String leaseId,@JsonKey(name: 'due_date') DateTime dueDate, double amount,@JsonKey(name: 'payment_type') PaymentType paymentType, PaymentStatus status,@JsonKey(name: 'paid_date') DateTime? paidDate,@JsonKey(name: 'cheque_number') String? chequeNumber, String? description,@JsonKey(name: 'cheque_copy_path') String? chequeCopyPath,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, LeasePaymentDetails? lease
+ String id,@JsonKey(name: 'payment_number') String paymentNumber,@JsonKey(name: 'lease_id') String leaseId,@JsonKey(name: 'due_date') DateTime dueDate, double amount,@JsonKey(name: 'payment_type') PaymentType paymentType, PaymentStatus status,@JsonKey(name: 'paid_date') DateTime? paidDate,@JsonKey(name: 'cheque_number') String? chequeNumber,@JsonKey(name: 'cheque_copy_path') String? chequeCopyPath,@JsonKey(name: 'cheque_submitted_at') DateTime? chequeSubmittedAt,@JsonKey(name: 'bounce_reason') String? bounceReason, String? description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, LeasePaymentDetails? lease
 });
 
 
@@ -306,10 +308,9 @@ class __$PaymentCopyWithImpl<$Res>
 
 /// Create a copy of Payment
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? orgId = null,Object? paymentNumber = null,Object? leaseId = null,Object? dueDate = null,Object? amount = null,Object? paymentType = null,Object? status = null,Object? paidDate = freezed,Object? chequeNumber = freezed,Object? description = freezed,Object? chequeCopyPath = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? lease = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? paymentNumber = null,Object? leaseId = null,Object? dueDate = null,Object? amount = null,Object? paymentType = null,Object? status = null,Object? paidDate = freezed,Object? chequeNumber = freezed,Object? chequeCopyPath = freezed,Object? chequeSubmittedAt = freezed,Object? bounceReason = freezed,Object? description = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? lease = freezed,}) {
   return _then(_Payment(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,orgId: null == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
 as String,paymentNumber: null == paymentNumber ? _self.paymentNumber : paymentNumber // ignore: cast_nullable_to_non_nullable
 as String,leaseId: null == leaseId ? _self.leaseId : leaseId // ignore: cast_nullable_to_non_nullable
 as String,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
@@ -318,8 +319,10 @@ as double,paymentType: null == paymentType ? _self.paymentType : paymentType // 
 as PaymentType,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as PaymentStatus,paidDate: freezed == paidDate ? _self.paidDate : paidDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,chequeNumber: freezed == chequeNumber ? _self.chequeNumber : chequeNumber // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,chequeCopyPath: freezed == chequeCopyPath ? _self.chequeCopyPath : chequeCopyPath // ignore: cast_nullable_to_non_nullable
+as String?,chequeSubmittedAt: freezed == chequeSubmittedAt ? _self.chequeSubmittedAt : chequeSubmittedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,bounceReason: freezed == bounceReason ? _self.bounceReason : bounceReason // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable

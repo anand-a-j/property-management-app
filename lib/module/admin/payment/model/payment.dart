@@ -12,20 +12,36 @@ abstract class Payment with _$Payment {
   const factory Payment({
     required String id,
 
-    @JsonKey(name: 'org_id') required String orgId,
     @JsonKey(name: 'payment_number') required String paymentNumber,
+
     @JsonKey(name: 'lease_id') required String leaseId,
+
     @JsonKey(name: 'due_date') required DateTime dueDate,
+
     required double amount,
+
     @JsonKey(name: 'payment_type') required PaymentType paymentType,
-    @Default(PaymentStatus.pending) PaymentStatus status,
+
+    @Default(PaymentStatus.draft) PaymentStatus status,
+
     @JsonKey(name: 'paid_date') DateTime? paidDate,
+
     @JsonKey(name: 'cheque_number') String? chequeNumber,
-    String? description,
+
     @JsonKey(name: 'cheque_copy_path') String? chequeCopyPath,
+
+    @JsonKey(name: 'cheque_submitted_at') DateTime? chequeSubmittedAt,
+
+    @JsonKey(name: 'bounce_reason') String? bounceReason,
+
+    String? description,
+
     @JsonKey(name: 'created_at') required DateTime createdAt,
+
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
+
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
+
     LeasePaymentDetails? lease,
   }) = _Payment;
 

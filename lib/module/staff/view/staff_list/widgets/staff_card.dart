@@ -5,8 +5,9 @@ import '../../../../auth/core/model/profile.dart';
 
 class StaffCard extends StatelessWidget {
   final Profile profile;
+  final int index;
 
-  const StaffCard({super.key, required this.profile});
+  const StaffCard({super.key, required this.profile, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +19,18 @@ class StaffCard extends StatelessWidget {
         border: Border.all(color: context.surface, width: 1.0),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(radius: 25, backgroundColor: context.surface),
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: AppColorScheme.backgroundColor(index),
+            child: Center(
+              child: Icon(
+                Icons.person_2_outlined,
+                color: AppColorScheme.iconColor(index),
+              ),
+            ),
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -34,11 +45,18 @@ class StaffCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
+                  profile.phone ?? "",
+                  style: context.bodyMedium?.copyWith(
+                    color: context.secondary.withValues(alpha: 0.75),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
                   profile.role.name.isNotEmpty
                       ? '${profile.role.name[0].toUpperCase()}${profile.role.name.substring(1)}'
                       : '',
                   style: context.bodyMedium?.copyWith(
-                    color: context.secondaryContainer,
+                    color: context.secondary.withValues(alpha: 0.5),
                   ),
                 ),
               ],

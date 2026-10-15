@@ -72,10 +72,17 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
                       return GestureDetector(
                         onTap: () {
                           if (widget.isSelectionMode) {
-                            context.pop<Profile>(resident);
+                            context.pop<Profile>(
+                              Profile(
+                                id: resident.profile.id,
+                                name: resident.profile.name,
+                                email: resident.profile.email,
+                                role: resident.profile.role,
+                              ),
+                            );
                           }
                         },
-                        child: ResidentCard(profile: resident),
+                        child: ResidentCard(resident: resident, index: index),
                       );
                     },
                   );

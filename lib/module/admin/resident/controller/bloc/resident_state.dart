@@ -16,7 +16,7 @@ class ResidentLoading extends ResidentState {
 }
 
 class ResidentSuccess extends ResidentState {
-  final List<Profile> residents;
+  final List<ResidentListResponse> residents;
 
   const ResidentSuccess(this.residents);
 

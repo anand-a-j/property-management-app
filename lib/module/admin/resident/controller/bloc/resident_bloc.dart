@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:naseem/module/admin/resident/model/resident_list_response.dart';
 
 import '../../../../auth/core/model/profile.dart';
 import '../repo/resident_repo.dart';

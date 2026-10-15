@@ -8,7 +8,7 @@ part 'profile_details.g.dart';
 @HiveType(typeId: 4, adapterName: 'ProfileDetailsAdapter')
 abstract class ProfileDetails with _$ProfileDetails {
   const factory ProfileDetails({
-    @HiveField(0) @JsonKey(name: 'profile_id') required String profileId,
+    @HiveField(0) @JsonKey(name: 'profile_id') String? profileId,
 
     @HiveField(1) @JsonKey(name: 'first_name') @Default('') String firstName,
 

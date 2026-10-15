@@ -38,6 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       orgId: event.orgId,
       isManagedCreation: event.isManagedCreation,
       profileDetails: event.profileDetails,
+      
     );
 
     if (response.error != null) {

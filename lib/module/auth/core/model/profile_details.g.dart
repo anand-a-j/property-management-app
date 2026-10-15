@@ -17,7 +17,7 @@ class ProfileDetailsAdapter extends TypeAdapter<ProfileDetails> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ProfileDetails(
-      profileId: fields[0] as String,
+      profileId: fields[0] as String?,
       firstName: fields[1] == null ? '' : fields[1] as String,
       lastName: fields[2] == null ? '' : fields[2] as String,
       nickname: fields[3] as String?,
@@ -64,7 +64,7 @@ class ProfileDetailsAdapter extends TypeAdapter<ProfileDetails> {
 
 _ProfileDetails _$ProfileDetailsFromJson(Map<String, dynamic> json) =>
     _ProfileDetails(
-      profileId: json['profile_id'] as String,
+      profileId: json['profile_id'] as String?,
       firstName: json['first_name'] as String? ?? '',
       lastName: json['last_name'] as String? ?? '',
       nickname: json['nickname'] as String?,

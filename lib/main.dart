@@ -104,11 +104,15 @@ class MyApp extends StatelessWidget {
     return ValueListenableBuilder<Box>(
       valueListenable: settings.listenable(keys: [themeModeKey]),
       builder: (context, value, child) {
+
+        
         // TODO: Light theme after version 1 release
         // final ThemeMode themeMode = ThemeMode.values[value.get(
         //   themeModeKey,
         //   defaultValue: 0,
         // )];
+
+
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           //

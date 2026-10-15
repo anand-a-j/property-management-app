@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class InputVaildator {
   // GENERIC REQUIRED
   static String? required(String? value, {String fieldName = "Field"}) {
@@ -61,6 +63,27 @@ class InputVaildator {
 
     if (value != originalPassword) {
       return "Passwords do not match";
+    }
+
+    return null;
+  }
+
+  /// Emirates ID format: 784-YYYY-NNNNNNN-C (15 digits, hyphens optional).
+  static String? validateEmiratesId(String? value) {
+    final id = (value ?? '').trim();
+
+    if (id.isEmpty) {
+      return 'Emirates ID is required';
+    }
+
+    final digitsOnly = id.replaceAll('-', '');
+
+    if (kDebugMode) {
+      return null;
+    }
+
+    if (!RegExp(r'^784\d{12}$').hasMatch(digitsOnly)) {
+      return 'Enter a valid Emirates ID (784-XXXX-XXXXXXX-X)';
     }
 
     return null;

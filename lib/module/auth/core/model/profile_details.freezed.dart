@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileDetails {
 
-@HiveField(0)@JsonKey(name: 'profile_id') String get profileId;@HiveField(1)@JsonKey(name: 'first_name') String get firstName;@HiveField(2)@JsonKey(name: 'last_name') String get lastName;@HiveField(3) String? get nickname;@HiveField(4)@JsonKey(name: 'emirates_id') String? get emiratesId;@HiveField(5)@JsonKey(name: 'created_at') DateTime? get createdAt;@HiveField(6)@JsonKey(name: 'updated_at') DateTime? get updatedAt;
+@HiveField(0)@JsonKey(name: 'profile_id') String? get profileId;@HiveField(1)@JsonKey(name: 'first_name') String get firstName;@HiveField(2)@JsonKey(name: 'last_name') String get lastName;@HiveField(3) String? get nickname;@HiveField(4)@JsonKey(name: 'emirates_id') String? get emiratesId;@HiveField(5)@JsonKey(name: 'created_at') DateTime? get createdAt;@HiveField(6)@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of ProfileDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProfileDetailsCopyWith<$Res>  {
   factory $ProfileDetailsCopyWith(ProfileDetails value, $Res Function(ProfileDetails) _then) = _$ProfileDetailsCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0)@JsonKey(name: 'profile_id') String profileId,@HiveField(1)@JsonKey(name: 'first_name') String firstName,@HiveField(2)@JsonKey(name: 'last_name') String lastName,@HiveField(3) String? nickname,@HiveField(4)@JsonKey(name: 'emirates_id') String? emiratesId,@HiveField(5)@JsonKey(name: 'created_at') DateTime? createdAt,@HiveField(6)@JsonKey(name: 'updated_at') DateTime? updatedAt
+@HiveField(0)@JsonKey(name: 'profile_id') String? profileId,@HiveField(1)@JsonKey(name: 'first_name') String firstName,@HiveField(2)@JsonKey(name: 'last_name') String lastName,@HiveField(3) String? nickname,@HiveField(4)@JsonKey(name: 'emirates_id') String? emiratesId,@HiveField(5)@JsonKey(name: 'created_at') DateTime? createdAt,@HiveField(6)@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -65,10 +65,10 @@ class _$ProfileDetailsCopyWithImpl<$Res>
 
 /// Create a copy of ProfileDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? profileId = null,Object? firstName = null,Object? lastName = null,Object? nickname = freezed,Object? emiratesId = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? profileId = freezed,Object? firstName = null,Object? lastName = null,Object? nickname = freezed,Object? emiratesId = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
-profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
-as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+profileId: freezed == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+as String?,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String,nickname: freezed == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String?,emiratesId: freezed == emiratesId ? _self.emiratesId : emiratesId // ignore: cast_nullable_to_non_nullable
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(name: 'profile_id')  String profileId, @HiveField(1)@JsonKey(name: 'first_name')  String firstName, @HiveField(2)@JsonKey(name: 'last_name')  String lastName, @HiveField(3)  String? nickname, @HiveField(4)@JsonKey(name: 'emirates_id')  String? emiratesId, @HiveField(5)@JsonKey(name: 'created_at')  DateTime? createdAt, @HiveField(6)@JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(name: 'profile_id')  String? profileId, @HiveField(1)@JsonKey(name: 'first_name')  String firstName, @HiveField(2)@JsonKey(name: 'last_name')  String lastName, @HiveField(3)  String? nickname, @HiveField(4)@JsonKey(name: 'emirates_id')  String? emiratesId, @HiveField(5)@JsonKey(name: 'created_at')  DateTime? createdAt, @HiveField(6)@JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileDetails() when $default != null:
 return $default(_that.profileId,_that.firstName,_that.lastName,_that.nickname,_that.emiratesId,_that.createdAt,_that.updatedAt);case _:
@@ -180,7 +180,7 @@ return $default(_that.profileId,_that.firstName,_that.lastName,_that.nickname,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(name: 'profile_id')  String profileId, @HiveField(1)@JsonKey(name: 'first_name')  String firstName, @HiveField(2)@JsonKey(name: 'last_name')  String lastName, @HiveField(3)  String? nickname, @HiveField(4)@JsonKey(name: 'emirates_id')  String? emiratesId, @HiveField(5)@JsonKey(name: 'created_at')  DateTime? createdAt, @HiveField(6)@JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(name: 'profile_id')  String? profileId, @HiveField(1)@JsonKey(name: 'first_name')  String firstName, @HiveField(2)@JsonKey(name: 'last_name')  String lastName, @HiveField(3)  String? nickname, @HiveField(4)@JsonKey(name: 'emirates_id')  String? emiratesId, @HiveField(5)@JsonKey(name: 'created_at')  DateTime? createdAt, @HiveField(6)@JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileDetails():
 return $default(_that.profileId,_that.firstName,_that.lastName,_that.nickname,_that.emiratesId,_that.createdAt,_that.updatedAt);case _:
@@ -200,7 +200,7 @@ return $default(_that.profileId,_that.firstName,_that.lastName,_that.nickname,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)@JsonKey(name: 'profile_id')  String profileId, @HiveField(1)@JsonKey(name: 'first_name')  String firstName, @HiveField(2)@JsonKey(name: 'last_name')  String lastName, @HiveField(3)  String? nickname, @HiveField(4)@JsonKey(name: 'emirates_id')  String? emiratesId, @HiveField(5)@JsonKey(name: 'created_at')  DateTime? createdAt, @HiveField(6)@JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)@JsonKey(name: 'profile_id')  String? profileId, @HiveField(1)@JsonKey(name: 'first_name')  String firstName, @HiveField(2)@JsonKey(name: 'last_name')  String lastName, @HiveField(3)  String? nickname, @HiveField(4)@JsonKey(name: 'emirates_id')  String? emiratesId, @HiveField(5)@JsonKey(name: 'created_at')  DateTime? createdAt, @HiveField(6)@JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileDetails() when $default != null:
 return $default(_that.profileId,_that.firstName,_that.lastName,_that.nickname,_that.emiratesId,_that.createdAt,_that.updatedAt);case _:
@@ -215,10 +215,10 @@ return $default(_that.profileId,_that.firstName,_that.lastName,_that.nickname,_t
 @JsonSerializable()
 
 class _ProfileDetails implements ProfileDetails {
-  const _ProfileDetails({@HiveField(0)@JsonKey(name: 'profile_id') required this.profileId, @HiveField(1)@JsonKey(name: 'first_name') this.firstName = '', @HiveField(2)@JsonKey(name: 'last_name') this.lastName = '', @HiveField(3) this.nickname, @HiveField(4)@JsonKey(name: 'emirates_id') this.emiratesId, @HiveField(5)@JsonKey(name: 'created_at') this.createdAt, @HiveField(6)@JsonKey(name: 'updated_at') this.updatedAt});
+  const _ProfileDetails({@HiveField(0)@JsonKey(name: 'profile_id') this.profileId, @HiveField(1)@JsonKey(name: 'first_name') this.firstName = '', @HiveField(2)@JsonKey(name: 'last_name') this.lastName = '', @HiveField(3) this.nickname, @HiveField(4)@JsonKey(name: 'emirates_id') this.emiratesId, @HiveField(5)@JsonKey(name: 'created_at') this.createdAt, @HiveField(6)@JsonKey(name: 'updated_at') this.updatedAt});
   factory _ProfileDetails.fromJson(Map<String, dynamic> json) => _$ProfileDetailsFromJson(json);
 
-@override@HiveField(0)@JsonKey(name: 'profile_id') final  String profileId;
+@override@HiveField(0)@JsonKey(name: 'profile_id') final  String? profileId;
 @override@HiveField(1)@JsonKey(name: 'first_name') final  String firstName;
 @override@HiveField(2)@JsonKey(name: 'last_name') final  String lastName;
 @override@HiveField(3) final  String? nickname;
@@ -259,7 +259,7 @@ abstract mixin class _$ProfileDetailsCopyWith<$Res> implements $ProfileDetailsCo
   factory _$ProfileDetailsCopyWith(_ProfileDetails value, $Res Function(_ProfileDetails) _then) = __$ProfileDetailsCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0)@JsonKey(name: 'profile_id') String profileId,@HiveField(1)@JsonKey(name: 'first_name') String firstName,@HiveField(2)@JsonKey(name: 'last_name') String lastName,@HiveField(3) String? nickname,@HiveField(4)@JsonKey(name: 'emirates_id') String? emiratesId,@HiveField(5)@JsonKey(name: 'created_at') DateTime? createdAt,@HiveField(6)@JsonKey(name: 'updated_at') DateTime? updatedAt
+@HiveField(0)@JsonKey(name: 'profile_id') String? profileId,@HiveField(1)@JsonKey(name: 'first_name') String firstName,@HiveField(2)@JsonKey(name: 'last_name') String lastName,@HiveField(3) String? nickname,@HiveField(4)@JsonKey(name: 'emirates_id') String? emiratesId,@HiveField(5)@JsonKey(name: 'created_at') DateTime? createdAt,@HiveField(6)@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -276,10 +276,10 @@ class __$ProfileDetailsCopyWithImpl<$Res>
 
 /// Create a copy of ProfileDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? profileId = null,Object? firstName = null,Object? lastName = null,Object? nickname = freezed,Object? emiratesId = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? profileId = freezed,Object? firstName = null,Object? lastName = null,Object? nickname = freezed,Object? emiratesId = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_ProfileDetails(
-profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
-as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+profileId: freezed == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+as String?,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String,nickname: freezed == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String?,emiratesId: freezed == emiratesId ? _self.emiratesId : emiratesId // ignore: cast_nullable_to_non_nullable

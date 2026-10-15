@@ -14,7 +14,9 @@ import '../../../../platform_admin/controller/bloc/manager_bloc.dart';
 import '../../../core/controller/bloc/auth_bloc.dart';
 import '../../../core/controller/bloc/auth_event.dart';
 import '../../../core/controller/bloc/auth_state.dart';
+import '../../../core/model/profile_details.dart';
 import '../../../sign_in/view/widgets/auth_navigation_text.dart';
+import '../../controller/sign_up_form_controller.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key, required this.type});
@@ -26,31 +28,19 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _formKey = GlobalKey<FormState>();
+  late final SignUpFormController _formController;
 
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  bool get _isResident => widget.type == SignUpType.resident;
 
-  final ValueNotifier<bool> _obscurePassword = ValueNotifier(true);
-  final ValueNotifier<bool> _obscureConfirmPassword = ValueNotifier(true);
-
-  UserRole? _selectedStaffRole;
+  @override
+  void initState() {
+    super.initState();
+    _formController = SignUpFormController();
+  }
 
   @override
   void dispose() {
-    _fullNameController.dispose();
-    _emailController.dispose();
-    _phoneNumberController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-
-    _obscurePassword.dispose();
-    _obscureConfirmPassword.dispose();
-
+    _formController.dispose();
     super.dispose();
   }
 
@@ -67,7 +57,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return UserRole.manager;
 
       case SignUpType.staff:
-        return _selectedStaffRole ?? UserRole.security;
+        return _formController.selectedStaffRole ?? UserRole.security;
     }
   }
 
@@ -109,6 +99,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  // ------------------------------------------------------------
+  // BUTTON TITLE
+  // ------------------------------------------------------------
+
   String get _buttonTitle {
     switch (widget.type) {
       case SignUpType.resident:
@@ -117,34 +111,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
             : 'Create your Account';
 
       case SignUpType.manager:
-        return 'Create';
-
       case SignUpType.staff:
         return 'Create';
     }
   }
 
+  // ------------------------------------------------------------
+  // BUILD
+  // ------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
-    log("Sign up type : ${widget.type}");
+    log('Sign up type: ${widget.type}');
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
           if (widget.type == SignUpType.staff) {
             context.read<StaffBloc>().add(
-              FetchStaffs(orgId: authentication.profile?.orgId ?? ""),
+              FetchStaffs(orgId: authentication.profile?.orgId ?? ''),
             );
-            Snack.success("Success");
+
+            Snack.success('Success');
             Navigator.pop(context);
           } else if (widget.type == SignUpType.manager) {
             context.read<ManagerBloc>().add(const FetchManagers());
-            Snack.success("Success");
+
+            Snack.success('Success');
             Navigator.pop(context);
           } else if (widget.type == SignUpType.resident) {
-            Snack.success("Success");
+            Snack.success('Success');
             Navigator.pop(context);
           } else {
-            Snack.success("Sign up success, more features coming soon");
+            Snack.success('Sign up success, more features coming soon');
           }
         }
 
@@ -161,7 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppConsts.pSide),
             child: Form(
-              key: _formKey,
+              key: _formController.formKey,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,29 +186,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: AppConsts.pLarge),
 
-                    // STAFF ROLE DROPDOWN
+                    // STAFF ROLE
                     if (widget.type == SignUpType.staff) ...[
                       _staffRoleDropdown(),
-
                       const SizedBox(height: AppConsts.pSide),
                     ],
 
-                    _fullNameTextField(),
+                    // NAME FIELDS
+                    if (_isResident) ...[
+                      // FIRST NAME
+                      _firstNameTextField(),
+
+                      const SizedBox(height: AppConsts.pSide),
+
+                      // LAST NAME
+                      _lastNameTextField(),
+
+                      const SizedBox(height: AppConsts.pSide),
+
+                      // EMIRATES ID
+                      _emiratesIdTextField(),
+                    ] else
+                      // FULL NAME (manager / staff)
+                      _fullNameTextField(),
 
                     const SizedBox(height: AppConsts.pSide),
 
+                    // EMAIL
                     _emailTextField(),
 
                     const SizedBox(height: AppConsts.pSide),
 
+                    // PHONE
                     _phoneNumberTextField(),
 
                     const SizedBox(height: AppConsts.pSide),
 
+                    // PASSWORD
                     _passwordTextField(),
 
                     const SizedBox(height: AppConsts.pSide),
 
+                    // CONFIRM PASSWORD
                     _confirmPasswordTextField(),
 
                     const SizedBox(height: AppConsts.pMedium),
@@ -219,6 +237,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ),
+
+        // BOTTOM BUTTON
         bottomNavigationBar: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppConsts.pSide),
@@ -232,10 +252,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   onPressed: _signUpRequest,
                 ),
-                if (widget.type == SignUpType.resident &&
-                    !authentication.isAuthenticated) ...[
-                  const SizedBox(height: AppConsts.pMedium),
 
+                if (_isResident && !authentication.isAuthenticated) ...[
+                  const SizedBox(height: AppConsts.pMedium),
                   const AuthNavigationText(isFromSignInScreen: false),
                 ],
 
@@ -249,22 +268,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   // ------------------------------------------------------------
-  // STAFF ROLE
+  // STAFF ROLE DROPDOWN
   // ------------------------------------------------------------
 
   Widget _staffRoleDropdown() {
     return CustomDropdownField<UserRole>(
-      initialValue: _selectedStaffRole,
+      initialValue: _formController.selectedStaffRole,
       labelText: 'Staff Role',
       hintText: 'Select staff role',
       items: [UserRole.security, UserRole.maintenance],
-      itemLabel: (item) {
-        return item.name;
-      },
-
+      itemLabel: (item) => item.name,
       onChanged: (value) {
         setState(() {
-          _selectedStaffRole = value;
+          _formController.selectedStaffRole = value;
         });
       },
       validator: (value) {
@@ -278,16 +294,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   // ------------------------------------------------------------
-  // FULL NAME
+  // FULL NAME (manager / staff only)
   // ------------------------------------------------------------
 
   CustomTextField _fullNameTextField() {
     return CustomTextField(
-      controller: _fullNameController,
+      controller: _formController.fullNameController,
       textInputType: TextInputType.name,
       labelText: 'Full Name',
       hintText: 'Full Name',
       validator: (value) => InputVaildator.required(value),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // FIRST NAME (resident only)
+  // ------------------------------------------------------------
+
+  CustomTextField _firstNameTextField() {
+    return CustomTextField(
+      controller: _formController.firstNameController,
+      textInputType: TextInputType.name,
+      labelText: 'First Name',
+      hintText: 'First Name',
+      validator: (value) => InputVaildator.required(value),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // LAST NAME (resident only)
+  // ------------------------------------------------------------
+
+  CustomTextField _lastNameTextField() {
+    return CustomTextField(
+      controller: _formController.lastNameController,
+      textInputType: TextInputType.name,
+      labelText: 'Last Name',
+      hintText: 'Last Name',
+      validator: (value) => InputVaildator.required(value),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // EMIRATES ID (resident only)
+  // ------------------------------------------------------------
+
+  CustomTextField _emiratesIdTextField() {
+    return CustomTextField(
+      controller: _formController.emiratesIdController,
+      textInputType: TextInputType.number,
+      labelText: 'Emirates ID',
+      hintText: '784-XXXX-XXXXXXX-X',
+      validator: (v) => InputVaildator.validateEmiratesId(v),
     );
   }
 
@@ -297,7 +355,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   CustomTextField _emailTextField() {
     return CustomTextField(
-      controller: _emailController,
+      controller: _formController.emailController,
       textInputType: TextInputType.emailAddress,
       labelText: 'Email',
       hintText: 'Email',
@@ -311,7 +369,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   CustomTextField _phoneNumberTextField() {
     return CustomTextField(
-      controller: _phoneNumberController,
+      controller: _formController.phoneNumberController,
       textInputType: TextInputType.phone,
       labelText: 'Mobile number',
       hintText: 'Mobile number',
@@ -323,23 +381,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // PASSWORD
   // ------------------------------------------------------------
 
-  ValueListenableBuilder<bool> _passwordTextField() {
+  Widget _passwordTextField() {
     return ValueListenableBuilder<bool>(
-      valueListenable: _obscurePassword,
-      builder: (context, value, _) {
+      valueListenable: _formController.obscurePassword,
+      builder: (context, obscurePassword, _) {
         return CustomTextField(
-          controller: _passwordController,
+          controller: _formController.passwordController,
           labelText: 'Password',
           hintText: 'Password',
           textInputType: TextInputType.visiblePassword,
           validator: (value) => InputVaildator.password(value),
-          obscureText: value,
+          obscureText: obscurePassword,
           suffixIcon: GestureDetector(
-            onTap: () {
-              _obscurePassword.value = !value;
-            },
+            onTap: _formController.togglePasswordVisibility,
             child: Icon(
-              value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              obscurePassword
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
               color: context.secondaryContainer,
               size: 22,
             ),
@@ -353,17 +411,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // CONFIRM PASSWORD
   // ------------------------------------------------------------
 
-  ValueListenableBuilder<bool> _confirmPasswordTextField() {
+  Widget _confirmPasswordTextField() {
     return ValueListenableBuilder<bool>(
-      valueListenable: _obscureConfirmPassword,
-      builder: (context, value, _) {
+      valueListenable: _formController.obscureConfirmPassword,
+      builder: (context, obscurePassword, _) {
         return CustomTextField(
-          controller: _confirmPasswordController,
+          controller: _formController.confirmPasswordController,
           labelText: 'Confirm password',
           hintText: 'Confirm password',
           textInputType: TextInputType.visiblePassword,
           validator: (value) {
-            final password = _passwordController.text.trim();
+            final password = _formController.passwordController.text.trim();
+
             final confirmPassword = value?.trim() ?? '';
 
             if (confirmPassword.isEmpty) {
@@ -376,13 +435,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             return null;
           },
-          obscureText: value,
+          obscureText: obscurePassword,
           suffixIcon: GestureDetector(
-            onTap: () {
-              _obscureConfirmPassword.value = !value;
-            },
+            onTap: _formController.toggleConfirmPasswordVisibility,
             child: Icon(
-              value ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              obscurePassword
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
               color: context.secondaryContainer,
               size: 22,
             ),
@@ -393,23 +452,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   // ------------------------------------------------------------
-  // SIGN UP
+  // SIGN UP REQUEST
   // ------------------------------------------------------------
 
   void _signUpRequest() {
     FocusScope.of(context).unfocus();
 
-    if (!(_formKey.currentState?.validate() ?? false)) {
+    // Validate the form through the controller.
+    if (!_formController.validate()) {
       return;
     }
 
-    final fullName = _fullNameController.text.trim();
-    final email = _emailController.text.trim();
-    final phone = _phoneNumberController.text.trim();
-    final password = _passwordController.text.trim();
-
+    // Read values from the controller.
+    final email = _formController.emailController.text.trim();
+    final phone = _formController.phoneNumberController.text.trim();
+    final password = _formController.passwordController.text.trim();
     final role = _userRole;
 
+    // Resident: full name = first name + last name.
+    // Manager / staff: full name comes from the full name field.
+    String fullName;
+    ProfileDetails? profileDetails;
+
+    if (_isResident) {
+      final firstName = _formController.firstNameController.text.trim();
+      final lastName = _formController.lastNameController.text.trim();
+      final emiratesId = _formController.emiratesIdController.text.trim();
+
+      fullName = '$firstName $lastName'.trim();
+
+      profileDetails = ProfileDetails(
+        firstName: firstName,
+        lastName: lastName,
+        emiratesId: emiratesId.isNotEmpty ? emiratesId : null,
+      );
+    } else {
+      fullName = _formController.fullNameController.text.trim();
+    }
+
+    // Determine organization ID.
     final String? orgId = switch (role) {
       UserRole.resident ||
       UserRole.security ||
@@ -418,20 +499,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       UserRole.manager || UserRole.platformAdmin => null,
     };
 
-    // Organization is required for resident/staff signup.
+    // Organization is required for resident and staff signup.
     if (role == UserRole.resident ||
         role == UserRole.security ||
         role == UserRole.maintenance) {
       if (orgId == null || orgId.isEmpty) {
         Snack.error(
-          'Manager information is missing. Please select a valid manager and try again.',
+          'Manager information is missing. '
+          'Please select a valid manager and try again.',
         );
         return;
       }
     }
 
-    log('sign up role: $role');
-    log('sign up orgId: $orgId');
+    log('Sign up role: $role');
+    log('Sign up orgId: $orgId');
+
+    final isManagedCreation =
+        authentication.isAuthenticated &&
+        authentication.role == UserRole.manager;
 
     context.read<AuthBloc>().add(
       AuthSignUp(
@@ -442,11 +528,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         role: role,
         signUpType: widget.type,
         orgId: orgId,
-        isManagedCreation:
-            authentication.isAuthenticated &&
-                authentication.role == UserRole.manager
-            ? true
-            : false,
+        isManagedCreation: isManagedCreation,
+        profileDetails: profileDetails,
       ),
     );
   }

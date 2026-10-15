@@ -66,7 +66,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
                     itemBuilder: (context, index) {
                       final staff = state.staffs[index];
 
-                      return StaffCard(profile: staff);
+                      return StaffCard(profile: staff, index: index);
                     },
                   );
                 }

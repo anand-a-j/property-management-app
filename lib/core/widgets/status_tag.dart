@@ -16,13 +16,15 @@ class StatusTag extends StatelessWidget {
         color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Text(
-        status,
-        style: context.bodySmall?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w900,
-          height: 1,
-          fontSize: 11,
+      child: Center(
+        child: Text(
+          status,
+          style: context.bodySmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w800,
+            height: 1,
+            fontSize: 11,
+          ),
         ),
       ),
     );
