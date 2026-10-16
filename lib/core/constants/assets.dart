@@ -18,6 +18,7 @@ class Assets {
 
   // image
   static const String welcome = "$_imageBaseUrl/welcome.png";
+  static const String residentDashBg = "$_imageBaseUrl/resident_dash_bg.png";
 
   // Naseem
   static const String backArrow = "$_newBaseUrl/back_arrow.svg";

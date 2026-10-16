@@ -90,6 +90,7 @@ void main() async {
           create: (context) =>
               DashboardStatsCubit(dashboardStatsRepo: DashboardStatsRepo()),
         ),
+        
       ],
       child: const MyApp(),
     ),

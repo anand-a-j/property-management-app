@@ -84,8 +84,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 AdminDashboardScreen(),
                 CommunityListScreen(),
                 ResidentListScreen(),
-                PaymentListScreen(),
-                SettingsScreen(),
+                PaymentListScreen(
+                  isFromResident: false,
+                  leaseId: null,
+                ),
+                SettingsScreen(isFromResident: false,),
               ],
             ),
             bottomNavigationBar: SafeArea(

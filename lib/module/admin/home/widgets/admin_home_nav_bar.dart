@@ -49,27 +49,58 @@ class AdminHomeNavigationBar extends StatelessWidget {
           height: 2.5,
         ),
         items: [
-          _item(context, asset: Assets.home, label: "Home", index: 0),
-          _item(context, asset: Assets.property, label: "Community", index: 1),
-          _item(context, asset: Assets.resident, label: "Resident", index: 2),
-
-          _item(context, asset: Assets.payment, label: "Payment", index: 3),
-          _item(context, asset: Assets.more, label: "More", index: 4),
+          BottomNavItemTile.build(
+            context,
+            asset: Assets.home,
+            label: "Home",
+            index: 0,
+            selectedIndex: selectedIndex,
+          ),
+          BottomNavItemTile.build(
+            context,
+            asset: Assets.property,
+            label: "Community",
+            index: 1,
+            selectedIndex: selectedIndex,
+          ),
+          BottomNavItemTile.build(
+            context,
+            asset: Assets.resident,
+            label: "Resident",
+            index: 2,
+            selectedIndex: selectedIndex,
+          ),
+          BottomNavItemTile.build(
+            context,
+            asset: Assets.payment,
+            label: "Payment",
+            index: 3,
+            selectedIndex: selectedIndex,
+          ),
+          BottomNavItemTile.build(
+            context,
+            asset: Assets.more,
+            label: "More",
+            index: 4,
+            selectedIndex: selectedIndex,
+          ),
         ],
       ),
     );
   }
+}
 
-  BottomNavigationBarItem _item(
+class BottomNavItemTile {
+  static BottomNavigationBarItem build(
     BuildContext context, {
     required String asset,
     required String label,
     required int index,
+    required int selectedIndex,
   }) {
     return BottomNavigationBarItem(
       icon: SvgBuild(
         assetImage: asset,
-
         height: 35,
         width: 35,
         colorFilter: ColorFilter.mode(

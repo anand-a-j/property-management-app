@@ -36,4 +36,7 @@ class RouterPath {
 
   // Staff
   static const String staffList = "/staff-list";
+
+  // Resident
+  static const String residentHome = "/resident-home";
 }

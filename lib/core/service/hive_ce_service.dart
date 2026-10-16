@@ -5,6 +5,7 @@ import 'package:naseem/core/enum/user_role.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../module/auth/core/model/profile.dart';
+import '../../module/auth/core/model/profile_details.dart';
 
 class HiveService {
   static Future<void> init() async {
@@ -13,6 +14,7 @@ class HiveService {
 
     // Register adapters
     Hive.registerAdapter(UserRoleAdapter());
+    Hive.registerAdapter(ProfileDetailsAdapter());
     Hive.registerAdapter(ProfileAdapter());
 
     // Open boxes

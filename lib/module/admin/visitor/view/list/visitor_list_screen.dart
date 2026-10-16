@@ -8,14 +8,19 @@ import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
-import '../../../../../routes/router_path.dart';
 import '../../controller/bloc/visitor_bloc.dart';
 
 class VisitorListScreen extends StatefulWidget {
-  const VisitorListScreen({super.key, required this.orgId, this.unitId});
+  const VisitorListScreen({
+    super.key,
+    required this.orgId,
+    this.unitId,
+    required this.isFromResident,
+  });
 
   final String orgId;
   final String? unitId;
+  final bool isFromResident;
 
   @override
   State<VisitorListScreen> createState() => _VisitorListScreenState();
@@ -29,12 +34,16 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
   }
 
   void _getVisitors() {
+    if (widget.isFromResident && widget.unitId == null) return;
+
     context.read<VisitorBloc>().add(
       GetVisitorsEvent(orgId: widget.orgId, unitId: widget.unitId),
     );
   }
 
   void _loadMore() {
+    if (widget.isFromResident && widget.unitId == null) return;
+
     context.read<VisitorBloc>().add(
       LoadMoreVisitorsEvent(orgId: widget.orgId, unitId: widget.unitId),
     );

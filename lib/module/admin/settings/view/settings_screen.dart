@@ -13,7 +13,9 @@ import '../../../auth/core/controller/bloc/auth_state.dart';
 import 'widgets/settings_card.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, required this.isFromResident});
+
+  final bool isFromResident;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          'Manager',
+                          isFromResident ? 'Resident' : 'Manager',
                           style: context.bodyMedium?.copyWith(
                             color: context.secondaryContainer,
                           ),
@@ -74,58 +76,60 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 25),
-
-              Text(
-                'Management',
-                style: context.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+              if (!isFromResident) ...[
+                Text(
+                  'Management',
+                  style: context.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
+                const SizedBox(height: 15),
 
-              SettingsCard(
-                icon: Icons.badge_outlined,
-                title: 'Staffs',
-                onTap: () {
-                  context.push(RouterPath.staffList);
-                },
-              ),
+                SettingsCard(
+                  icon: Icons.badge_outlined,
+                  title: 'Staffs',
+                  onTap: () {
+                    context.push(RouterPath.staffList);
+                  },
+                ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              SettingsCard(
-                icon: Icons.manage_accounts_outlined,
-                title: 'Visors',
-                onTap: () {
-                  context.push(
-                    RouterPath.visitorList,
-                    extra: VisitorListArgs(
-                      orgId: authentication.profile?.orgId ?? "",
-                    ),
-                  );
-                },
-              ),
+                SettingsCard(
+                  icon: Icons.manage_accounts_outlined,
+                  title: 'Visors',
+                  onTap: () {
+                    context.push(
+                      RouterPath.visitorList,
+                      extra: VisitorListArgs(
+                        orgId: authentication.profile?.orgId ?? "",
+                      ),
+                    );
+                  },
+                ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              SettingsCard(
-                icon: Icons.assignment_turned_in_outlined,
-                title: 'Manage Lease',
-                showTrailingIcon: true,
-                onTap: () {
-                  context.push(RouterPath.leaseList);
-                },
-              ),
-              const SizedBox(height: 10),
+                SettingsCard(
+                  icon: Icons.assignment_turned_in_outlined,
+                  title: 'Manage Lease',
+                  showTrailingIcon: true,
+                  onTap: () {
+                    context.push(RouterPath.leaseList);
+                  },
+                ),
+                const SizedBox(height: 10),
 
-              SettingsCard(
-                icon: Icons.handyman_outlined,
-                title: 'Maintenance',
-                showTrailingIcon: true,
-                onTap: () {
-                  context.push(RouterPath.maintenanceList);
-                },
-              ),
+                SettingsCard(
+                  icon: Icons.handyman_outlined,
+                  title: 'Maintenance',
+                  showTrailingIcon: true,
+                  onTap: () {
+                    context.push(RouterPath.maintenanceList);
+                  },
+                ),
+              ],
+
               const Spacer(),
             ],
           ),

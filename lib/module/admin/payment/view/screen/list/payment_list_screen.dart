@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/core.dart';
@@ -13,7 +15,14 @@ import '../../../controller/bloc/payment_bloc.dart';
 import '../../widgets/payment_card.dart';
 
 class PaymentListScreen extends StatefulWidget {
-  const PaymentListScreen({super.key});
+  const PaymentListScreen({
+    super.key,
+    required this.isFromResident,
+    required this.leaseId,
+  });
+
+  final bool isFromResident;
+  final String? leaseId;
 
   @override
   State<PaymentListScreen> createState() => _PaymentListScreenState();
@@ -27,14 +36,25 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
   }
 
   void _fetchPayments() {
-    context.read<PaymentBloc>().add(
-      FetchPaymentsEvent(orgId: authentication.profile?.orgId ?? ""),
-    );
+    log("payments : ${authentication.profile?.orgId} ${widget.leaseId}");
+    if (widget.isFromResident &&
+        widget.leaseId != null &&
+        (widget.leaseId?.isNotEmpty ?? false)) {
+      context.read<PaymentBloc>().add(
+        FetchPaymentsEvent(
+          orgId: authentication.profile?.orgId ?? "",
+          leaseId: widget.isFromResident ? widget.leaseId : null,
+        ),
+      );
+    }
   }
 
   void _loadMore() {
     context.read<PaymentBloc>().add(
-      LoadMorePayments(orgId: authentication.profile?.orgId ?? ""),
+      LoadMorePayments(
+        orgId: authentication.profile?.orgId ?? "",
+        leaseId: widget.isFromResident ? widget.leaseId : null,
+      ),
     );
   }
 
@@ -47,33 +67,35 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
       ),
       body: Column(
         children: [
-          // Stats cards remain unchanged.
-          AppHorizontalPadding(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
-              children: [
-                Expanded(
-                  child: StatCard(
-                    title: 'Rent Collected',
-                    value: '0',
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: context.primary,
+          if (!widget.isFromResident) ...[
+            // Stats cards remain unchanged.
+            AppHorizontalPadding(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 20,
+                children: [
+                  Expanded(
+                    child: StatCard(
+                      title: 'Rent Collected',
+                      value: '0',
+                      borderColor: context.surface,
+                      titleColor: context.secondary,
+                      valueColor: context.primary,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: StatCard(
-                    title: 'Due',
-                    value: '0',
-                    borderColor: context.surface,
-                    titleColor: context.secondary,
-                    valueColor: Colors.red,
+                  Expanded(
+                    child: StatCard(
+                      title: 'Due',
+                      value: '0',
+                      borderColor: context.surface,
+                      titleColor: context.secondary,
+                      valueColor: Colors.red,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
 
           const SizedBox(height: 15),
 

@@ -34,6 +34,7 @@ import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
+import '../module/resident/home/view/resident_home_screen.dart';
 import 'args/add_lease_args.dart';
 import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
@@ -304,7 +305,11 @@ final GoRouter router = GoRouter(
 
         return SlideTransitionPage(
           beginOffset: const Offset(1, 0),
-          page: VisitorListScreen(orgId: args.orgId, unitId: args.unitId),
+          page: VisitorListScreen(
+            orgId: args.orgId,
+            unitId: args.unitId,
+            isFromResident: args.isFromResident,
+          ),
         );
       },
     ),
@@ -327,6 +332,16 @@ final GoRouter router = GoRouter(
         return SlideTransitionPage(
           beginOffset: Offset(1, 0),
           page: StaffListScreen(),
+        );
+      },
+    ),
+     GoRoute(
+      path: RouterPath.residentHome,
+      name: 'resident-home-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: Offset(1, 0),
+          page: ResidentHomeScreen(),
         );
       },
     ),
