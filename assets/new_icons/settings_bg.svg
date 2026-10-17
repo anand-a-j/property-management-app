@@ -1,0 +1,256 @@
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1200 360"
+     fill="none">
+
+  <defs>
+    <linearGradient id="building" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8F9FB"/>
+      <stop offset="1" stop-color="#DDE1E8"/>
+    </linearGradient>
+    <linearGradient id="phone" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F7F8FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- White background -->
+  <rect width="1200" height="360" fill="#FFFFFF"/>
+
+  <!-- Soft clouds -->
+  <g fill="#F5F6F8">
+    <path d="M110 125 Q110 105 132 108
+      Q143 77 170 103 Q193 91 205 116
+      Q228 113 232 130 Z"/>
+    <path d="M905 88 Q909 71 928 77
+      Q940 49 962 74 Q981 63 993 86 Z"/>
+    <path d="M1020 133 Q1027 115 1046 122
+      Q1060 94 1081 119 Q1104 111 1116 135 Z"/>
+  </g>
+
+  <!-- Distant city -->
+  <g fill="#F5F6F8">
+    <path d="M25 260 V210 H53 V260
+      M65 260 V185 H94 V260
+      M103 260 V224 H130 V260
+      M146 260 V198 H174 V260
+      M190 260 V225 H218 V260
+      M244 260 V207 H268 V260
+      M285 260 V228 H314 V260
+      M337 260 V190 H363 V260
+      M375 260 V218 H408 V260
+      M810 260 V210 H839 V260
+      M845 260 V187 H871 V260
+      M1080 260 V210 H1109 V260
+      M1120 260 V228 H1150 V260
+      M1160 260 V198 H1190 V260"/>
+  </g>
+
+  <!-- Ground -->
+  <path d="M0 285 Q300 280 600 285 T1200 283"
+        stroke="#E5E7EB" stroke-width="2"/>
+  <ellipse cx="590" cy="291" rx="250" ry="9"
+           fill="#F5F6F8"/>
+
+  <!-- Apartment building -->
+  <g stroke="#E0E4EA" stroke-width="2"
+     stroke-linejoin="round">
+    <path d="M345 152 L445 119 L545 152 L545 281 L345 281 Z"
+          fill="url(#building)"/>
+    <path d="M345 152 L445 119 L545 152 L445 181 Z"
+          fill="#F7F8FA"/>
+    <path d="M445 181 V281"
+          stroke="#D8DDE5"/>
+    <path d="M345 184 L445 209 L545 184"
+          stroke="#D8DDE5" fill="none"/>
+    <path d="M345 217 L445 242 L545 217"
+          stroke="#D8DDE5" fill="none"/>
+    <path d="M345 250 L445 273 L545 250"
+          stroke="#D8DDE5" fill="none"/>
+  </g>
+
+  <!-- Windows -->
+  <g fill="#E7EBF0" stroke="#D9DEE6">
+    <rect x="361" y="164" width="25" height="17" rx="2"/>
+    <rect x="397" y="175" width="25" height="17" rx="2"/>
+    <rect x="463" y="174" width="25" height="17" rx="2"/>
+    <rect x="500" y="163" width="25" height="17" rx="2"/>
+    <rect x="361" y="197" width="25" height="17" rx="2"/>
+    <rect x="397" y="208" width="25" height="17" rx="2"/>
+    <rect x="463" y="207" width="25" height="17" rx="2"/>
+    <rect x="500" y="196" width="25" height="17" rx="2"/>
+    <rect x="361" y="230" width="25" height="17" rx="2"/>
+    <rect x="397" y="241" width="25" height="17" rx="2"/>
+    <rect x="463" y="240" width="25" height="17" rx="2"/>
+    <rect x="500" y="229" width="25" height="17" rx="2"/>
+  </g>
+
+  <!-- Building entrance -->
+  <path d="M415 250 H466 V281 H415 Z"
+        fill="#DDE2E9"/>
+  <path d="M441 250 V281"
+        stroke="#CDD3DD" stroke-width="2"/>
+
+  <!-- Trees -->
+  <g stroke="#D4D9E1" stroke-width="2"
+     stroke-linecap="round" fill="#ECEFF3">
+    <path d="M278 282 V224"/>
+    <circle cx="278" cy="218" r="19"/>
+    <circle cx="263" cy="228" r="13"/>
+    <circle cx="292" cy="230" r="12"/>
+    <path d="M278 251 L264 240 M278 260 L292 248"/>
+
+    <path d="M582 282 V238"/>
+    <circle cx="582" cy="228" r="24"/>
+    <circle cx="562" cy="237" r="15"/>
+    <circle cx="600" cy="239" r="15"/>
+    <path d="M582 259 L568 248 M582 266 L596 253"/>
+  </g>
+
+  <!-- Shrubs -->
+  <g fill="#E9EDF1">
+    <ellipse cx="230" cy="282" rx="24" ry="8"/>
+    <circle cx="219" cy="275" r="8"/>
+    <circle cx="232" cy="272" r="11"/>
+    <circle cx="244" cy="278" r="8"/>
+    <ellipse cx="637" cy="282" rx="27" ry="8"/>
+    <circle cx="625" cy="275" r="8"/>
+    <circle cx="638" cy="271" r="11"/>
+    <circle cx="650" cy="278" r="8"/>
+  </g>
+
+  <!-- Settings panel shadow -->
+  <rect x="736" y="69" width="172" height="224"
+        rx="23" fill="#E8EBF0"/>
+
+  <!-- Phone / settings panel -->
+  <rect x="728" y="64" width="172" height="226"
+        rx="22" fill="url(#phone)"
+        stroke="#D8DDE5" stroke-width="3"/>
+
+  <!-- Phone speaker -->
+  <rect x="786" y="71" width="56" height="7"
+        rx="3.5" fill="#ECEFF3"/>
+
+  <!-- Profile icon -->
+  <circle cx="814" cy="112" r="23" fill="#E9ECF1"/>
+  <circle cx="814" cy="105" r="7" fill="#B7BEC9"/>
+  <path d="M800 125 Q801 112 814 112
+           Q827 112 828 125"
+        fill="#B7BEC9"/>
+
+  <!-- Settings rows -->
+  <g>
+    <rect x="748" y="146" width="132" height="29"
+          rx="7" fill="#F6F7F9"/>
+    <rect x="748" y="183" width="132" height="29"
+          rx="7" fill="#F6F7F9"/>
+    <rect x="748" y="220" width="132" height="29"
+          rx="7" fill="#F6F7F9"/>
+    <rect x="748" y="257" width="132" height="22"
+          rx="7" fill="#F6F7F9"/>
+  </g>
+
+  <!-- Profile / notification / security / settings icons -->
+  <g stroke="#AEB6C2" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="764" cy="156" r="3.5" fill="#AEB6C2"/>
+    <path d="M757 168 Q757 160 764 160 Q771 160 771 168"/>
+    <path d="M764 191 Q757 191 757 200 H771 Q771 191 764 191 Z"/>
+    <path d="M760 191 Q760 185 764 185 Q768 185 768 191"/>
+    <path d="M764 227 L772 230 V236
+             Q770 242 764 245 Q758 242 756 236 V230 Z"/>
+    <path d="M764 232 V237 M764 240 V240.5"/>
+    <circle cx="764" cy="268" r="6"/>
+    <circle cx="764" cy="268" r="2" fill="#AEB6C2"/>
+  </g>
+
+  <!-- Text placeholder lines -->
+  <g fill="#DCE1E8">
+    <rect x="779" y="153" width="49" height="4" rx="2"/>
+    <rect x="779" y="161" width="34" height="3" rx="1.5"/>
+    <rect x="779" y="191" width="57" height="4" rx="2"/>
+    <rect x="779" y="199" width="38" height="3" rx="1.5"/>
+    <rect x="779" y="228" width="51" height="4" rx="2"/>
+    <rect x="779" y="236" width="36" height="3" rx="1.5"/>
+    <rect x="779" y="266" width="47" height="4" rx="2"/>
+  </g>
+
+  <!-- Seated resident -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- Hair -->
+    <path d="M949 156 Q947 141 961 137
+             Q978 134 981 151 L976 164 L954 165 Z"
+          fill="#8D96A5"/>
+    <!-- Head -->
+    <path d="M953 149 Q954 140 964 142
+             Q974 144 973 155 L967 166
+             L958 164 Z"
+          fill="#E1E4EA"/>
+    <!-- Neck -->
+    <path d="M958 163 L956 174 L968 176 L970 162"
+          fill="#D8DDE5"/>
+    <!-- Shirt -->
+    <path d="M946 172 Q959 166 973 175
+             L984 204 L947 212 L937 190 Z"
+          fill="#E5E8ED"/>
+    <!-- Back arm -->
+    <path d="M973 180 L988 193 L977 207"
+          stroke="#C8CED8" stroke-width="10"/>
+    <!-- Trousers -->
+    <path d="M948 207 L983 202 L1001 230
+             L980 250 L957 230 L941 251 L919 246 Z"
+          fill="#8993A3"/>
+    <!-- Lower legs -->
+    <path d="M941 245 L961 254 L946 274
+             L923 277 L916 272 L931 264 Z"
+          fill="#ADB5C1"/>
+    <path d="M980 245 L997 249 L1000 270
+             L980 277 L972 272 L986 262 Z"
+          fill="#A3ACB9"/>
+    <!-- Shoes -->
+    <path d="M923 271 L947 270 Q953 270 956 277
+             L925 281 Q916 280 918 276 Z"
+          fill="#F9FAFB" stroke="#D9DEE6" stroke-width="1.5"/>
+    <path d="M979 271 L999 267 Q1007 268 1009 275
+             L983 280 Q975 278 979 271 Z"
+          fill="#F9FAFB" stroke="#D9DEE6" stroke-width="1.5"/>
+    <!-- Phone -->
+    <g transform="rotate(-16 946 187)">
+      <rect x="940" y="177" width="12" height="21"
+            rx="2" fill="#7E8999"/>
+      <rect x="942" y="180" width="8" height="14"
+            rx="1" fill="#DDE2E9"/>
+    </g>
+    <!-- Hand -->
+    <path d="M948 188 L942 185"
+          stroke="#D8DDE5" stroke-width="5"/>
+  </g>
+
+  <!-- Decorative plant -->
+  <g stroke="#D1D7E0" stroke-width="2"
+     stroke-linejoin="round">
+    <path d="M1058 280 V222"/>
+    <path d="M1058 252 Q1028 248 1028 226
+             Q1051 227 1058 252 Z"
+          fill="#E8ECF1"/>
+    <path d="M1058 241 Q1060 212 1082 205
+             Q1082 230 1058 241 Z"
+          fill="#E3E7ED"/>
+    <path d="M1058 268 Q1034 267 1031 249
+             Q1051 249 1058 268 Z"
+          fill="#EDF0F4"/>
+    <path d="M1058 261 Q1082 257 1088 237
+             Q1066 240 1058 261 Z"
+          fill="#E7EBF0"/>
+    <path d="M1038 280 H1078 L1073 298 H1043 Z"
+          fill="#E1E5EB"/>
+    <path d="M1043 286 H1073"
+          stroke="#D1D7E0"/>
+  </g>
+
+  <!-- Soft bottom fade -->
+  <path d="M0 300 Q600 325 1200 300 V360 H0 Z"
+        fill="#FFFFFF" opacity=".8"/>
+
+</svg>

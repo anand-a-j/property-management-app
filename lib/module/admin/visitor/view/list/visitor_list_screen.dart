@@ -54,7 +54,8 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Visitors',
-        leadingOnTap: () => Navigator.pop(context),
+        leadingOnTap: () =>
+            widget.isFromResident ? null : Navigator.pop(context),
       ),
       body: BlocBuilder<VisitorBloc, VisitorState>(
         builder: (context, state) {
@@ -124,26 +125,33 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
             );
           }
 
-          return const SizedBox.shrink();
+          return widget.isFromResident
+              ? const EmptyStateView(message: 'No visitors found')
+              : const SizedBox.shrink();
         },
       ),
-      floatingActionButton: FloatingAddButton(
-        title: 'Add Visitor',
-        onTap: () async {
-          // context.push(RouterPath.addVisitor);
+      floatingActionButton: widget.isFromResident
+          ? null
+          : FloatingAddButton(
+              title: 'Add Visitor',
+              onTap: () async {
+                // context.push(RouterPath.addVisitor);
 
-          final result = await context.push<bool>('/add-visitor');
+                final result = await context.push<bool>('/add-visitor');
 
-          if (!mounted) return;
+                if (!mounted) return;
 
-          if (result == true) {
-            // ignore: use_build_context_synchronously
-            context.read<VisitorBloc>().add(
-              GetVisitorsEvent(orgId: widget.orgId, unitId: widget.unitId),
-            );
-          }
-        },
-      ),
+                if (result == true) {
+                  // ignore: use_build_context_synchronously
+                  context.read<VisitorBloc>().add(
+                    GetVisitorsEvent(
+                      orgId: widget.orgId,
+                      unitId: widget.unitId,
+                    ),
+                  );
+                }
+              },
+            ),
     );
   }
 }

@@ -6,10 +6,12 @@ class LeaseDetailsArgs {
   final Lease lease;
   final Unit unit;
   final Community community;
+  final bool isFromResident;
 
   const LeaseDetailsArgs({
     required this.lease,
     required this.unit,
     required this.community,
+    this.isFromResident = false,
   });
 }

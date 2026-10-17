@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:naseem/core/enum/lease_status.dart';
+import 'package:naseem/module/resident/home/model/resident_lease_details.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/utils/string_utils.dart';
+import '../../../../../core/widgets/status_tag.dart';
 
 class ResidentDashCard extends StatelessWidget {
-  const ResidentDashCard({super.key});
+  const ResidentDashCard({super.key, this.onTap, required this.leaseDetails});
+
+  final ResidentLeaseDetails leaseDetails;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    // Dummy data - replace with actual model data later.
-    const unitName = 'Unit A-204';
-    const communityName = 'Green Valley Residency';
-    const startDate = '01 Jan 2026';
-    const endDate = '31 Dec 2026';
-    const annualRent = 360000.0;
-    const paymentFrequency = 'Monthly';
-    const leaseNumber = '#LES-034';
+    final lease = leaseDetails;
 
     return Container(
       margin: const EdgeInsets.all(AppConsts.pSide),
@@ -34,47 +33,59 @@ class ResidentDashCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Unit & Community Details
+          // Unit and community details
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: context.secondary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(AppConsts.rSmall),
-                ),
-                child: Icon(
-                  Icons.business_outlined,
-                  color: context.secondary.withValues(alpha: 0.6),
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: AppConsts.pMedium),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      unitName,
-                      style: context.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: context.secondary.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(AppConsts.rSmall),
+                      ),
+                      child: Icon(
+                        Icons.business_outlined,
+                        color: context.secondary.withValues(alpha: 0.6),
+                        size: 28,
                       ),
                     ),
-                 
-                   
-                    const SizedBox(height: 2),
-                    Text(
-                      communityName,
-                      style: context.bodySmall?.copyWith(
-                        color: context.secondary.withValues(alpha: 0.5),
+                    const SizedBox(width: AppConsts.pMedium),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            lease.unitName,
+                            style: context.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            lease.communityName,
+                            style: context.bodySmall?.copyWith(
+                              color: context.secondary.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
+              StatusTag(
+                status: lease.leaseStatus.label,
+                color: lease.leaseStatus.color,
+              ),
             ],
           ),
+
+          const SizedBox(height: AppConsts.pMedium),
 
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppConsts.pMedium),
@@ -84,20 +95,20 @@ class ResidentDashCard extends StatelessWidget {
             ),
           ),
 
-          // Lease Dates
+          // Lease dates
           Row(
             children: [
               Expanded(
                 child: _buildDateColumn(
                   context,
-                  date: startDate,
+                  date: StrHelper.formatDate(lease.startDate),
                   label: 'Start Date',
                 ),
               ),
               Expanded(
                 child: _buildDateColumn(
                   context,
-                  date: endDate,
+                  date: StrHelper.formatDate(lease.endDate),
                   label: 'End Date',
                 ),
               ),
@@ -109,29 +120,45 @@ class ResidentDashCard extends StatelessWidget {
             color: context.secondary.withValues(alpha: 0.1),
           ),
 
-          // Lease Information
+          // Lease information
           _buildRow(
             context,
             label: 'Annual Rent',
-            value: StrHelper.formatCurrency(annualRent),
+            value: StrHelper.formatCurrency(lease.annualRent),
           ),
+
           Divider(
             height: AppConsts.pLarge,
             color: context.secondary.withValues(alpha: 0.1),
           ),
+
           _buildRow(
             context,
             label: 'Payment Frequency',
-            value: paymentFrequency,
+            value: lease.paymentFrequency,
           ),
+
           Divider(
             height: AppConsts.pLarge,
             color: context.secondary.withValues(alpha: 0.1),
           ),
-          _buildRow(context, label: 'Lease Number', value: leaseNumber),
+
+          _buildRow(
+            context,
+            label: 'Number of Cheques',
+            value: lease.numberOfCheques.toString(),
+          ),
+
+          Divider(
+            height: AppConsts.pLarge,
+            color: context.secondary.withValues(alpha: 0.1),
+          ),
+
+          _buildRow(context, label: 'Lease Number', value: lease.leaseNumber),
 
           const SizedBox(height: AppConsts.pMedium),
 
+          // View details
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -141,9 +168,7 @@ class ResidentDashCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppConsts.rSmall),
             ),
             child: InkWell(
-              onTap: () {
-                // TODO: Navigate to lease details.
-              },
+              onTap: onTap,
               borderRadius: BorderRadius.circular(AppConsts.rSmall),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),

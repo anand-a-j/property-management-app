@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -417,23 +418,10 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
       labelText: 'Number of Cheques',
       hintText: 'Enter number of cheques',
       validator: (value) {
-        final requiredError = InputVaildator.required(value);
-
-        if (requiredError != null) {
-          return requiredError;
-        }
-
-        final number = int.tryParse(value!.trim());
-
-        if (number == null) {
-          return 'Enter a valid number';
-        }
-
-        if (number <= 0) {
-          return 'Number of cheques must be greater than 0';
-        }
-
-        return null;
+        return InputVaildator.numberOfCheques(
+          value: value,
+          paymentFrequency: _paymentFrequency,
+        );
       },
     );
   }
@@ -448,17 +436,72 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
     );
   }
 
-  Future<void> _selectStartDate() async {
-    final selectedDate = await showDatePicker(
+  Future<DateTime?> _showCupertinoDatePicker({
+    required DateTime initialDate,
+    required DateTime firstDate,
+    required DateTime lastDate,
+  }) async {
+    DateTime selectedDate = initialDate.isBefore(firstDate)
+        ? firstDate
+        : initialDate.isAfter(lastDate)
+        ? lastDate
+        : initialDate;
+
+    return showCupertinoModalPopup<DateTime>(
       context: context,
+      builder: (context) {
+        return Container(
+          height: 320,
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => Navigator.pop(context, selectedDate),
+                        child: const Text('Done'),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: selectedDate,
+                    minimumDate: firstDate,
+                    maximumDate: lastDate,
+                    onDateTimeChanged: (date) {
+                      selectedDate = date;
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _selectStartDate() async {
+    final selectedDate = await _showCupertinoDatePicker(
       initialDate: _startDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
 
-    if (selectedDate == null) {
-      return;
-    }
+    if (selectedDate == null || !mounted) return;
 
     setState(() {
       _startDate = selectedDate;
@@ -476,16 +519,13 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
     final firstDate =
         _startDate?.add(const Duration(days: 1)) ?? DateTime.now();
 
-    final selectedDate = await showDatePicker(
-      context: context,
+    final selectedDate = await _showCupertinoDatePicker(
       initialDate: _endDate ?? firstDate,
       firstDate: firstDate,
       lastDate: DateTime(2100),
     );
 
-    if (selectedDate == null) {
-      return;
-    }
+    if (selectedDate == null || !mounted) return;
 
     setState(() {
       _endDate = selectedDate;

@@ -39,4 +39,5 @@ class RouterPath {
 
   // Resident
   static const String residentHome = "/resident-home";
+  static const String residentLeaseDetails = "/resident-lease-details";
 }

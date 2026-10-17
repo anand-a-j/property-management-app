@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../enum/payment_frequency.dart';
+
 class InputVaildator {
   // GENERIC REQUIRED
   static String? required(String? value, {String fieldName = "Field"}) {
@@ -84,6 +86,45 @@ class InputVaildator {
 
     if (!RegExp(r'^784\d{12}$').hasMatch(digitsOnly)) {
       return 'Enter a valid Emirates ID (784-XXXX-XXXXXXX-X)';
+    }
+
+    return null;
+  }
+
+  static String? numberOfCheques({
+    required String? value,
+    required PaymentFrequency? paymentFrequency,
+  }) {
+    final requiredError = required(value);
+
+    if (requiredError != null) {
+      return requiredError;
+    }
+
+    final number = int.tryParse(value!.trim());
+
+    if (number == null) {
+      return 'Enter a valid whole number';
+    }
+
+    if (number <= 0) {
+      return 'Number of cheques must be greater than 0';
+    }
+
+    if (paymentFrequency == null) {
+      return 'Please select a payment frequency';
+    }
+
+    final expectedCheques = switch (paymentFrequency) {
+      PaymentFrequency.monthly => 12,
+      PaymentFrequency.quarterly => 4,
+      PaymentFrequency.semiAnnual => 2,
+      PaymentFrequency.annual => 1,
+    };
+
+    if (number != expectedCheques) {
+      return '${paymentFrequency.label} payments require '
+          '$expectedCheques cheque(s) per year';
     }
 
     return null;

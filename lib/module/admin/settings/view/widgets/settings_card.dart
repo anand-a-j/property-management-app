@@ -20,6 +20,7 @@ class SettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: context.onPrimary,
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(color: context.surface, width: 1.0),
       ),

@@ -10,6 +10,7 @@ import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/unit_details_screen.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
 import 'package:naseem/module/staff/view/staff_list/staff_list_screen.dart';
+import 'package:naseem/routes/args/resident_lease_details_args.dart';
 
 import 'package:naseem/routes/router_path.dart';
 
@@ -35,6 +36,7 @@ import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
 import '../module/resident/home/view/resident_home_screen.dart';
+import '../module/resident/lease_details/resident_lease_details_screen.dart';
 import 'args/add_lease_args.dart';
 import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
@@ -248,6 +250,7 @@ final GoRouter router = GoRouter(
             lease: args.lease,
             unit: args.unit,
             community: args.community,
+            isFromResident: args.isFromResident,
           ),
         );
       },
@@ -335,13 +338,27 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-     GoRoute(
+
+    // Resident
+    GoRoute(
       path: RouterPath.residentHome,
       name: 'resident-home-screen',
       pageBuilder: (context, state) {
         return SlideTransitionPage(
           beginOffset: Offset(1, 0),
           page: ResidentHomeScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterPath.residentLeaseDetails,
+      name: 'resident-lease-details-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as ResidentLeaseDetailsArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: ResidentLeaseDetailsScreen(leaseDetails: args.leaseDetails),
         );
       },
     ),

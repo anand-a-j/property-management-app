@@ -18,11 +18,13 @@ class LeaseDetailsScreen extends StatefulWidget {
     required this.lease,
     required this.unit,
     required this.community,
+    required this.isFromResident,
   });
 
   final Lease lease;
   final Unit unit;
   final Community community;
+  final bool isFromResident;
 
   @override
   State<LeaseDetailsScreen> createState() => _LeaseDetailsScreenState();
@@ -84,6 +86,7 @@ class _LeaseDetailsScreenState extends State<LeaseDetailsScreen>
                 LeaseHistoryStepper(
                   lease: widget.lease,
                   currentUserId: authentication.profile?.id ?? '',
+                  isFromResident: false,
                 ),
                 LeasePaymentsTab(
                   orgId: authentication.profile?.orgId ?? '',

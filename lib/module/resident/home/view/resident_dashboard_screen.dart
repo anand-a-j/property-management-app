@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/resident/home/view/widgets/resident_dash_card.dart';
 import 'package:naseem/module/resident/home/view/widgets/resident_dash_header.dart';
+import 'package:naseem/routes/args/resident_lease_details_args.dart';
+import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/bloc/cubit/app_cubit.dart';
 import '../controller/bloc/resident_details_bloc.dart';
@@ -39,22 +42,32 @@ class _ResidentDashboardScreenState extends State<ResidentDashboardScreen> {
           ResidentDashHeader(),
           BlocBuilder<ResidentDetailsBloc, ResidentDetailsState>(
             builder: (context, state) {
+              if (state is ResidentDetailsLoading) {
+                return SizedBox(
+                  height: 250,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
               if (state is ResidentDetailsSuccess) {
-                if (state is ResidentDetailsLoading) {
-                  return SizedBox(
-                    height: 300,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
                 if (state.details.isNotEmpty) {
-                  final lease = state.details.first;
+                  final leaseDetails = state.details.first;
                   context.read<AppCubit>().setResidentLeaseContext(
-                    leaseId: lease.leaseId,
-                    unitId: lease.unitId,
-                    communityId: lease.communityId,
-                    leaseStartDate: lease.startDate,
+                    leaseId: leaseDetails.leaseId,
+                    unitId: leaseDetails.unitId,
+                    communityId: leaseDetails.communityId,
+                    leaseStartDate: leaseDetails.startDate,
                   );
-                  return ResidentDashCard();
+                  return ResidentDashCard(
+                    leaseDetails: leaseDetails,
+                    onTap: () {
+                      context.push(
+                        RouterPath.residentLeaseDetails,
+                        extra: ResidentLeaseDetailsArgs(
+                          leaseDetails: leaseDetails,
+                        ),
+                      );
+                    },
+                  );
                 }
                 return EmptyStateView(
                   message:
@@ -62,7 +75,7 @@ class _ResidentDashboardScreenState extends State<ResidentDashboardScreen> {
                   isHalf: true,
                 );
               }
-      
+
               if (state is ResidentDetailsFailed) {
                 return ErrorStateView(
                   retryOnTap: () {

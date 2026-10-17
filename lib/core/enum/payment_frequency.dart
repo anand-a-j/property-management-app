@@ -31,3 +31,25 @@ extension PaymentFrequencyLabel on PaymentFrequency {
     }
   }
 }
+
+extension PaymentFrequencyParser on PaymentFrequency {
+  static PaymentFrequency fromString(String? value) {
+    switch (value?.trim().toLowerCase()) {
+      case 'monthly':
+        return PaymentFrequency.monthly;
+
+      case 'quarterly':
+        return PaymentFrequency.quarterly;
+
+      case 'semi_annual':
+      case 'semi annual':
+        return PaymentFrequency.semiAnnual;
+
+      case 'annual':
+        return PaymentFrequency.annual;
+
+      default:
+        throw ArgumentError('Invalid payment frequency: $value');
+    }
+  }
+}

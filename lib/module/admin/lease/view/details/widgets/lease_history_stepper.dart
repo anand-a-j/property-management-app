@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:naseem/core/core.dart';
+import 'package:naseem/core/utils/snackbar_manager.dart';
 import 'package:naseem/module/admin/lease/model/lease.dart';
 
 import '../../../../../../core/enum/lease_movement_status.dart';
@@ -16,11 +17,13 @@ class LeaseHistoryStepper extends StatefulWidget {
   const LeaseHistoryStepper({
     super.key,
     required this.lease,
-    required this.currentUserId, // the logged-in manager
+    required this.currentUserId,
+    required this.isFromResident,
   });
 
   final Lease lease;
   final String currentUserId;
+  final bool isFromResident;
 
   @override
   State<LeaseHistoryStepper> createState() => _LeaseHistoryStepperState();
@@ -38,28 +41,42 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
     _fetch();
   }
 
-  void _fetch() => _bloc.add(FetchMovementsEvent(leaseId: widget.lease.id));
+  void _fetch() {
+    _bloc.add(FetchMovementsEvent(leaseId: widget.lease.id));
+  }
 
   // ---------------------------------------------------------------- actions
 
-  void _request(String type) => _bloc.add(
-    CreateMovementEvent(
-      leaseId: widget.lease.id,
-      movementType: type,
-      requestedBy: widget.currentUserId,
-    ),
-  );
+  // Residents can request move-in / move-out.
+  void _request(String type) {
+    _bloc.add(
+      CreateMovementEvent(
+        leaseId: widget.lease.id,
+        movementType: type,
+        requestedBy: widget.currentUserId,
+      ),
+    );
+  }
 
-  void _managerApprove(LeaseMovement m) => _bloc.add(
-    ApproveMovementByManagerEvent(
-      movementId: m.id,
-      managerId: widget.currentUserId,
-    ),
-  );
+  // Manager actions.
+  void _managerApprove(LeaseMovement m) {
+    if (widget.isFromResident) return;
+
+    _bloc.add(
+      ApproveMovementByManagerEvent(
+        movementId: m.id,
+        managerId: widget.currentUserId,
+      ),
+    );
+  }
 
   Future<void> _managerReject(LeaseMovement m) async {
+    if (widget.isFromResident) return;
+
     final reason = await _askReason('Reject request');
+
     if (reason == null || !mounted) return;
+
     _bloc.add(
       RejectMovementByManagerEvent(
         movementId: m.id,
@@ -69,17 +86,25 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
     );
   }
 
-  // Manager acting on behalf of security
-  void _securityAccept(LeaseMovement m) => _bloc.add(
-    CompleteMovementBySecurityEvent(
-      movementId: m.id,
-      securityId: widget.currentUserId,
-    ),
-  );
+  // Manager acting on behalf of security.
+  void _securityAccept(LeaseMovement m) {
+    if (widget.isFromResident) return;
+
+    _bloc.add(
+      CompleteMovementBySecurityEvent(
+        movementId: m.id,
+        securityId: widget.currentUserId,
+      ),
+    );
+  }
 
   Future<void> _securityReject(LeaseMovement m) async {
+    if (widget.isFromResident) return;
+
     final reason = await _askReason('Reject check-in/out');
+
     if (reason == null || !mounted) return;
+
     _bloc.add(
       RejectMovementBySecurityEvent(
         movementId: m.id,
@@ -89,21 +114,19 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
     );
   }
 
-  Future<String?> _askReason(String title) => showDialog<String>(
-    context: context,
-    builder: (_) => _ReasonDialog(title: title),
-  );
+  Future<String?> _askReason(String title) {
+    return showDialog<String>(
+      context: context,
+      builder: (_) => _ReasonDialog(title: title),
+    );
+  }
 
   void _snack(String message, {bool error = false}) {
-    final cs = Theme.of(context).colorScheme;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: error ? cs.error : null,
-        ),
-      );
+    if (error) {
+      Snack.error(message);
+    } else {
+      Snack.success(message);
+    }
   }
 
   // ------------------------------------------------------------------ build
@@ -118,7 +141,7 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
             _loaded = true;
           });
         } else if (state is LeaseMovementSuccess) {
-          // create / approve / reject / complete -> toast, then refresh timeline
+          // Create / approve / reject / complete.
           _snack(state.message ?? 'Done');
           _fetch();
         } else if (state is LeaseMovementFailed && _loaded) {
@@ -132,6 +155,7 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
           if (state is LeaseMovementFailed) {
             return _ErrorView(message: state.message, onRetry: _fetch);
           }
+
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -147,29 +171,37 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
                   height: 4,
                   child: busy ? const LinearProgressIndicator() : null,
                 ),
+
                 AbsorbPointer(
-                  absorbing: busy, // blocks double taps while a call is running
+                  absorbing: busy,
                   child: Column(children: _buildTiles()),
                 ),
-                if (nextRequest != null)
+
+                // RESIDENT ACCESS RULE:
+                // Residents can request move-in / move-out.
+                // This button is independent of approval actions.
+                if (widget.isFromResident && nextRequest != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: CustomButton(
                       label: nextRequest == 'move_in'
                           ? 'Request Move-in'
                           : 'Request Move-out',
-
                       onPressed: busy ? () {} : () => _request(nextRequest),
                     ),
+                  ),
 
-                    //  FilledButton(
-                    //   onPressed: busy ? null : () => _request(nextRequest),
-                    //   child: Text(
-                    //     nextRequest == 'move_in'
-                    //         ? 'Request Move-in'
-                    //         : 'Request Move-out',
-                    //   ),
-                    // ),
+                // Non-resident views retain the existing
+                // request button behavior.
+                if (!widget.isFromResident && nextRequest != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: CustomButton(
+                      label: nextRequest == 'move_in'
+                          ? 'Request Move-in'
+                          : 'Request Move-out',
+                      onPressed: busy ? () {} : () => _request(nextRequest),
+                    ),
                   ),
               ],
             ),
@@ -186,6 +218,7 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
 
   List<Widget> _buildTiles() {
     final lease = widget.lease;
+
     final sorted = [..._movements]
       ..sort((a, b) => a.requestedAt.compareTo(b.requestedAt));
 
@@ -197,7 +230,9 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
         date: _fmt(lease.createdAt),
         status: LeaseStepperStatus.completed,
       ),
-      for (final m in sorted) ..._movementTiles(m),
+
+      for (final movement in sorted) ..._movementTiles(movement),
+
       LeaseHistoryStepperTile(
         title: 'Lease Expired / Terminated',
         date: ended ? _fmt(lease.endDate) : '-',
@@ -211,26 +246,36 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
 
   // ------------------------------------------------------------ flow rules
 
-  String _fmt(DateTime? d) =>
-      d == null ? '-' : DateFormat('d MMM yyyy, h:mm a').format(d.toLocal());
+  String _fmt(DateTime? date) {
+    return date == null
+        ? '-'
+        : DateFormat('d MMM yyyy, h:mm a').format(date.toLocal());
+  }
 
   LeaseMovement? _latest(bool moveIn) {
-    final list = _movements.where((m) => m.isMoveIn == moveIn).toList()
-      ..sort((a, b) => b.requestedAt.compareTo(a.requestedAt));
+    final list =
+        _movements.where((movement) => movement.isMoveIn == moveIn).toList()
+          ..sort((a, b) => b.requestedAt.compareTo(a.requestedAt));
+
     return list.isEmpty ? null : list.first;
   }
 
-  /// Which request can be created next (null = none).
+  /// Determines which request can be created next.
+  /// Returns null when no new request is currently allowed.
   String? _nextRequestType() {
     final moveIn = _latest(true);
     final moveOut = _latest(false);
 
-    if (moveIn == null || moveIn.isFailed) return 'move_in';
+    if (moveIn == null || moveIn.isFailed) {
+      return 'move_in';
+    }
+
     if (moveIn.status == LeaseMovementStatus.completed &&
         (moveOut == null || moveOut.isFailed)) {
       return 'move_out';
     }
-    return null; // something is still in progress
+
+    return null;
   }
 
   List<Widget> _movementTiles(LeaseMovement m) {
@@ -238,15 +283,28 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
     final check = m.isMoveIn ? 'Check-in' : 'Check-out';
 
     final s = m.status;
+
     final managerRejected = s == LeaseMovementStatus.managerRejected;
+
     final securityRejected = s == LeaseMovementStatus.securityRejected;
+
     final cancelled = s == LeaseMovementStatus.cancelled;
+
     final pendingManager = s == LeaseMovementStatus.pendingManager;
+
     final pendingSecurity = s == LeaseMovementStatus.pendingSecurity;
+
     final done = s == LeaseMovementStatus.completed;
 
+    // RESIDENT ACCESS RULE:
+    // A resident may view the workflow but cannot perform
+    // manager or security approval actions.
+    final canReviewAsManager = !widget.isFromResident && pendingManager;
+
+    final canReviewAsSecurity = !widget.isFromResident && pendingSecurity;
+
     final tiles = <Widget>[
-      // 1. Request submitted (requestedBy is only an id, so no name subtitle)
+      // 1. Request submitted.
       LeaseHistoryStepperTile(
         title: '$label Request Submitted',
         date: _fmt(m.requestedAt),
@@ -254,7 +312,7 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
       ),
     ];
 
-    // Cancelled before or during review
+    // Cancelled before or during review.
     if (cancelled) {
       tiles.add(
         LeaseHistoryStepperTile(
@@ -263,10 +321,13 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
           status: LeaseStepperStatus.rejected,
         ),
       );
+
       return tiles;
     }
 
-    // 2. Manager review
+    // 2. Manager review.
+    // Residents can see the manager's decision, but cannot
+    // approve or reject the request.
     tiles.add(
       LeaseHistoryStepperTile(
         title: managerRejected
@@ -282,14 +343,19 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
             : pendingManager
             ? LeaseStepperStatus.active
             : LeaseStepperStatus.completed,
-        showActions: pendingManager,
-        onAccept: pendingManager ? () => _managerApprove(m) : null,
-        onReject: pendingManager ? () => _managerReject(m) : null,
+
+        // Only non-resident views receive these actions.
+        showActions: canReviewAsManager,
+        onAccept: canReviewAsManager ? () => _managerApprove(m) : null,
+        onReject: canReviewAsManager ? () => _managerReject(m) : null,
       ),
     );
+
     if (managerRejected) return tiles;
 
-    // 3. Security check (manager acts on behalf of security)
+    // 3. Security check.
+    // Residents can see security status and rejection reasons,
+    // but cannot accept or reject check-in / check-out.
     tiles.add(
       LeaseHistoryStepperTile(
         title: securityRejected
@@ -307,14 +373,17 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
             : pendingSecurity
             ? LeaseStepperStatus.active
             : LeaseStepperStatus.pending,
-        showActions: pendingSecurity,
-        onAccept: pendingSecurity ? () => _securityAccept(m) : null,
-        onReject: pendingSecurity ? () => _securityReject(m) : null,
+
+        // Only non-resident views receive these actions.
+        showActions: canReviewAsSecurity,
+        onAccept: canReviewAsSecurity ? () => _securityAccept(m) : null,
+        onReject: canReviewAsSecurity ? () => _securityReject(m) : null,
       ),
     );
+
     if (securityRejected) return tiles;
 
-    // 4. Completed
+    // 4. Completed.
     tiles.add(
       LeaseHistoryStepperTile(
         title: '$label Completed',
@@ -324,6 +393,7 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
             : LeaseStepperStatus.pending,
       ),
     );
+
     return tiles;
   }
 }
@@ -332,6 +402,7 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
 
 class _ReasonDialog extends StatefulWidget {
   const _ReasonDialog({required this.title});
+
   final String title;
 
   @override
@@ -359,8 +430,9 @@ class _ReasonDialogState extends State<_ReasonDialog> {
           autofocus: true,
           maxLines: 3,
           decoration: const InputDecoration(labelText: 'Reason'),
-          validator: (v) =>
-              (v == null || v.trim().isEmpty) ? 'Reason is required' : null,
+          validator: (value) => (value == null || value.trim().isEmpty)
+              ? 'Reason is required'
+              : null,
         ),
       ),
       actions: [
@@ -383,18 +455,21 @@ class _ReasonDialogState extends State<_ReasonDialog> {
 
 class _ErrorView extends StatelessWidget {
   const _ErrorView({required this.message, required this.onRetry});
+
   final String message;
   final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(message, textAlign: TextAlign.center),
-        const SizedBox(height: 12),
-        OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 12),
+          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
+        ],
+      ),
+    );
+  }
 }

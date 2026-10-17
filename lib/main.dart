@@ -22,6 +22,7 @@ import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
 import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
+import 'package:naseem/module/resident/home/controller/repo/resident_details_repo.dart';
 import 'package:naseem/module/staff/controller/bloc/staff_bloc.dart';
 import 'package:naseem/module/staff/controller/repo/staff_repo.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,7 @@ import 'module/admin/maintainence/controller/bloc/maintenance_bloc.dart';
 import 'module/admin/maintainence/controller/repo/maintenance_repo.dart';
 import 'module/admin/resident/controller/bloc/resident_bloc.dart';
 import 'module/admin/resident/controller/repo/resident_repo.dart';
+import 'module/resident/home/controller/bloc/resident_details_bloc.dart';
 import 'routes/routes.dart';
 
 void main() async {
@@ -90,7 +92,9 @@ void main() async {
           create: (context) =>
               DashboardStatsCubit(dashboardStatsRepo: DashboardStatsRepo()),
         ),
-        
+        BlocProvider<ResidentDetailsBloc>(
+          create: (context) => ResidentDetailsBloc(repo: ResidentDetailsRepo()),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -105,14 +109,11 @@ class MyApp extends StatelessWidget {
     return ValueListenableBuilder<Box>(
       valueListenable: settings.listenable(keys: [themeModeKey]),
       builder: (context, value, child) {
-
-        
         // TODO: Light theme after version 1 release
         // final ThemeMode themeMode = ThemeMode.values[value.get(
         //   themeModeKey,
         //   defaultValue: 0,
         // )];
-
 
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,

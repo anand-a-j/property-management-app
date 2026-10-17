@@ -29,7 +29,7 @@ class EmptyStateView extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.5),
+                  color: context.primary.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, size: 26, color: context.primary),
@@ -39,7 +39,7 @@ class EmptyStateView extends StatelessWidget {
                 message,
                 textAlign: TextAlign.center,
                 style: context.bodyMedium?.copyWith(
-                  color: context.secondary,
+                  color: context.secondary.withValues(alpha: 0.75),
                   fontWeight: FontWeight.w500,
                 ),
               ),

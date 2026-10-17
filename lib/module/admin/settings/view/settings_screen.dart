@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/bloc/cubit/app_cubit.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
@@ -21,119 +22,128 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'Settings'),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            bottom: -150,
+            child: SvgPicture.asset(Assets.settingsBg, fit: BoxFit.cover),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 15.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: context.surface,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  const SizedBox(width: 15),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: context.surface,
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
 
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          authentication.profile?.role.name != null
-                              ? '${authentication.profile?.role.name[0].toUpperCase()}${authentication.profile?.role.name.substring(1)}'
-                              : '',
-                          style: context.titleMedium?.copyWith(
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              authentication.profile?.name ?? "",
+                              style: context.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              isFromResident ? 'Resident' : 'Manager',
+                              style: context.bodyMedium?.copyWith(
+                                color: context.secondaryContainer,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          'Edit',
+                          style: context.titleSmall?.copyWith(
+                            color: context.primary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        Text(
-                          isFromResident ? 'Resident' : 'Manager',
-                          style: context.bodyMedium?.copyWith(
-                            color: context.secondaryContainer,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      'Edit',
-                      style: context.titleSmall?.copyWith(
-                        color: context.primary,
+                  const SizedBox(height: 25),
+                  if (!isFromResident) ...[
+                    Text(
+                      'Management',
+                      style: context.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 15),
+
+                    SettingsCard(
+                      icon: Icons.badge_outlined,
+                      title: 'Staffs',
+                      onTap: () {
+                        context.push(RouterPath.staffList);
+                      },
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    SettingsCard(
+                      icon: Icons.manage_accounts_outlined,
+                      title: 'Visors',
+                      onTap: () {
+                        context.push(
+                          RouterPath.visitorList,
+                          extra: VisitorListArgs(
+                            orgId: authentication.profile?.orgId ?? "",
+                          ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    SettingsCard(
+                      icon: Icons.assignment_turned_in_outlined,
+                      title: 'Manage Lease',
+                      showTrailingIcon: true,
+                      onTap: () {
+                        context.push(RouterPath.leaseList);
+                      },
+                    ),
+                    const SizedBox(height: 10),
+
+                    SettingsCard(
+                      icon: Icons.handyman_outlined,
+                      title: 'Maintenance',
+                      showTrailingIcon: true,
+                      onTap: () {
+                        context.push(RouterPath.maintenanceList);
+                      },
+                    ),
+                  ],
+
+                  const Spacer(),
                 ],
               ),
-              const SizedBox(height: 25),
-              if (!isFromResident) ...[
-                Text(
-                  'Management',
-                  style: context.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                SettingsCard(
-                  icon: Icons.badge_outlined,
-                  title: 'Staffs',
-                  onTap: () {
-                    context.push(RouterPath.staffList);
-                  },
-                ),
-
-                const SizedBox(height: 10),
-
-                SettingsCard(
-                  icon: Icons.manage_accounts_outlined,
-                  title: 'Visors',
-                  onTap: () {
-                    context.push(
-                      RouterPath.visitorList,
-                      extra: VisitorListArgs(
-                        orgId: authentication.profile?.orgId ?? "",
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 10),
-
-                SettingsCard(
-                  icon: Icons.assignment_turned_in_outlined,
-                  title: 'Manage Lease',
-                  showTrailingIcon: true,
-                  onTap: () {
-                    context.push(RouterPath.leaseList);
-                  },
-                ),
-                const SizedBox(height: 10),
-
-                SettingsCard(
-                  icon: Icons.handyman_outlined,
-                  title: 'Maintenance',
-                  showTrailingIcon: true,
-                  onTap: () {
-                    context.push(RouterPath.maintenanceList);
-                  },
-                ),
-              ],
-
-              const Spacer(),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
       bottomNavigationBar: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {

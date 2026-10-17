@@ -63,7 +63,8 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Payments',
-        leadingOnTap: () => Navigator.pop(context),
+        leadingOnTap: () =>
+            widget.isFromResident ? null : Navigator.pop(context),
       ),
       body: Column(
         children: [
@@ -157,7 +158,9 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                   );
                 }
 
-                return const SizedBox.shrink();
+                return widget.isFromResident
+                    ? const EmptyStateView(message: 'No payments found')
+                    : const SizedBox.shrink();
               },
             ),
           ),

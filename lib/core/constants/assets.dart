@@ -13,8 +13,10 @@ class Assets {
   static const String home = "$_newBaseUrl/home.svg";
   static const String payment = "$_newBaseUrl/payment.svg";
   static const String property = "$_newBaseUrl/property.svg";
-    static const String resident = "$_newBaseUrl/resident.svg";
-    static const String more = "$_newBaseUrl/more.svg";
+  static const String resident = "$_newBaseUrl/resident.svg";
+  static const String more = "$_newBaseUrl/more.svg";
+
+  static const String settingsBg = "$_newBaseUrl/settings_bg.svg";
 
   // image
   static const String welcome = "$_imageBaseUrl/welcome.png";
