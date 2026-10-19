@@ -42,3 +42,13 @@ class LoadMoreVisitorsEvent extends VisitorEvent {
   @override
   List<Object?> get props => [orgId, unitId];
 }
+
+class UpdateVisitorStatusEvent extends VisitorEvent {
+  final String id;
+  final VisitorStatus status;
+
+  const UpdateVisitorStatusEvent({required this.id, required this.status});
+
+  @override
+  List<Object?> get props => [id, status];
+}

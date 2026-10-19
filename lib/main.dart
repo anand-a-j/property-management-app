@@ -23,6 +23,8 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
 import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
 import 'package:naseem/module/resident/home/controller/repo/resident_details_repo.dart';
+import 'package:naseem/module/staff/controller/security/bloc/security_lease_movement_bloc.dart';
+import 'package:naseem/module/staff/controller/security/repo/security_lease_movement_repo.dart';
 import 'package:naseem/module/staff/controller/stafff_bloc/staff_bloc.dart';
 import 'package:naseem/module/staff/controller/repo/staff_repo.dart';
 import 'package:provider/provider.dart';
@@ -95,9 +97,13 @@ void main() async {
         BlocProvider<ResidentDetailsBloc>(
           create: (context) => ResidentDetailsBloc(repo: ResidentDetailsRepo()),
         ),
+        BlocProvider<SecurityLeaseMovementBloc>(
+          create: (context) =>
+              SecurityLeaseMovementBloc(repo: SecurityLeaseMovementRepo()),
+        ),
       ],
       child: const MyApp(),
-    ),
+    ) , 
   );
 }
 

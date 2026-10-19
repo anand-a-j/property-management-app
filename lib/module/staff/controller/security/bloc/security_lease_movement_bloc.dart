@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../model/security_lease_movement.dart';
+import '../../../model/security_lease_movement.dart';
 import '../repo/security_lease_movement_repo.dart';
 
 part 'security_lease_movement_event.dart';
@@ -24,7 +24,7 @@ class SecurityLeaseMovementBloc
     emit(const SecurityLeaseMovementLoading());
 
     final response = await _repo.fetchSecurityLeaseMovements(
-      orgId: event.orgId.trim(),
+      orgId: event.orgId,
     );
 
     if (response.hasData) {

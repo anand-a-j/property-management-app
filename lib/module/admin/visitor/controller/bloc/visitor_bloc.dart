@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../../../core/enum/visitor_status.dart';
 import '../../model/create_visitor.dart';
 import '../../model/visitor.dart';
 import '../repo/visitor_repo.dart';
@@ -29,6 +32,7 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
     on<CreateVisitorEvent>(_onCreateVisitor);
     on<GetVisitorsEvent>(_onGetVisitors);
     on<LoadMoreVisitorsEvent>(_onLoadMoreVisitors);
+    on<UpdateVisitorStatusEvent>(_onUpdateVisitorStatus);
   }
 
   // CREATE VISITOR
@@ -156,5 +160,24 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
         isLoadingMore: false,
       ),
     );
+  }
+
+  Future<void> _onUpdateVisitorStatus(
+    UpdateVisitorStatusEvent event,
+    Emitter<VisitorState> emit,
+  ) async {
+    emit(VisitorStatusUpdating());
+
+    final response = await _visitorRepo.updateVisitorStatus(
+      id: event.id,
+      status: event.status,
+    );
+
+    if (response.error != null) {
+      emit(VisitorStatusUpdateFailed(message: response.error.toString()));
+      return;
+    }
+
+    emit(VisitorStatusUpdated());
   }
 }

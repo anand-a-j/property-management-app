@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/api/data_response.dart';
-import '../../../../core/utils/error_log.dart';
-import '../../model/security_lease_movement.dart';
+import '../../../../../core/api/data_response.dart';
+import '../../../../../core/utils/error_log.dart';
+import '../../../model/security_lease_movement.dart';
 
 class SecurityLeaseMovementRepo {
   final SupabaseClient _client = Supabase.instance.client;
@@ -15,7 +15,8 @@ class SecurityLeaseMovementRepo {
           .select()
           .eq('org_id', orgId)
           .eq('status', 'pending_security')
-          .order('requested_at', ascending: false);
+          .order('requested_at', ascending: false)
+          .limit(15);
 
       final movements = (data as List)
           .map((e) => SecurityLeaseMovement.fromJson(e as Map<String, dynamic>))

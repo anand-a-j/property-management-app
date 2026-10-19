@@ -37,6 +37,8 @@ import '../module/auth/splash/splash_screen.dart';
 import '../module/auth/welcome/welcome_screen.dart';
 import '../module/resident/home/view/resident_home_screen.dart';
 import '../module/resident/lease_details/resident_lease_details_screen.dart';
+import '../module/staff/view/maintaince_staff/view/staff_maintenance_dashboard_screen.dart';
+import '../module/staff/view/security/security_dashboard_screen.dart';
 import 'args/add_lease_args.dart';
 import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
@@ -359,6 +361,27 @@ final GoRouter router = GoRouter(
         return SlideTransitionPage(
           beginOffset: const Offset(1, 0),
           page: ResidentLeaseDetailsScreen(leaseDetails: args.leaseDetails),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouterPath.securityHome,
+      name: 'security-home-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: Offset(1, 0),
+          page: const SecurityDashboardScreen(),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.maintenanceStaffHome,
+      name: 'maintenance-staff-home-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: StaffMaintenanceDashboardScreen(),
         );
       },
     ),

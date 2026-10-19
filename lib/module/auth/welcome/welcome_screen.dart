@@ -81,7 +81,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         label: "Sign Up",
 
                         onPressed: () {
-                         context.push(
+                          context.push(
                             RouterPath.signUp,
                             extra: {'type': SignUpType.resident},
                           );

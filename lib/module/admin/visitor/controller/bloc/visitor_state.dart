@@ -42,3 +42,16 @@ class VisitorFailed extends VisitorState {
   @override
   List<Object?> get props => [message];
 }
+
+class VisitorStatusUpdating extends VisitorState {}
+
+class VisitorStatusUpdated extends VisitorState {}
+
+class VisitorStatusUpdateFailed extends VisitorState {
+  final String message;
+
+  const VisitorStatusUpdateFailed({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

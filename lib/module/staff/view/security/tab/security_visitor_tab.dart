@@ -7,6 +7,7 @@ import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
 import '../../../../admin/visitor/controller/bloc/visitor_bloc.dart';
 import '../../../../admin/visitor/view/list/widgets/visitor_card.dart';
+import '../sheet/visitor_status_update_sheet.dart';
 
 class SecurityVisitorTab extends StatefulWidget {
   const SecurityVisitorTab({super.key, required this.orgId});
@@ -120,8 +121,13 @@ class _SecurityVisitorTabState extends State<SecurityVisitorTab> {
                         return LoadMoreButton(onTap: _loadMore);
                       }
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
+                      return GestureDetector(
+                        onTap: () {
+                          showVisitorStatusUpdateSheet(
+                            context,
+                            visitors[index],
+                          );
+                        },
                         child: VisitorCard(visitor: visitors[index]),
                       );
                     },

@@ -4,12 +4,19 @@ import 'package:go_router/go_router.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/view/widgets/platform_logout_button.dart'
     show PlatformLogoutButton;
+import 'package:naseem/module/staff/view/security/tab/security_requests_tab.dart';
 import 'package:naseem/module/staff/view/security/tab/security_visitor_tab.dart';
 
 import '../../../../core/core.dart';
+import '../../../../core/utils/snackbar_manager.dart';
 import '../../../../routes/router_path.dart';
 import '../../../admin/visitor/controller/bloc/visitor_bloc.dart'
-    show GetVisitorsEvent, VisitorBloc;
+    show
+        GetVisitorsEvent,
+        VisitorBloc,
+        VisitorState,
+        VisitorStatusUpdateFailed,
+        VisitorStatusUpdated;
 import '../../../auth/core/controller/bloc/auth_bloc.dart';
 import '../../../auth/core/controller/bloc/auth_event.dart';
 import '../../../auth/core/controller/bloc/auth_state.dart';
@@ -26,12 +33,32 @@ class SecurityDashboardScreen extends StatefulWidget {
 class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLogoutSuccess) {
-          context.go(RouterPath.welcome);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthLogoutSuccess) {
+              context.go(RouterPath.welcome);
+            }
+          },
+        ),
+        BlocListener<VisitorBloc, VisitorState>(
+          listener: (context, state) {
+            if (state is VisitorStatusUpdated) {
+              Snack.success("Update status successfully!!!");
+
+              context.read<VisitorBloc>().add(
+                GetVisitorsEvent(orgId: authentication.profile?.orgId ?? ""),
+              );
+            } else if (state is VisitorStatusUpdateFailed) {
+              Snack.error(state.message);
+              context.read<VisitorBloc>().add(
+                GetVisitorsEvent(orgId: authentication.profile?.orgId ?? ""),
+              );
+            }
+          },
+        ),
+      ],
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -66,11 +93,15 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
               ColoredBox(
                 color: context.secondary,
                 child: Padding(
-                  padding: const EdgeInsets.all(AppConsts.pSide),
+                  padding: const EdgeInsets.only(
+                    left: AppConsts.pSide,
+                    right: AppConsts.pSide,
+                    bottom: 15,
+                  ),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Hello, ${authentication.profile?.name ?? ''}',
+                      'Hello, //${authentication.profile?.name ?? ''}',
                       style: context.bodyMedium?.copyWith(
                         color: context.secondaryContainer,
                       ),
@@ -78,6 +109,7 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
                   ),
                 ),
               ),
+
               const TabBar(
                 tabs: [
                   Tab(text: 'Visitors'),
@@ -92,7 +124,7 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
                     SecurityVisitorTab(
                       orgId: authentication.profile?.orgId ?? "",
                     ),
-                    Center(child: Text('Requests')),
+                    SecurityRequestsTab(),
                   ],
                 ),
               ),

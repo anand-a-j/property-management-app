@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
+import '../../../../../core/enum/visitor_status.dart';
 import '../../../../../core/utils/error_log.dart';
 import '../../model/create_visitor.dart';
 import '../../model/visitor.dart';
@@ -8,7 +9,7 @@ import '../../model/visitor.dart';
 class VisitorRepo {
   final SupabaseClient _client = Supabase.instance.client;
 
- // CREATE VISITOR
+  // CREATE VISITOR
   Future<DataResponse<void>> createVisitor({
     required CreateVisitor visitor,
   }) async {
@@ -48,6 +49,28 @@ class VisitorRepo {
       return DataResponse(data: visitors);
     } catch (e, stack) {
       return DataResponse(error: errorlog('VisitorRepo.getVisitors', e, stack));
+    }
+  }
+
+  // UPDATE VISITOR STATUS
+  Future<DataResponse<void>> updateVisitorStatus({
+    required String id,
+    required VisitorStatus status,
+  }) async {
+    try {
+      await _client
+          .from('visitor')
+          .update({
+            'status': status.name,
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', id);
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('VisitorRepo.updateVisitorStatus', e, stack),
+      );
     }
   }
 }
