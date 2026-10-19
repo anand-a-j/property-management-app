@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/enum/sign_up_type.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
-import 'package:naseem/module/staff/controller/bloc/staff_bloc.dart';
+import 'package:naseem/module/staff/controller/stafff_bloc/staff_bloc.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/enum/user_role.dart';

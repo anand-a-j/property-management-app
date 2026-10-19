@@ -23,7 +23,7 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
 import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
 import 'package:naseem/module/resident/home/controller/repo/resident_details_repo.dart';
-import 'package:naseem/module/staff/controller/bloc/staff_bloc.dart';
+import 'package:naseem/module/staff/controller/stafff_bloc/staff_bloc.dart';
 import 'package:naseem/module/staff/controller/repo/staff_repo.dart';
 import 'package:provider/provider.dart';
 

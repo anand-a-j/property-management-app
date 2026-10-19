@@ -8,7 +8,7 @@ import '../../../../core/widgets/empty_state_view.dart';
 import '../../../../core/widgets/error_state_view.dart';
 import '../../../../routes/router_path.dart';
 import '../../../auth/core/controller/service/auth_service.dart';
-import '../../controller/bloc/staff_bloc.dart';
+import '../../controller/stafff_bloc/staff_bloc.dart';
 import 'widgets/staff_card.dart';
 
 class StaffListScreen extends StatefulWidget {

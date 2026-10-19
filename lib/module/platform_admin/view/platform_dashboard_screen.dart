@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/floating_add_button.dart';
+import 'package:naseem/core/widgets/status_tag.dart';
 import 'package:naseem/module/platform_admin/view/widgets/platform_appbar.dart';
+import 'package:naseem/module/platform_admin/view/widgets/platform_logout_button.dart';
 
 import '../../../core/core.dart';
 import '../../../core/enum/sign_up_type.dart';
@@ -47,7 +49,7 @@ class _PlatformDashboardScreenState extends State<PlatformDashboardScreen> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: AppConsts.pSide),
-              child: _LogoutButton(
+              child: PlatformLogoutButton(
                 onPressed: () {
                   CustomDialog.confirmationDialog(
                     context: context,
@@ -415,71 +417,8 @@ class _ManagerCard extends StatelessWidget {
               ],
             ),
           ),
-          if (isActive) const _StatusBadge(label: 'Active'),
+          if (isActive) const StatusTag(status: "Active", color: Colors.green),
         ],
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final String label;
-
-  const _StatusBadge({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppConsts.pSmall,
-        vertical: AppConsts.pMicro,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(0XFFE8F8EE), // Soft green container background
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Text(
-        label,
-        style: context.bodySmall?.copyWith(
-          color: const Color(0XFF27AE60), // Status green text
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-}
-
-// =============================================================================
-// UTILITY COMPONENTS
-// =============================================================================
-
-class _LogoutButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const _LogoutButton({required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 32,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.error,
-          foregroundColor: context.onPrimary,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: AppConsts.pMedium),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
-        onPressed: onPressed,
-        child: Text(
-          'Logout',
-          style: context.bodySmall?.copyWith(
-            color: context.onPrimary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
       ),
     );
   }
