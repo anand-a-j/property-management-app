@@ -37,7 +37,7 @@ mixin AppColorScheme {
   /// Soft background derived from the same palette color.
   static Color backgroundColor(int index) {
     return Color.alphaBlend(
-      iconColor(index).withValues(alpha: 0.14),
+      iconColor(index).withValues(alpha: 0.24),
       Colors.white,
     );
   }

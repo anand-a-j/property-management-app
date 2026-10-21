@@ -12,15 +12,14 @@ class CommunityRepo {
   }) async {
     try {
       final data = await _client
-          .from('communities')
+          .from('communities_with_unit_counts')
           .select()
           .eq('org_id', orgId)
-          .isFilter('deleted_at', null)
           .order('created_at', ascending: false)
           .limit(15);
 
       final communities = (data as List)
-          .map((json) => Community.fromJson(json))
+          .map((json) => Community.fromJson(json as Map<String, dynamic>))
           .toList();
 
       return DataResponse(data: communities);

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../model/community.dart';
 import '../repo/community_repo.dart';
@@ -14,26 +13,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   CommunityBloc({required CommunityRepo communityRepo})
     : _communityRepo = communityRepo,
       super(const CommunityInitial()) {
-    on<GetCommunities>(_onGetCommunities);
     on<CreateCommunity>(_onCreateCommunity);
     on<UpdateCommunity>(_onUpdateCommunity);
-  }
-
-  Future<void> _onGetCommunities(
-    GetCommunities event,
-    Emitter<CommunityState> emit,
-  ) async {
-    emit(const CommunityLoading());
-
-    final response = await _communityRepo.getCommunities(
-      orgId: authentication.profile?.orgId ?? "",
-    );
-
-    if (response.hasData) {
-      emit(CommunitySuccess(communities: response.data ?? []));
-    } else {
-      emit(CommunityFailed(response.error ?? 'Failed to fetch communities'));
-    }
   }
 
   Future<void> _onCreateCommunity(
@@ -45,7 +26,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     final response = await _communityRepo.createCommunity(
       orgId: event.orgId.trim(),
       developmentType: event.developmentType.trim(),
-      
       communityType: event.communityType.trim(),
       name: event.name.trim(),
       address: event.address.trim(),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../core/core.dart';
-import '../../../../model/staff_maintenance_overview.dart';
+import '../../../../../../core/widgets/stats_card.dart';
+
+import '../../../model/staff_maintenance_overview.dart';
 
 class MaintenanceDashboardHeader extends StatelessWidget {
   const MaintenanceDashboardHeader({super.key, required this.overview});
@@ -13,7 +15,7 @@ class MaintenanceDashboardHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: context.secondary,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -27,18 +29,26 @@ class MaintenanceDashboardHeader extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _MaintenanceStatCard(
+                child: StatCard(
                   title: 'Total Tickets',
-                  value: overview.totalTickets,
+                  value: overview.totalTickets.toString(),
                   icon: Icons.confirmation_number_outlined,
+                  iconColor: context.primary,
+                  borderColor: Colors.white24,
+                  titleColor: context.onPrimary.withValues(alpha: 0.7),
+                  valueColor: context.onPrimary,
                 ),
               ),
               const SizedBox(width: AppConsts.pSmall),
               Expanded(
-                child: _MaintenanceStatCard(
+                child: StatCard(
                   title: 'Pending Review',
-                  value: overview.pendingReview,
+                  value: overview.pendingReview.toString(),
                   icon: Icons.pending_actions_outlined,
+                  iconColor: Colors.orangeAccent,
+                  borderColor: Colors.white24,
+                  titleColor: context.onPrimary.withValues(alpha: 0.7),
+                  valueColor: context.onPrimary,
                 ),
               ),
             ],
@@ -47,65 +57,31 @@ class MaintenanceDashboardHeader extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _MaintenanceStatCard(
+                child: StatCard(
                   title: 'In Progress',
-                  value: overview.activeTickets,
+                  value: overview.activeTickets.toString(),
                   icon: Icons.engineering_outlined,
+                  iconColor: Colors.lightBlueAccent,
+                  borderColor: Colors.white24,
+                  titleColor: context.onPrimary.withValues(alpha: 0.7),
+                  valueColor: context.onPrimary,
                 ),
               ),
               const SizedBox(width: AppConsts.pSmall),
               Expanded(
-                child: _MaintenanceStatCard(
+                child: StatCard(
                   title: 'Completed',
-                  value: overview.completedTickets,
+                  value: overview.completedTickets.toString(),
                   icon: Icons.task_alt_outlined,
+                  iconColor: Colors.greenAccent,
+                  borderColor: Colors.white24,
+                  titleColor: context.onPrimary.withValues(alpha: 0.7),
+                  valueColor: context.onPrimary,
                 ),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MaintenanceStatCard extends StatelessWidget {
-  const _MaintenanceStatCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-  });
-
-  final String title;
-  final int value;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppConsts.pMedium),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 22, color: context.secondary),
-          const SizedBox(height: 12),
-          Text(
-            value.toString(),
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          const SizedBox(height: 15),
         ],
       ),
     );

@@ -6,6 +6,8 @@ import 'package:naseem/core/utils/bloc_observer.dart';
 import 'package:naseem/core/utils/snackbar_manager.dart';
 
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:naseem/module/admin/community/controller/bloc/bloc/community_listing_bloc.dart';
+import 'package:naseem/module/admin/community/controller/repo/community_repo.dart';
 import 'package:naseem/module/admin/home/controller/repo/dashboard_stats_repo.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:naseem/module/admin/lease/controller/repo/lease_movement_repo.da
 import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
 import 'package:naseem/module/admin/payment/controller/bloc/payment_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/repo/payment_repo.dart';
+import 'package:naseem/module/admin/unit/controller/bloc/bloc/unit_list_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/unit_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/repo/unit_repo.dart';
 import 'package:naseem/module/admin/visitor/controller/bloc/visitor_bloc.dart';
@@ -23,6 +26,7 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
 import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
 import 'package:naseem/module/resident/home/controller/repo/resident_details_repo.dart';
+import 'package:naseem/module/staff/controller/maintaince_staff/bloc/status/maintenance_status_bloc.dart';
 import 'package:naseem/module/staff/controller/security/bloc/security_lease_movement_bloc.dart';
 import 'package:naseem/module/staff/controller/security/repo/security_lease_movement_repo.dart';
 import 'package:naseem/module/staff/controller/stafff_bloc/staff_bloc.dart';
@@ -40,6 +44,8 @@ import 'module/admin/maintainence/controller/repo/maintenance_repo.dart';
 import 'module/admin/resident/controller/bloc/resident_bloc.dart';
 import 'module/admin/resident/controller/repo/resident_repo.dart';
 import 'module/resident/home/controller/bloc/resident_details_bloc.dart';
+import 'module/staff/controller/maintaince_staff/bloc/maintenance_staff_bloc.dart';
+import 'module/staff/controller/maintaince_staff/repo/maintaince_staff_repo.dart';
 import 'routes/routes.dart';
 
 void main() async {
@@ -58,6 +64,15 @@ void main() async {
         ),
         BlocProvider<ManagerBloc>(
           create: (context) => ManagerBloc(repo: ManagerRepo()),
+        ),
+
+        BlocProvider<CommunityListingBloc>(
+          create: (context) =>
+              CommunityListingBloc(communityRepo: CommunityRepo()),
+        ),
+
+        BlocProvider<UnitListBloc>(
+          create: (context) => UnitListBloc(unitRepo: UnitRepo()),
         ),
 
         // Migrate the bloc later
@@ -101,9 +116,17 @@ void main() async {
           create: (context) =>
               SecurityLeaseMovementBloc(repo: SecurityLeaseMovementRepo()),
         ),
+        BlocProvider<MaintenanceStaffBloc>(
+          create: (context) =>
+              MaintenanceStaffBloc(repo: MaintainceStaffRepo()),
+        ),
+        BlocProvider<MaintenanceStatusBloc>(
+          create: (context) =>
+              MaintenanceStatusBloc(maintenanceRepo: MaintenanceRepo()),
+        ),
       ],
       child: const MyApp(),
-    ) , 
+    ),
   );
 }
 

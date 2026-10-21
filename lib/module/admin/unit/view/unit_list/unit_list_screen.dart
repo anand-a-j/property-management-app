@@ -13,6 +13,7 @@ import 'package:naseem/routes/args/unit_details_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../../core/core.dart';
+import '../../controller/bloc/bloc/unit_list_bloc.dart';
 import '../../controller/bloc/unit_bloc.dart';
 
 class UnitListScreen extends StatefulWidget {
@@ -29,17 +30,19 @@ class _UnitListScreenState extends State<UnitListScreen> {
   void initState() {
     super.initState();
 
-    context.read<UnitBloc>().add(GetUnits(communityId: widget.community.id));
+    context.read<UnitListBloc>().add(
+      GetUnits(communityId: widget.community.id),
+    );
   }
 
   void _onSearch(String query) {
-    context.read<UnitBloc>().add(
+    context.read<UnitListBloc>().add(
       SearchUnits(communityId: widget.community.id, searchQuery: query),
     );
   }
 
   void _loadMore() {
-    context.read<UnitBloc>().add(
+    context.read<UnitListBloc>().add(
       LoadMoreUnits(communityId: widget.community.id),
     );
   }
@@ -57,18 +60,18 @@ class _UnitListScreenState extends State<UnitListScreen> {
           SearchTextField(title: 'Search Units', onChanged: _onSearch),
 
           Expanded(
-            child: BlocBuilder<UnitBloc, UnitState>(
+            child: BlocBuilder<UnitListBloc, UnitListState>(
               builder: (context, state) {
                 // Initial loading
-                if (state is UnitLoading) {
+                if (state is UnitListLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
                 // Error
-                if (state is UnitFailed) {
+                if (state is UnitListFailed) {
                   return ErrorStateView(
                     retryOnTap: () {
-                      context.read<UnitBloc>().add(
+                      context.read<UnitListBloc>().add(
                         GetUnits(communityId: widget.community.id),
                       );
                     },
@@ -121,7 +124,7 @@ class _UnitListScreenState extends State<UnitListScreen> {
                             ),
                           );
                         },
-                        child: UnitCard(unit: unit),
+                        child: UnitCard(unit: unit, index: index),
                       );
                     },
                   );

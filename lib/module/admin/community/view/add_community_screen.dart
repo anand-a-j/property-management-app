@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:naseem/core/utils/snackbar_manager.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
+import '../../../../core/constants/property_type_constants.dart';
 import '../../../../core/core.dart';
-import '../../../../core/enum/community_type.dart';
-import '../../../../core/enum/development_type.dart';
 import '../../../../core/utils/input_vaildator.dart';
+import '../controller/bloc/bloc/community_listing_bloc.dart';
 import '../controller/bloc/community_bloc.dart';
 import '../model/community.dart';
 
@@ -31,12 +31,10 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
 
   final TextEditingController _descriptionController = TextEditingController();
 
-  DevelopmentType? _selectedDevelopmentType;
-  CommunityType? _selectedCommunityType;
+  String? _selectedCommunityType;
 
-  static const List<DevelopmentType> _developmentTypes = DevelopmentType.values;
-
-  static const List<CommunityType> _communityTypes = CommunityType.values;
+  static const List<String> _communityTypes =
+      PropertyTypeConstants.communityTypes;
 
   @override
   void initState() {
@@ -55,13 +53,12 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
     _addressController.text = community.address;
     _descriptionController.text = community.description;
 
-    _selectedDevelopmentType = DevelopmentType.values.firstWhere(
-      (type) => type.value == community.developmentType,
-    );
+    // Match the existing community type with the fixed constants.
+    final existingType = community.communityType;
 
-    _selectedCommunityType = CommunityType.values.firstWhere(
-      (type) => type.value == community.communityType,
-    );
+    _selectedCommunityType = _communityTypes.contains(existingType)
+        ? existingType
+        : null;
   }
 
   @override
@@ -79,7 +76,7 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
         if (state is AddUpdateCommunitySuccess) {
           if (!context.mounted) return;
 
-          context.read<CommunityBloc>().add(GetCommunities());
+          context.read<CommunityListingBloc>().add(GetCommunities());
           context.pop();
         }
 
@@ -123,10 +120,6 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
                     ),
 
                     const SizedBox(height: AppConsts.pLarge),
-
-                    _developmentTypeDropdown(),
-
-                    const SizedBox(height: AppConsts.pSide),
 
                     _communityTypeDropdown(),
 
@@ -173,42 +166,21 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
     );
   }
 
-  Widget _developmentTypeDropdown() {
-    return CustomDropdownField<DevelopmentType>(
-      initialValue: _selectedDevelopmentType,
-      labelText: 'Development Type',
-      hintText: 'Select development type',
-      items: _developmentTypes,
-      itemLabel: (item) => item.label,
-      onChanged: (value) {
-        setState(() {
-          _selectedDevelopmentType = value;
-        });
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please select development type';
-        }
-
-        return null;
-      },
-    );
-  }
-
   Widget _communityTypeDropdown() {
-    return CustomDropdownField<CommunityType>(
+    return CustomDropdownField<String>(
+      key: ValueKey(_selectedCommunityType),
       initialValue: _selectedCommunityType,
       labelText: 'Community Type',
       hintText: 'Select community type',
       items: _communityTypes,
-      itemLabel: (item) => item.label,
+      itemLabel: (item) => item,
       onChanged: (value) {
         setState(() {
           _selectedCommunityType = value;
         });
       },
       validator: (value) {
-        if (value == null) {
+        if (value == null || value.isEmpty) {
           return 'Please select community type';
         }
 
@@ -256,7 +228,6 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
       return;
     }
 
-    final developmentType = _selectedDevelopmentType!;
     final communityType = _selectedCommunityType!;
 
     final communityName = _communityNameController.text.trim();
@@ -271,8 +242,8 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
       bloc.add(
         UpdateCommunity(
           id: community.id,
-          developmentType: developmentType.value,
-          communityType: communityType.value,
+          developmentType: '',
+          communityType: communityType,
           name: communityName,
           address: address,
           description: description,
@@ -281,9 +252,9 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
     } else {
       bloc.add(
         CreateCommunity(
-          orgId: authentication.profile?.orgId ?? "",
-          developmentType: developmentType.value,
-          communityType: communityType.value,
+          orgId: authentication.profile?.orgId ?? '',
+          developmentType: '',
+          communityType: communityType,
           name: communityName,
           address: address,
           description: description,

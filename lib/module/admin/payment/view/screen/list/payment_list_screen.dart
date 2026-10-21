@@ -78,6 +78,8 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                   Expanded(
                     child: StatCard(
                       title: 'Rent Collected',
+                      icon: Icons.account_balance_wallet_outlined,
+                      iconColor: Colors.teal,
                       value: '0',
                       borderColor: context.surface,
                       titleColor: context.secondary,
@@ -87,6 +89,8 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                   Expanded(
                     child: StatCard(
                       title: 'Due',
+                      icon: Icons.event_busy_outlined,
+                      iconColor: Colors.red,
                       value: '0',
                       borderColor: context.surface,
                       titleColor: context.secondary,

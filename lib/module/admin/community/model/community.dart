@@ -23,6 +23,13 @@ abstract class Community with _$Community {
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
 
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
+
+    // Unit counts
+    @JsonKey(name: 'total_units') @Default(0) int? totalUnits,
+
+    @JsonKey(name: 'occupied_units') @Default(0) int? occupiedUnits,
+
+    @JsonKey(name: 'vacant_units') @Default(0) int? vacantUnits,
   }) = _Community;
 
   factory Community.fromJson(Map<String, dynamic> json) =>

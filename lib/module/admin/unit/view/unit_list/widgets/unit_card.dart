@@ -7,8 +7,9 @@ import '../../../model/unit.dart';
 
 class UnitCard extends StatelessWidget {
   final Unit unit;
+  final int index;
 
-  const UnitCard({super.key, required this.unit});
+  const UnitCard({super.key, required this.unit, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +25,10 @@ class UnitCard extends StatelessWidget {
         children: [
           // Image / placeholder
           Container(
-            width: 90,
-            height: 90,
+            width: 105,
+            height: 105,
             decoration: BoxDecoration(
-              color: context.surface.withValues(alpha: 0.2),
+              color: AppColorScheme.backgroundColor(index),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(7),
                 bottomLeft: Radius.circular(7),
@@ -37,7 +38,7 @@ class UnitCard extends StatelessWidget {
               child: Icon(
                 Icons.apartment,
                 size: 36,
-                color: context.secondaryContainer,
+                color: AppColorScheme.iconColor(index),
               ),
             ),
           ),
@@ -71,6 +72,18 @@ class UnitCard extends StatelessWidget {
                         color: unit.status?.color ?? Colors.grey,
                       ),
                     ],
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Area / Size
+                  Text(
+                    unit.unitType ?? "",
+                    style: context.bodySmall?.copyWith(
+                      color: context.secondary.withValues(alpha: 0.75),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
 
                   const SizedBox(height: 4),

@@ -17,6 +17,7 @@ class MaintenanceCard extends StatelessWidget {
     final request = maintenanceRequest;
 
     return Container(
+      padding: const EdgeInsets.only(bottom: AppConsts.pSmall),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: context.surface, width: 1.0),

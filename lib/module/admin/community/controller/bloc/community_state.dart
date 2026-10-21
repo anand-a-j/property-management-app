@@ -15,15 +15,6 @@ class CommunityLoading extends CommunityState {
   const CommunityLoading();
 }
 
-class CommunitySuccess extends CommunityState {
-  final List<Community> communities;
-
-  const CommunitySuccess({required this.communities});
-
-  @override
-  List<Object?> get props => [communities];
-}
-
 class AddUpdateCommunitySuccess extends CommunityState {
   const AddUpdateCommunitySuccess();
 

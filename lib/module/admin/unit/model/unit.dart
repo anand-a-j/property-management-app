@@ -12,6 +12,8 @@ abstract class Unit with _$Unit {
 
     @JsonKey(name: 'community_id') required String communityId,
 
+    @JsonKey(name: 'unit_type') String? unitType,
+
     required String name,
     required String area,
     required String description,

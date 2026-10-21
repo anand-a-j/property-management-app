@@ -19,6 +19,9 @@ _Community _$CommunityFromJson(Map<String, dynamic> json) => _Community(
   deletedAt: json['deleted_at'] == null
       ? null
       : DateTime.parse(json['deleted_at'] as String),
+  totalUnits: (json['total_units'] as num?)?.toInt() ?? 0,
+  occupiedUnits: (json['occupied_units'] as num?)?.toInt() ?? 0,
+  vacantUnits: (json['vacant_units'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$CommunityToJson(_Community instance) =>
@@ -33,4 +36,7 @@ Map<String, dynamic> _$CommunityToJson(_Community instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'deleted_at': instance.deletedAt?.toIso8601String(),
+      'total_units': instance.totalUnits,
+      'occupied_units': instance.occupiedUnits,
+      'vacant_units': instance.vacantUnits,
     };

@@ -3,13 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
+import 'package:naseem/module/admin/community/controller/bloc/bloc/community_listing_bloc.dart';
 import 'package:naseem/module/admin/community/view/widgets/community_card.dart';
-import 'package:naseem/module/admin/unit/view/unit_list/unit_list_screen.dart';
 import 'package:naseem/routes/args/unit_list_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/core.dart';
-import '../controller/bloc/community_bloc.dart';
 
 class CommunityListScreen extends StatefulWidget {
   const CommunityListScreen({super.key});
@@ -23,11 +22,11 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
   void initState() {
     super.initState();
 
-    context.read<CommunityBloc>().add(const GetCommunities());
+    context.read<CommunityListingBloc>().add(const GetCommunities());
   }
 
   void _retry() {
-    context.read<CommunityBloc>().add(const GetCommunities());
+    context.read<CommunityListingBloc>().add(const GetCommunities());
   }
 
   @override
@@ -39,13 +38,13 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
           SearchTextField(title: "Search Communities", onChanged: (query) {}),
 
           Expanded(
-            child: BlocBuilder<CommunityBloc, CommunityState>(
+            child: BlocBuilder<CommunityListingBloc, CommunityListingState>(
               builder: (context, state) {
-                if (state is CommunityLoading) {
+                if (state is CommunityListingLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (state is CommunitySuccess) {
+                if (state is CommunityListingSuccess) {
                   final communities = state.communities;
 
                   if (communities.isEmpty) {
@@ -54,7 +53,7 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
 
                   return RefreshIndicator(
                     onRefresh: () async {
-                      context.read<CommunityBloc>().add(const GetCommunities());
+                      _retry();
                     },
                     child: ListView.builder(
                       padding: const EdgeInsets.fromLTRB(
@@ -74,14 +73,17 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                               extra: UnitListArgs(community: community),
                             );
                           },
-                          child: CommunityCard(community: community),
+                          child: CommunityCard(
+                            community: community,
+                            index: index,
+                          ),
                         );
                       },
                     ),
                   );
                 }
 
-                if (state is CommunityFailed) {
+                if (state is CommunityListingFailed) {
                   return ErrorStateView(
                     retryOnTap: _retry,
                     message: state.message,

@@ -5,8 +5,13 @@ import '../../../../../core/core.dart';
 
 class CommunityCard extends StatelessWidget {
   final Community community;
+  final int index;
 
-  const CommunityCard({super.key, required this.community});
+  const CommunityCard({
+    super.key,
+    required this.community,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class CommunityCard extends StatelessWidget {
               flex: 3,
               child: Container(
                 decoration: BoxDecoration(
-                  color: context.surface.withOpacity(0.2),
+                  color: AppColorScheme.backgroundColor(index),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
@@ -36,12 +41,12 @@ class CommunityCard extends StatelessWidget {
                   child: Icon(
                     Icons.apartment_rounded,
                     size: 40,
-                    color: context.secondaryContainer,
+                    color: AppColorScheme.iconColor(index),
                   ),
                 ),
               ),
             ),
-    
+
             // Right side content
             Expanded(
               flex: 7,
@@ -66,7 +71,7 @@ class CommunityCard extends StatelessWidget {
                       Text(
                         community.communityType,
                         style: context.bodySmall?.copyWith(
-                          color: context.secondaryContainer,
+                          color: context.onSecondary.withValues(alpha: 0.75),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -77,7 +82,7 @@ class CommunityCard extends StatelessWidget {
                     Text(
                       community.address,
                       style: context.bodySmall?.copyWith(
-                        color: context.secondaryContainer,
+                        color: context.secondary.withValues(alpha: 0.5),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -87,15 +92,19 @@ class CommunityCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildStatColumn(context, count: "0", label: 'Units'),
                         _buildStatColumn(
                           context,
-                          count: "0",
+                          count: "${community.totalUnits ?? "0"}",
+                          label: 'Units',
+                        ),
+                        _buildStatColumn(
+                          context,
+                          count: "${community.occupiedUnits ?? "0"}",
                           label: 'Occupied',
                         ),
                         _buildStatColumn(
                           context,
-                          count: "0",
+                          count: "${community.vacantUnits ?? "0"}",
                           label: 'Vacant',
                         ),
                       ],
@@ -125,7 +134,9 @@ class CommunityCard extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           label,
-          style: context.bodySmall?.copyWith(color: context.secondaryContainer),
+          style: context.bodySmall?.copyWith(
+            color: context.secondary.withValues(alpha: 0.5),
+          ),
         ),
       ],
     );

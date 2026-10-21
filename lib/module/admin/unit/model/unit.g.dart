@@ -9,6 +9,7 @@ part of 'unit.dart';
 _Unit _$UnitFromJson(Map<String, dynamic> json) => _Unit(
   id: json['id'] as String,
   communityId: json['community_id'] as String,
+  unitType: json['unit_type'] as String?,
   name: json['name'] as String,
   area: json['area'] as String,
   description: json['description'] as String,
@@ -23,6 +24,7 @@ _Unit _$UnitFromJson(Map<String, dynamic> json) => _Unit(
 Map<String, dynamic> _$UnitToJson(_Unit instance) => <String, dynamic>{
   'id': instance.id,
   'community_id': instance.communityId,
+  'unit_type': instance.unitType,
   'name': instance.name,
   'area': instance.area,
   'description': instance.description,

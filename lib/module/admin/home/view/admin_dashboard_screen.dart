@@ -75,6 +75,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: StatCard(
                             title: "Total Units",
+                            icon: Icons.apartment_rounded,
+                            iconColor: context.secondary,
                             value: "${stats.totalUnits}",
                             borderColor: context.surface,
                             titleColor: context.secondary,
@@ -84,6 +86,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: StatCard(
                             title: "Occupied",
+                            icon: Icons.people_alt_outlined,
+                            iconColor: Colors.green,
                             value: "${stats.occupied}",
                             borderColor: context.surface,
                             titleColor: context.secondary,
@@ -99,6 +103,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: StatCard(
                             title: "Vacant",
+                            icon: Icons.door_front_door_outlined,
+                            iconColor: Colors.orange,
                             value: "${stats.vacant}",
                             borderColor: context.surface,
                             titleColor: context.secondary,
@@ -108,6 +114,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: StatCard(
                             title: "Maintenance",
+                            icon: Icons.build_outlined,
+                            iconColor: context.error,
                             value: "${stats.maintenance}",
                             borderColor: context.surface,
                             titleColor: context.secondary,
@@ -123,6 +131,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: StatCard(
                             title: "Rent Collected",
+                            icon: Icons.account_balance_wallet_outlined,
+                            iconColor: Colors.teal,
                             value: "${stats.rentCollected} AED",
                             borderColor: context.surface,
                             titleColor: context.secondary,
@@ -132,6 +142,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: StatCard(
                             title: "Overdue",
+                            icon: Icons.event_busy_outlined,
+                            iconColor: Colors.red,
                             value: "${stats.overdueCount}",
                             borderColor: context.surface,
                             titleColor: context.secondary,

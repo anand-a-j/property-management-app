@@ -8,6 +8,7 @@ import 'package:naseem/module/platform_admin/view/widgets/platform_logout_button
 
 import '../../../core/core.dart';
 import '../../../core/enum/sign_up_type.dart';
+import '../../../core/widgets/stats_card.dart';
 import '../../../routes/router_path.dart';
 import '../../auth/core/controller/bloc/auth_bloc.dart';
 import '../../auth/core/controller/bloc/auth_event.dart';
@@ -141,65 +142,31 @@ class _DashboardHeaderOverview extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _StatCard(
+                child: StatCard(
                   title: 'Total Manager',
                   value: response.totalManagers.toString(),
+                  icon: Icons.admin_panel_settings_outlined,
+                  iconColor: context.primary,
+                  borderColor: Colors.white24,
+                  titleColor: context.onPrimary.withValues(alpha: 0.7),
+                  valueColor: context.onPrimary,
                 ),
               ),
               const SizedBox(width: AppConsts.pSmall),
               Expanded(
-                child: _StatCard(
+                child: StatCard(
                   title: 'Total Users',
                   value: response.activeUsers.toString(),
+                  icon: Icons.people_outline_rounded,
+                  iconColor: const Color(0xFF4DD0E1),
+                  borderColor: Colors.white24,
+                  titleColor: context.onPrimary.withValues(alpha: 0.7),
+                  valueColor: context.onPrimary,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const _StatCard({required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: context.secondaryContainer.withOpacity(0.4),
-          width: 1.0,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            title,
-            style: context.bodyMedium?.copyWith(
-              color: context.onPrimary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: AppConsts.pSmall),
-          Text(
-            value,
-            style: context.titleLarge?.copyWith(
-              color: context.primary,
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
         ],
       ),
     );

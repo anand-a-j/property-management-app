@@ -7,14 +7,17 @@ import 'package:naseem/module/auth/core/controller/bloc/auth_event.dart'
     show AuthSignOut;
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
-import '../../../../../core/core.dart';
-import '../../../../../routes/router_path.dart';
-import '../../../../admin/maintainence/view/list/widgets/maintenance_card.dart';
-import '../../../../auth/core/controller/bloc/auth_bloc.dart';
-import '../../../../auth/core/controller/bloc/auth_state.dart';
-import '../../../../platform_admin/view/widgets/platform_appbar.dart';
-import '../../../../platform_admin/view/widgets/platform_logout_button.dart';
-import '../../../controller/maintaince_staff/bloc/maintenance_staff_bloc.dart';
+import '../../../../core/core.dart';
+import '../../../../core/utils/snackbar_manager.dart';
+import '../../../../routes/router_path.dart';
+import '../../../admin/maintainence/view/list/widgets/maintenance_card.dart';
+import '../../../auth/core/controller/bloc/auth_bloc.dart';
+import '../../../auth/core/controller/bloc/auth_state.dart';
+import '../../../platform_admin/view/widgets/platform_appbar.dart';
+import '../../../platform_admin/view/widgets/platform_logout_button.dart';
+import '../../controller/maintaince_staff/bloc/maintenance_staff_bloc.dart';
+import '../../controller/maintaince_staff/bloc/status/maintenance_status_bloc.dart';
+import 'sheet/show_maintenance_update_sheet.dart';
 import 'widgets/maintenance_dashboard_header.dart';
 
 class StaffMaintenanceDashboardScreen extends StatefulWidget {
@@ -73,12 +76,30 @@ class _StaffMaintenanceDashboardScreenState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLogoutSuccess) {
-          context.go(RouterPath.welcome);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthLogoutSuccess) {
+              context.go(RouterPath.welcome);
+            }
+          },
+        ),
+        BlocListener<MaintenanceStatusBloc, MaintenanceStatusState>(
+          listener: (context, state) {
+            if (state is MaintenanceStatusSuccess) {
+              Snack.success("Maintenance status updated successfully");
+              context.read<MaintenanceStaffBloc>().add(
+                FetchStaffMaintenanceList(
+                  orgId: authentication.profile?.orgId ?? "",
+                ),
+              );
+            } else if (state is MaintenanceStatusFailed) {
+              Snack.error(state.errorMessage);
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: PlatformAppBar(
@@ -145,12 +166,13 @@ class _StaffMaintenanceDashboardScreenState
                               Expanded(
                                 child: Text(
                                   'Maintenance Requests',
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                  style: context.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
                               Text(
-                                '${state.overview.maintenanceList.length} tickets',
+                                '//${state.overview.maintenanceList.length} tickets',
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -173,10 +195,13 @@ class _StaffMaintenanceDashboardScreenState
                                 final request =
                                     state.overview.maintenanceList[index];
 
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: AppConsts.pSmall,
-                                  ),
+                                return GestureDetector(
+                                  onTap: () async {
+                                    showMaintenanceStatusUpdateSheet(
+                                      context,
+                                      request,
+                                    );
+                                  },
                                   child: MaintenanceCard(
                                     maintenanceRequest: request,
                                   ),

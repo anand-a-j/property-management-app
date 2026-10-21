@@ -59,4 +59,119 @@ class MaintenanceRepo {
       );
     }
   }
+
+  Future<DataResponse<void>> updateMaintenanceStatus({
+    required String requestId,
+    required String status,
+    required String updatedBy,
+    String? note,
+    String? assignedTo,
+    String? rejectionReason,
+  }) async {
+    try {
+      const allowedStatuses = {
+        'pending_review',
+        'rejected',
+        'approved',
+        'assigned',
+        'in_progress',
+        'completed',
+        'closed',
+        'cancelled',
+      };
+
+      if (!allowedStatuses.contains(status)) {
+        throw ArgumentError('Invalid maintenance status: $status');
+      }
+
+      // Validate required fields before making database changes.
+      if (status == 'rejected' &&
+          (rejectionReason == null || rejectionReason.trim().isEmpty)) {
+        throw ArgumentError(
+          'Rejection reason is required when rejecting a request.',
+        );
+      }
+
+      if ((status == 'assigned' || status == 'in_progress') &&
+          (assignedTo == null || assignedTo.trim().isEmpty)) {
+        throw ArgumentError('An assignee is required for this status.');
+      }
+
+      // maintenance_updates only supports these three statuses.
+      const historyStatuses = {'assigned', 'in_progress', 'completed'};
+
+      if (historyStatuses.contains(status) &&
+          (note == null || note.trim().isEmpty)) {
+        throw ArgumentError(
+          'A note is required for maintenance progress updates.',
+        );
+      }
+
+      final now = DateTime.now().toUtc().toIso8601String();
+
+      final Map<String, dynamic> updates = {
+        'status': status,
+        'updated_at': now,
+      };
+
+      // Review information
+      if (status == 'approved' || status == 'rejected') {
+        updates['reviewed_by'] = updatedBy;
+        updates['reviewed_at'] = now;
+      }
+
+      // Approval information
+      if (status == 'approved') {
+        updates['approved_at'] = now;
+      }
+
+      // Rejection information
+      if (status == 'rejected') {
+        updates['rejection_reason'] = rejectionReason!.trim();
+      }
+
+      // Assignment information
+      if (status == 'assigned' || status == 'in_progress') {
+        updates['assigned_to'] = assignedTo;
+      }
+
+      // Completion information
+      if (status == 'completed') {
+        updates['completed_at'] = now;
+      }
+
+      // Closure information
+      if (status == 'closed') {
+        updates['closed_at'] = now;
+      }
+
+      // Update the main request.
+      final updatedRequest = await _client
+          .from('maintenance_requests')
+          .update(updates)
+          .eq('id', requestId)
+          .select('id')
+          .maybeSingle();
+
+      if (updatedRequest == null) {
+        throw Exception('Maintenance request not found.');
+      }
+
+      // Record progress history only for supported history statuses.
+      if (historyStatuses.contains(status)) {
+        await _client.from('maintenance_updates').insert({
+          'maintenance_request_id': requestId,
+          'updated_by': updatedBy,
+          'status': status,
+          'note': note!.trim(),
+        });
+      }
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('MaintenanceRepo.updateMaintenanceStatus', e, stack),
+      );
+    }
+  }
 }

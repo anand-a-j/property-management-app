@@ -58,9 +58,10 @@ class UnitRepo {
     }
   }
 
-  Future<DataResponse<Unit>> createUnit({
+Future<DataResponse<Unit>> createUnit({
     required String communityId,
     required String name,
+    required String unitType,
     required String area,
     required String description,
   }) async {
@@ -70,6 +71,7 @@ class UnitRepo {
           .insert({
             'community_id': communityId,
             'name': name,
+            'unit_type': unitType,
             'area': area,
             'description': description,
           })
@@ -86,13 +88,19 @@ class UnitRepo {
     required String unitId,
     required String communityId,
     required String name,
+    required String unitType,
     required String area,
     required String description,
   }) async {
     try {
       final data = await _client
           .from('units')
-          .update({'name': name, 'area': area, 'description': description})
+          .update({
+            'name': name,
+            'unit_type': unitType,
+            'area': area,
+            'description': description,
+          })
           .eq('id', unitId)
           .eq('community_id', communityId)
           .isFilter('deleted_at', null)

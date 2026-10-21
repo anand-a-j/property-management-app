@@ -121,6 +121,7 @@ class _ResidentLeaseDetailsScreenState extends State<ResidentLeaseDetailsScreen>
                   description: '',
                   createdAt: lease.startDate,
                   updatedAt: lease.startDate,
+                  unitType: '',
                 );
 
                 final community = Community(

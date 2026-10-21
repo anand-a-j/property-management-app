@@ -7,11 +7,6 @@ abstract class CommunityEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetCommunities extends CommunityEvent {
-
-  
-  const GetCommunities();
-}
 
 class CreateCommunity extends CommunityEvent {
   final String orgId;

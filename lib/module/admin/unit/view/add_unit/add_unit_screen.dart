@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/module/admin/community/model/community.dart';
 
+import '../../../../../core/constants/property_type_constants.dart';
 import '../../../../../core/core.dart';
 import '../../../../../core/utils/input_vaildator.dart';
 import '../../../../../core/utils/snackbar_manager.dart';
+import '../../controller/bloc/bloc/unit_list_bloc.dart';
 import '../../controller/bloc/unit_bloc.dart';
 import '../../model/unit.dart';
 
@@ -31,14 +33,28 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
   final TextEditingController _sizeAreaController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  String? _selectedUnitType;
+
+  late final List<String> _unitTypes;
+
   @override
   void initState() {
     super.initState();
 
+    _unitTypes = PropertyTypeConstants.getUnitTypes(
+      widget.community.communityType,
+    );
+
     if (widget.isEdit) {
-      _unitNameController.text = widget.unit?.name ?? "";
-      _sizeAreaController.text = widget.unit?.area ?? "";
-      _descriptionController.text = widget.unit?.description ?? "";
+      _unitNameController.text = widget.unit?.name ?? '';
+      _sizeAreaController.text = widget.unit?.area ?? '';
+      _descriptionController.text = widget.unit?.description ?? '';
+
+      final existingUnitType = widget.unit?.unitType;
+
+      if (existingUnitType != null && _unitTypes.contains(existingUnitType)) {
+        _selectedUnitType = existingUnitType;
+      }
     }
   }
 
@@ -57,23 +73,25 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
         if (state is UnitAddSuccess) {
           Snack.success('Unit created successfully');
 
-          if (context.mounted) {
-            context.read<UnitBloc>().add(
-              SearchUnits(communityId: widget.community.id, searchQuery: ""),
-            );
-            Navigator.pop(context);
-          }
+          if (!context.mounted) return;
+
+          context.read<UnitListBloc>().add(
+            GetUnits(communityId: widget.community.id),
+          );
+
+          Navigator.pop(context);
         }
 
         if (state is UnitUpdateSuccess) {
           Snack.success('Unit updated successfully');
 
-          if (context.mounted) {
-            context.read<UnitBloc>().add(
-              SearchUnits(communityId: widget.community.id, searchQuery: ""),
-            );
-            Navigator.pop(context);
-          }
+          if (!context.mounted) return;
+
+          context.read<UnitListBloc>().add(
+            GetUnits(communityId: widget.community.id),
+          );
+
+          Navigator.pop(context);
         }
 
         if (state is UnitFailed) {
@@ -118,6 +136,10 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
                     const SizedBox(height: AppConsts.pLarge),
 
                     _communityField(),
+
+                    const SizedBox(height: AppConsts.pSide),
+
+                    _unitTypeDropdown(),
 
                     const SizedBox(height: AppConsts.pSide),
 
@@ -170,6 +192,28 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
     );
   }
 
+  Widget _unitTypeDropdown() {
+    return CustomDropdownField<String>(
+      initialValue: _selectedUnitType,
+      labelText: 'Unit Type',
+      hintText: 'Select unit type',
+      items: _unitTypes,
+      itemLabel: (item) => item,
+      onChanged: (value) {
+        setState(() {
+          _selectedUnitType = value;
+        });
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please select unit type';
+        }
+
+        return null;
+      },
+    );
+  }
+
   Widget _unitNameField() {
     return CustomTextField(
       controller: _unitNameController,
@@ -212,23 +256,27 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
     final unitName = _unitNameController.text.trim();
     final sizeArea = _sizeAreaController.text.trim();
     final description = _descriptionController.text.trim();
+    final unitType = _selectedUnitType!;
 
     if (widget.isEdit) {
       context.read<UnitBloc>().add(
         UpdateUnit(
-          unitId: widget.unit?.id ?? "",
+          unitId: widget.unit?.id ?? '',
           communityId: communityId,
+          unitType: unitType,
           name: unitName,
           area: sizeArea,
           description: description,
         ),
       );
+
       return;
     }
 
     context.read<UnitBloc>().add(
       AddUnit(
         communityId: communityId,
+        unitType: unitType,
         name: unitName,
         area: sizeArea,
         description: description,
