@@ -172,7 +172,7 @@ class _StaffMaintenanceDashboardScreenState
                                 ),
                               ),
                               Text(
-                                '//${state.overview.maintenanceList.length} tickets',
+                                '${state.overview.maintenanceList.length} tickets',
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
@@ -200,6 +200,7 @@ class _StaffMaintenanceDashboardScreenState
                                     showMaintenanceStatusUpdateSheet(
                                       context,
                                       request,
+                                      false,
                                     );
                                   },
                                   child: MaintenanceCard(

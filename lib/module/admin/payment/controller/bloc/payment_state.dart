@@ -26,20 +26,8 @@ class PaymentSuccess extends PaymentState {
   List<Object?> get props => [payment, payments, message];
 }
 
-
-class PaymentListLoadSuccess extends PaymentState {
-  final List<Payment> payments;
-  final bool hasMore;
-  final bool isLoadingMore;
-
-  const PaymentListLoadSuccess({
-    required this.payments,
-    required this.hasMore,
-    this.isLoadingMore = false,
-  });
-
-  @override
-  List<Object?> get props => [payments, hasMore, isLoadingMore];
+class PaymentStatusUpdated extends PaymentState {
+  const PaymentStatusUpdated();
 }
 
 class PaymentFailed extends PaymentState {

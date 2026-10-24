@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Unit {
 
- String get id;@JsonKey(name: 'community_id') String get communityId;@JsonKey(name: 'unit_type') String? get unitType; String get name; String get area; String get description;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt; UnitStatus? get status;
+ String get id;@JsonKey(name: 'community_id') String get communityId;@JsonKey(name: 'unit_type') String? get unitType; String get name; String get area; String get description;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime? get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt; UnitStatus? get status;
 /// Create a copy of Unit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UnitCopyWith<$Res>  {
   factory $UnitCopyWith(Unit value, $Res Function(Unit) _then) = _$UnitCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'community_id') String communityId,@JsonKey(name: 'unit_type') String? unitType, String name, String area, String description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, UnitStatus? status
+ String id,@JsonKey(name: 'community_id') String communityId,@JsonKey(name: 'unit_type') String? unitType, String name, String area, String description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, UnitStatus? status
 });
 
 
@@ -65,7 +65,7 @@ class _$UnitCopyWithImpl<$Res>
 
 /// Create a copy of Unit
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? communityId = null,Object? unitType = freezed,Object? name = null,Object? area = null,Object? description = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? status = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? communityId = null,Object? unitType = freezed,Object? name = null,Object? area = null,Object? description = null,Object? createdAt = null,Object? updatedAt = freezed,Object? deletedAt = freezed,Object? status = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,communityId: null == communityId ? _self.communityId : communityId // ignore: cast_nullable_to_non_nullable
@@ -74,8 +74,8 @@ as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_no
 as String,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as UnitStatus?,
   ));
@@ -162,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'community_id')  String communityId, @JsonKey(name: 'unit_type')  String? unitType,  String name,  String area,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  UnitStatus? status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'community_id')  String communityId, @JsonKey(name: 'unit_type')  String? unitType,  String name,  String area,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  UnitStatus? status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Unit() when $default != null:
 return $default(_that.id,_that.communityId,_that.unitType,_that.name,_that.area,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.status);case _:
@@ -183,7 +183,7 @@ return $default(_that.id,_that.communityId,_that.unitType,_that.name,_that.area,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'community_id')  String communityId, @JsonKey(name: 'unit_type')  String? unitType,  String name,  String area,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  UnitStatus? status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'community_id')  String communityId, @JsonKey(name: 'unit_type')  String? unitType,  String name,  String area,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  UnitStatus? status)  $default,) {final _that = this;
 switch (_that) {
 case _Unit():
 return $default(_that.id,_that.communityId,_that.unitType,_that.name,_that.area,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.status);case _:
@@ -203,7 +203,7 @@ return $default(_that.id,_that.communityId,_that.unitType,_that.name,_that.area,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'community_id')  String communityId, @JsonKey(name: 'unit_type')  String? unitType,  String name,  String area,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  UnitStatus? status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'community_id')  String communityId, @JsonKey(name: 'unit_type')  String? unitType,  String name,  String area,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt,  UnitStatus? status)?  $default,) {final _that = this;
 switch (_that) {
 case _Unit() when $default != null:
 return $default(_that.id,_that.communityId,_that.unitType,_that.name,_that.area,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.status);case _:
@@ -228,7 +228,7 @@ class _Unit implements Unit {
 @override final  String area;
 @override final  String description;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
-@override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
+@override@JsonKey(name: 'updated_at') final  DateTime? updatedAt;
 @override@JsonKey(name: 'deleted_at') final  DateTime? deletedAt;
 @override final  UnitStatus? status;
 
@@ -265,7 +265,7 @@ abstract mixin class _$UnitCopyWith<$Res> implements $UnitCopyWith<$Res> {
   factory _$UnitCopyWith(_Unit value, $Res Function(_Unit) _then) = __$UnitCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'community_id') String communityId,@JsonKey(name: 'unit_type') String? unitType, String name, String area, String description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, UnitStatus? status
+ String id,@JsonKey(name: 'community_id') String communityId,@JsonKey(name: 'unit_type') String? unitType, String name, String area, String description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt, UnitStatus? status
 });
 
 
@@ -282,7 +282,7 @@ class __$UnitCopyWithImpl<$Res>
 
 /// Create a copy of Unit
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? communityId = null,Object? unitType = freezed,Object? name = null,Object? area = null,Object? description = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? status = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? communityId = null,Object? unitType = freezed,Object? name = null,Object? area = null,Object? description = null,Object? createdAt = null,Object? updatedAt = freezed,Object? deletedAt = freezed,Object? status = freezed,}) {
   return _then(_Unit(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,communityId: null == communityId ? _self.communityId : communityId // ignore: cast_nullable_to_non_nullable
@@ -291,8 +291,8 @@ as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_no
 as String,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as UnitStatus?,
   ));

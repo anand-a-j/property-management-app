@@ -5,7 +5,7 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import '../../../../core/core.dart';
 import '../../../../core/widgets/empty_state_view.dart';
 import '../../../../core/widgets/error_state_view.dart';
-import '../../../admin/maintainence/controller/bloc/maintenance_bloc.dart';
+import '../../../admin/maintainence/controller/bloc/bloc/maintenance_list_bloc.dart';
 import '../../../admin/maintainence/view/list/widgets/maintenance_card.dart';
 
 class ResidentMaintenanceTab extends StatefulWidget {
@@ -23,27 +23,32 @@ class _ResidentMaintenanceTabState extends State<ResidentMaintenanceTab> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getMaintenanceList();
+      if (mounted) {
+        _getMaintenanceList();
+      }
     });
   }
 
   void _getMaintenanceList() {
-    context.read<MaintenanceBloc>().add(
-      GetMaintenanceListEvent( orgId: authentication.profile?.orgId??"", unitId: widget.unitId,),
+    context.read<MaintenanceListBloc>().add(
+      GetMaintenanceListEvent(
+        orgId: authentication.profile?.orgId ?? '',
+        unitId: widget.unitId,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MaintenanceBloc, MaintenanceState>(
+    return BlocBuilder<MaintenanceListBloc, MaintenanceListState>(
       builder: (context, state) {
         // Loading
-        if (state is MaintenanceLoading) {
+        if (state is MaintenanceListLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
         // Error
-        if (state is MaintenanceFailed) {
+        if (state is MaintenanceListFailed) {
           return ErrorStateView(
             message: state.message,
             retryOnTap: _getMaintenanceList,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:naseem/core/widgets/status_tag.dart';
+import 'package:naseem/module/admin/unit/model/unit_list_item.dart';
 
 import '../../../../../../core/core.dart';
 import '../../../../../../core/enum/unit_status.dart';
-import '../../../model/unit.dart';
 
 class UnitCard extends StatelessWidget {
-  final Unit unit;
+  final UnitListItem unit;
   final int index;
 
   const UnitCard({super.key, required this.unit, required this.index});
@@ -25,8 +25,8 @@ class UnitCard extends StatelessWidget {
         children: [
           // Image / placeholder
           Container(
-            width: 105,
-            height: 105,
+            width: 95,
+            height: 125,
             decoration: BoxDecoration(
               color: AppColorScheme.backgroundColor(index),
               borderRadius: const BorderRadius.only(
@@ -36,7 +36,7 @@ class UnitCard extends StatelessWidget {
             ),
             child: Center(
               child: Icon(
-                Icons.apartment,
+                Icons.door_front_door_outlined,
                 size: 36,
                 color: AppColorScheme.iconColor(index),
               ),
@@ -102,9 +102,20 @@ class UnitCard extends StatelessWidget {
 
                   // Description
                   Text(
-                    unit.description,
+                    unit.description ?? "",
                     style: context.bodySmall?.copyWith(
                       color: context.secondary.withValues(alpha: 0.5),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Description
+                  Text(
+                    unit.residentName ?? "",
+                    style: context.bodySmall?.copyWith(
+                      color: context.secondary.withValues(alpha: 0.75),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

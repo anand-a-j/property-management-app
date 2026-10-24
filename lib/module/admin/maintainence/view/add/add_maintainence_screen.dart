@@ -11,6 +11,7 @@ import '../../../../../core/utils/snackbar_manager.dart';
 import '../../../../auth/core/controller/service/auth_service.dart';
 import '../../../community/model/community.dart';
 import '../../../unit/model/unit.dart';
+import '../../controller/bloc/bloc/maintenance_list_bloc.dart';
 import '../../controller/bloc/maintenance_bloc.dart';
 import '../../model/add_maintenance.dart';
 import '../../model/maintenance_request.dart';
@@ -60,6 +61,12 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       listener: (context, state) {
         if (state is MaintenanceAddSuccess) {
           Snack.success('Maintenance request added successfully');
+          context.read<MaintenanceListBloc>().add(
+            GetMaintenanceListEvent(
+              orgId: authentication.profile?.orgId ?? '',
+              unitId: widget.unit.id,
+            ),
+          );
 
           Navigator.pop(context);
         }

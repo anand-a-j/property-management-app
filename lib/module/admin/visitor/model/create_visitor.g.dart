@@ -12,7 +12,7 @@ _CreateVisitor _$CreateVisitorFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       phone: json['phone'] as String?,
       visitAt: DateTime.parse(json['visit_at'] as String),
-      visitType: $enumDecode(_$VisitTypeEnumMap, json['visit_type']),
+      visitType: json['visit_type'] as String,
       purpose: json['purpose'] as String?,
       unitId: json['unit_id'] as String?,
       createdBy: json['created_by'] as String,
@@ -24,16 +24,8 @@ Map<String, dynamic> _$CreateVisitorToJson(_CreateVisitor instance) =>
       'name': instance.name,
       'phone': instance.phone,
       'visit_at': instance.visitAt.toIso8601String(),
-      'visit_type': _$VisitTypeEnumMap[instance.visitType]!,
+      'visit_type': instance.visitType,
       'purpose': instance.purpose,
       'unit_id': instance.unitId,
       'created_by': instance.createdBy,
     };
-
-const _$VisitTypeEnumMap = {
-  VisitType.resident: 'resident',
-  VisitType.maintenance: 'maintenance',
-  VisitType.delivery: 'delivery',
-  VisitType.guest: 'guest',
-  VisitType.other: 'other',
-};

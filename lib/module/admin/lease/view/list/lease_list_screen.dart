@@ -7,7 +7,8 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
-import '../../controller/blocs/bloc/lease_bloc.dart';
+import '../../../../../core/widgets/load_more_button.dart';
+import '../../controller/blocs/bloc/lease_list_bloc.dart';
 import '../../model/lease.dart';
 
 class LeaseListScreen extends StatefulWidget {
@@ -20,47 +21,34 @@ class LeaseListScreen extends StatefulWidget {
 }
 
 class _LeaseListScreenState extends State<LeaseListScreen> {
-  late final ScrollController _scrollController;
-
   @override
   void initState() {
     super.initState();
+    _fetchLeases();
+  }
 
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
-
-    // Initial load
-    context.read<LeaseBloc>().add(
+  void _fetchLeases({String searchQuery = ''}) {
+    context.read<LeaseListBloc>().add(
       GetLeases(
-        orgId: authentication.profile?.orgId ?? "",
+        orgId: authentication.profile?.orgId ?? '',
+        searchQuery: searchQuery,
         isDraftOnly: widget.isSelectionMode,
       ),
     );
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      context.read<LeaseBloc>().add(LoadMoreLeases());
-    }
-  }
-
   void _onSearch(String query) {
-    context.read<LeaseBloc>().add(
+    context.read<LeaseListBloc>().add(
       SearchLeases(
-        orgId: authentication.profile?.orgId ?? "",
-        searchQuery: query,
+        orgId: authentication.profile?.orgId ?? '',
+        searchQuery: query.trim(),
+        isDraftOnly: widget.isSelectionMode,
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-
-    super.dispose();
+  void _loadMore() {
+    context.read<LeaseListBloc>().add(const LoadMoreLeases());
   }
 
   @override
@@ -70,74 +58,71 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
         title: widget.isSelectionMode ? 'Select Lease' : 'Leases',
         leadingOnTap: () => context.pop(),
       ),
-
       body: Column(
         children: [
           SearchTextField(title: 'Search Leases', onChanged: _onSearch),
-
           Expanded(
-            child: BlocBuilder<LeaseBloc, LeaseState>(
+            child: BlocBuilder<LeaseListBloc, LeaseListState>(
               builder: (context, state) {
-                // Initial loading
-                if (state is LeasesLoading) {
+                if (state is LeaseListLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                // Error
-                if (state is LeasesFailed) {
+                if (state is LeaseListFailed) {
                   return ErrorStateView(
                     message: state.message,
-                    retryOnTap: () {
-                      context.read<LeaseBloc>().add(
-                        GetLeases(
-                          orgId: authentication.profile?.orgId ?? "",
-                          isDraftOnly: widget.isSelectionMode,
+                    retryOnTap: () => _fetchLeases(),
+                  );
+                }
+
+                if (state is! LeaseListSuccess) {
+                  return const SizedBox.shrink();
+                }
+
+                final leases = state.leases;
+
+                if (leases.isEmpty) {
+                  return const EmptyStateView(message: 'Lease not found');
+                }
+
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppConsts.pSide,
+                          15,
+                          AppConsts.pSide,
+                          10,
                         ),
-                      );
-                    },
-                  );
-                }
+                        itemCount: leases.length,
+                        itemBuilder: (context, index) {
+                          final lease = leases[index];
 
-                // Success
-                if (state is LeasesSuccess) {
-                  final leases = state.leases;
-
-                  // Empty
-                  if (leases.isEmpty) {
-                    return const EmptyStateView(message:  'Lease not found');
-                  }
-
-                  return ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.fromLTRB(
-                      AppConsts.pSide,
-                      15,
-                      AppConsts.pSide,
-                      10,
-                    ),
-                    itemCount: leases.length + (state.isLoadingMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      // Pagination loader
-                      if (index == leases.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-
-                      final lease = leases[index];
-
-                      return GestureDetector(
-                        onTap: () {
-                          context.pop<Lease>(lease);
+                          return GestureDetector(
+                            onTap: () {
+                              context.pop<Lease>(lease);
+                            },
+                            child: LeaseCard(lease: lease),
+                          );
                         },
-                        child: LeaseCard(lease: lease),
-                      );
-                    },
-                  );
-                }
+                      ),
+                    ),
 
-                return const SizedBox.shrink();
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppConsts.pSide,
+                        8,
+                        AppConsts.pSide,
+                        16,
+                      ),
+                      child: LoadMoreButton(
+                        onTap: _loadMore,
+                        isLoading: state.isLoadingMore,
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
           ),

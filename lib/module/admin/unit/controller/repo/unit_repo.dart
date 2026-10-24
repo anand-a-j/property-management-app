@@ -3,11 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../../core/api/data_response.dart';
 import '../../../../../core/utils/error_log.dart';
 import '../../model/unit.dart';
+import '../../model/unit_list_item.dart';
 
 class UnitRepo {
   final SupabaseClient _client = Supabase.instance.client;
 
-  Future<DataResponse<List<Unit>>> getUnits({
+  Future<DataResponse<List<UnitListItem>>> getUnits({
     required String communityId,
     int page = 1,
     int limit = 15,
@@ -18,10 +19,9 @@ class UnitRepo {
       final to = from + limit - 1;
 
       var query = _client
-          .from('units')
+          .from('unit_list_view')
           .select()
-          .eq('community_id', communityId)
-          .isFilter('deleted_at', null);
+          .eq('community_id', communityId);
 
       if (searchQuery != null && searchQuery.trim().isNotEmpty) {
         query = query.ilike('name', '%${searchQuery.trim()}%');
@@ -31,34 +31,17 @@ class UnitRepo {
           .order('created_at', ascending: false)
           .range(from, to);
 
-      final units = (data as List).map((json) => Unit.fromJson(json)).toList();
+      final units = (data as List)
+          .map((json) => UnitListItem.fromJson(Map<String, dynamic>.from(json)))
+          .toList();
 
       return DataResponse(data: units);
     } catch (e, stack) {
-      return DataResponse(error: errorlog("UnitRepo.getUnits", e, stack));
+      return DataResponse(error: errorlog('UnitRepo.getUnits', e, stack));
     }
   }
 
-  Future<DataResponse<Unit>> getUnit({
-    required String unitId,
-    required String communityId,
-  }) async {
-    try {
-      final data = await _client
-          .from('units')
-          .select()
-          .eq('id', unitId)
-          .eq('community_id', communityId)
-          .isFilter('deleted_at', null)
-          .single();
-
-      return DataResponse(data: Unit.fromJson(data));
-    } catch (e, stack) {
-      return DataResponse(error: errorlog("UnitRepo.getUnit", e, stack));
-    }
-  }
-
-Future<DataResponse<Unit>> createUnit({
+  Future<DataResponse<Unit>> createUnit({
     required String communityId,
     required String name,
     required String unitType,

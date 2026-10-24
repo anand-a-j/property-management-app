@@ -15,7 +15,6 @@ class MaintenanceBloc extends Bloc<MaintenanceEvent, MaintenanceState> {
     : _maintenanceRepo = maintenanceRepo,
       super(const MaintenanceInitial()) {
     on<AddMaintenanceEvent>(_onAddMaintenance);
-    on<GetMaintenanceListEvent>(_onGetMaintenanceList);
   }
 
   Future<void> _onAddMaintenance(
@@ -38,32 +37,5 @@ class MaintenanceBloc extends Bloc<MaintenanceEvent, MaintenanceState> {
     }
 
     emit(const MaintenanceAddSuccess());
-  }
-
-  Future<void> _onGetMaintenanceList(
-    GetMaintenanceListEvent event,
-    Emitter<MaintenanceState> emit,
-  ) async {
-    emit(const MaintenanceLoading());
-
-    final response = await _maintenanceRepo.getMaintenanceList(
-      orgId: event.orgId.trim(),
-      unitId: event.unitId?.trim().isEmpty ?? true
-          ? null
-          : event.unitId!.trim(),
-      page: event.page,
-      limit: event.limit,
-    );
-
-    if (response.hasData) {
-      emit(MaintenanceListSuccess(maintenanceList: response.data!));
-      return;
-    }
-
-    emit(
-      MaintenanceFailed(
-        message: response.error ?? 'Unable to load maintenance requests',
-      ),
-    );
   }
 }

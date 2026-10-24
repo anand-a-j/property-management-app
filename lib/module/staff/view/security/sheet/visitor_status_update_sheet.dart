@@ -7,7 +7,15 @@ import '../../../../../core/core.dart';
 import '../../../../../core/widgets/status_update_bottom_sheet.dart';
 import '../../../../admin/visitor/model/visitor.dart';
 
-void showVisitorStatusUpdateSheet(BuildContext context, Visitor visitor) {
+void showVisitorStatusUpdateSheet(
+  BuildContext context,
+  Visitor visitor,
+  bool isManager,
+) {
+  final nextStatuses = visitor.status.nextStatuses(isManager: isManager);
+
+  if (nextStatuses.isEmpty) return;
+
   showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -20,8 +28,8 @@ void showVisitorStatusUpdateSheet(BuildContext context, Visitor visitor) {
         backgroundColor: Colors.white,
         child: StatusUpdateBottomSheet<VisitorStatus>(
           title: 'Update Visitor Status',
-          statuses: VisitorStatus.values,
-          initialStatus: VisitorStatus.pending,
+          statuses: nextStatuses,
+          initialStatus: nextStatuses.first,
           itemLabel: (item) => item.label,
           showRemark: false,
           isLoading: false,

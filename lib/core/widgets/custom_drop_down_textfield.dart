@@ -217,9 +217,9 @@ class _CustomDropdownFieldState<T extends Object>
                       fillColor: Colors.transparent,
 
                       contentPadding: const EdgeInsets.fromLTRB(
-                        20.0,
+                        12,
                         15.0,
-                        20.0,
+                        12,
                         15.0,
                       ),
 

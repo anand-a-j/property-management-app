@@ -7,13 +7,8 @@ import '../../../../../core/utils/string_utils.dart';
 import '../../../../../core/widgets/status_tag.dart';
 import '../../model/payment.dart';
 
-
 class PaymentCard extends StatelessWidget {
-  const PaymentCard({
-    super.key,
-    required this.payment,
-    this.onTap,
-  });
+  const PaymentCard({super.key, required this.payment, this.onTap});
 
   final Payment payment;
   final VoidCallback? onTap;
@@ -25,18 +20,13 @@ class PaymentCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: context.surface,
-            width: 1.0,
-          ),
+          border: Border.all(color: context.surface, width: 1.0),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -94,9 +84,7 @@ class PaymentCard extends StatelessWidget {
               Text(
                 '${StrHelper.formatCurrency(payment.amount)}'
                 '  |  ${payment.paymentType.label}',
-                style: context.bodyMedium?.copyWith(
-                  color: secondaryTextColor,
-                ),
+                style: context.bodyMedium?.copyWith(color: secondaryTextColor),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -104,9 +92,7 @@ class PaymentCard extends StatelessWidget {
               // Due Date
               Text(
                 'Due: ${StrHelper.formatDate(payment.dueDate)}',
-                style: context.bodyMedium?.copyWith(
-                  color: secondaryTextColor,
-                ),
+                style: context.bodyMedium?.copyWith(color: secondaryTextColor),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

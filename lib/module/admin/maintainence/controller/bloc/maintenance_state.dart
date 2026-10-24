@@ -19,15 +19,6 @@ class MaintenanceAddSuccess extends MaintenanceState {
   const MaintenanceAddSuccess();
 }
 
-class MaintenanceListSuccess extends MaintenanceState {
-  final List<MaintenanceRequest> maintenanceList;
-
-  const MaintenanceListSuccess({required this.maintenanceList});
-
-  @override
-  List<Object?> get props => [maintenanceList];
-}
-
 class MaintenanceFailed extends MaintenanceState {
   final String message;
 

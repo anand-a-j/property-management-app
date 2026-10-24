@@ -10,9 +10,6 @@ enum MaintenancePriority {
 
   @JsonValue('high')
   high,
-
-  @JsonValue('important')
-  important,
 }
 
 extension MaintenancePriorityX on MaintenancePriority {
@@ -24,8 +21,6 @@ extension MaintenancePriorityX on MaintenancePriority {
         return 'Medium';
       case MaintenancePriority.high:
         return 'High';
-      case MaintenancePriority.important:
-        return 'Important';
     }
   }
 
@@ -36,9 +31,8 @@ extension MaintenancePriorityX on MaintenancePriority {
       case MaintenancePriority.medium:
         return Colors.blue;
       case MaintenancePriority.high:
-        return Colors.orange;
-      case MaintenancePriority.important:
         return Colors.red;
+
     }
   }
 }

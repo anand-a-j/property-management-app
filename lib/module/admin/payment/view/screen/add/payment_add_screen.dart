@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naseem/core/enum/payment_status.dart';
 import 'package:naseem/core/enum/payment_type.dart';
 import 'package:naseem/module/admin/unit/model/unit.dart';
 
@@ -301,21 +303,65 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
   }
 
   Future<void> _selectDueDate() async {
-    final selectedDate = await showDatePicker(
+    final now = DateTime.now();
+    final initialDate = _dueDate ?? now;
+
+    DateTime selectedDate = initialDate;
+
+    await showCupertinoModalPopup<void>(
       context: context,
-      initialDate: _dueDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      builder: (context) {
+        return Container(
+          height: 300,
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        if (!mounted) return;
+
+                        setState(() {
+                          _dueDate = selectedDate;
+                          _dueDateController.text = _formatDate(selectedDate);
+                        });
+
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Done'),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: initialDate,
+                  minimumDate: DateTime(2000),
+                  maximumDate: DateTime(2100),
+                  onDateTimeChanged: (date) {
+                    selectedDate = date;
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
-
-    if (selectedDate == null || !mounted) {
-      return;
-    }
-
-    setState(() {
-      _dueDate = selectedDate;
-      _dueDateController.text = _formatDate(selectedDate);
-    });
   }
 
   String _formatDate(DateTime date) {
@@ -349,6 +395,7 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
         chequeNumber: chequeNumber.isEmpty ? null : chequeNumber,
         description: description.isEmpty ? null : description,
         chequeCopyPath: null,
+        status: PaymentStatus.draft,
       ),
     );
   }

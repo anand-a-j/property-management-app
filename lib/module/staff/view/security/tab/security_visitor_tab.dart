@@ -5,6 +5,7 @@ import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
+import '../../../../admin/visitor/controller/bloc/bloc/visitor_list_bloc.dart';
 import '../../../../admin/visitor/controller/bloc/visitor_bloc.dart';
 import '../../../../admin/visitor/view/list/widgets/visitor_card.dart';
 import '../sheet/visitor_status_update_sheet.dart';
@@ -32,25 +33,29 @@ class _SecurityVisitorTabState extends State<SecurityVisitorTab> {
   void _getVisitors() {
     if (widget.orgId.trim().isEmpty) return;
 
-    context.read<VisitorBloc>().add(GetVisitorsEvent(orgId: widget.orgId));
+    context.read<VisitorListBloc>().add(GetVisitorsEvent(orgId: widget.orgId));
   }
 
   void _loadMore() {
-    final state = context.read<VisitorBloc>().state;
+    final state = context.read<VisitorListBloc>().state;
 
     if (state is! VisitorListSuccess) return;
     if (!state.hasMore || state.isLoadingMore) return;
 
-    context.read<VisitorBloc>().add(LoadMoreVisitorsEvent(orgId: widget.orgId));
+    context.read<VisitorListBloc>().add(
+      LoadMoreVisitorsEvent(orgId: widget.orgId),
+    );
   }
 
   Future<void> _refreshVisitors() async {
-    final bloc = context.read<VisitorBloc>();
+    if (widget.orgId.trim().isEmpty) return;
+
+    final bloc = context.read<VisitorListBloc>();
 
     bloc.add(GetVisitorsEvent(orgId: widget.orgId));
 
     await bloc.stream.firstWhere(
-      (state) => state is VisitorListSuccess || state is VisitorFailed,
+      (state) => state is VisitorListSuccess || state is VisitorListFailed,
     );
   }
 
@@ -65,13 +70,13 @@ class _SecurityVisitorTabState extends State<SecurityVisitorTab> {
     return Column(
       children: [
         Expanded(
-          child: BlocBuilder<VisitorBloc, VisitorState>(
+          child: BlocBuilder<VisitorListBloc, VisitorListState>(
             builder: (context, state) {
-              if (state is VisitorLoading) {
+              if (state is VisitorListLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              if (state is VisitorFailed) {
+              if (state is VisitorListFailed) {
                 return ErrorStateView(
                   message: state.message,
                   retryOnTap: _getVisitors,
@@ -121,14 +126,13 @@ class _SecurityVisitorTabState extends State<SecurityVisitorTab> {
                         return LoadMoreButton(onTap: _loadMore);
                       }
 
+                      final visitor = visitors[index];
+
                       return GestureDetector(
                         onTap: () {
-                          showVisitorStatusUpdateSheet(
-                            context,
-                            visitors[index],
-                          );
+                          showVisitorStatusUpdateSheet(context, visitor, true);
                         },
-                        child: VisitorCard(visitor: visitors[index]),
+                        child: VisitorCard(visitor: visitor),
                       );
                     },
                   ),

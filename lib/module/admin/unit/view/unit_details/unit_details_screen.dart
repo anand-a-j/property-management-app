@@ -10,8 +10,11 @@ import 'package:naseem/routes/args/add_maintenance_args.dart';
 
 import '../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../routes/router_path.dart';
+import '../../../../staff/controller/maintaince_staff/bloc/maintenance_staff_bloc.dart';
+import '../../../../staff/controller/maintaince_staff/bloc/status/maintenance_status_bloc.dart';
 import '../../../lease/controller/blocs/bloc/active_lease_bloc.dart';
-import '../../../lease/controller/blocs/bloc/lease_bloc.dart';
+import '../../../lease/controller/blocs/bloc/lease_list_bloc.dart'
+    show GetLeases, LeaseListBloc;
 import '../../model/unit.dart';
 import 'tab/unit_mainteance_tab.dart';
 import 'tab/unit_overview_tab.dart';
@@ -47,7 +50,7 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
       GetActiveLease(orgId: orgId, unitId: widget.unit.id),
     );
 
-    context.read<LeaseBloc>().add(
+    context.read<LeaseListBloc>().add(
       GetLeases(
         orgId: orgId,
         unitId: widget.unit.id,
@@ -74,29 +77,34 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
   Widget build(BuildContext context) {
     final isMaintenanceTab = _tabController.index == 1;
 
-    return BlocListener<ActiveLeaseBloc, ActiveLeaseState>(
-      listener: (context, state) {
-        if (state is LeaseAssignSuccess) {
-          Snack.success("Lease assigned to unit successfully.");
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ActiveLeaseBloc, ActiveLeaseState>(
+          listener: (context, state) {
+            if (state is LeaseAssignSuccess) {
+              Snack.success("Lease assigned to unit successfully.");
 
-          final orgId = authentication.profile?.orgId ?? '';
+              final orgId = authentication.profile?.orgId ?? '';
 
-          context.read<ActiveLeaseBloc>().add(
-            GetActiveLease(orgId: orgId, unitId: widget.unit.id),
-          );
+              context.read<ActiveLeaseBloc>().add(
+                GetActiveLease(orgId: orgId, unitId: widget.unit.id),
+              );
 
-          context.read<LeaseBloc>().add(
-            GetLeases(
-              orgId: orgId,
-              unitId: widget.unit.id,
-              searchQuery: '',
-              isDraftOnly: false,
-            ),
-          );
-        } else if (state is LeaseAssignFailed) {
-          Snack.error(state.message);
-        }
-      },
+              context.read<LeaseListBloc>().add(
+                GetLeases(
+                  orgId: orgId,
+                  unitId: widget.unit.id,
+                  searchQuery: '',
+                  isDraftOnly: false,
+                ),
+              );
+            } else if (state is LeaseAssignFailed) {
+              Snack.error(state.message);
+            }
+          },
+        ),
+       
+      ],
       child: Scaffold(
         appBar: CustomAppBar(
           title: 'Unit',

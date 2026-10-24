@@ -42,7 +42,6 @@ const _$MaintenancePriorityEnumMap = {
   MaintenancePriority.low: 'low',
   MaintenancePriority.medium: 'medium',
   MaintenancePriority.high: 'high',
-  MaintenancePriority.important: 'important',
 };
 
 const _$MaintenanceStatusEnumMap = {

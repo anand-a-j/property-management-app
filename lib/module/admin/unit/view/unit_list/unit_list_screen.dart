@@ -7,6 +7,7 @@ import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/core/widgets/load_more_button.dart';
 import 'package:naseem/module/admin/community/model/community.dart';
+import 'package:naseem/module/admin/unit/model/unit_list_item.dart';
 import 'package:naseem/module/admin/unit/view/unit_list/widgets/unit_card.dart';
 import 'package:naseem/routes/args/add_unit_args.dart';
 import 'package:naseem/routes/args/unit_details_args.dart';
@@ -119,7 +120,7 @@ class _UnitListScreenState extends State<UnitListScreen> {
                           context.push(
                             RouterPath.unitDetails,
                             extra: UnitDetailsArgs(
-                              unit: unit,
+                              unit: unit.toUnit(),
                               community: widget.community,
                             ),
                           );

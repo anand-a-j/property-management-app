@@ -33,8 +33,6 @@ class LeaseUpdateSuccess extends LeaseState {
   List<Object?> get props => [lease];
 }
 
-
-
 class LeaseFailed extends LeaseState {
   final String message;
 
@@ -46,21 +44,6 @@ class LeaseFailed extends LeaseState {
 
 class LeasesLoading extends LeaseState {
   const LeasesLoading();
-}
-
-class LeasesSuccess extends LeaseState {
-  final List<Lease> leases;
-  final bool hasMore;
-  final bool isLoadingMore;
-
-  const LeasesSuccess({
-    required this.leases,
-    required this.hasMore,
-    this.isLoadingMore = false,
-  });
-
-  @override
-  List<Object?> get props => [leases, hasMore, isLoadingMore];
 }
 
 class LeasesFailed extends LeaseState {

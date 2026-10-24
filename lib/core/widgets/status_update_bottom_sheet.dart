@@ -115,15 +115,35 @@ class _StatusUpdateBottomSheetState<T extends Object>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppConsts.pLarge),
+              const SizedBox(height: AppConsts.pMedium),
 
               // Title
-              Text(
-                widget.title,
-                style: context.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: context.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: context.secondaryContainer,
+                      radius: 18,
+                      child: Icon(
+                        Icons.close,
+                        size: 18,
+                        color: context.secondary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
 
-              const SizedBox(height: AppConsts.pLarge),
+              const SizedBox(height: AppConsts.pMedium),
 
               // Generic dropdown
               CustomDropdownField<T>(
@@ -156,7 +176,7 @@ class _StatusUpdateBottomSheetState<T extends Object>
                 ),
               ],
 
-              const SizedBox(height: AppConsts.pLarge),
+              const SizedBox(height: AppConsts.pMedium),
 
               // Submit button
               SizedBox(
@@ -170,8 +190,6 @@ class _StatusUpdateBottomSheetState<T extends Object>
                   ),
                 ),
               ),
-
-              const SizedBox(height: AppConsts.pSmall),
             ],
           ),
         ),

@@ -44,6 +44,7 @@ import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
 import 'args/add_unit_args.dart';
 import 'args/lease_details_args.dart';
+import 'args/maintenance_list_args.dart';
 import 'args/unit_details_args.dart';
 import 'args/unit_list_args.dart';
 import 'args/visitor_list_args.dart';
@@ -279,9 +280,14 @@ final GoRouter router = GoRouter(
       path: RouterPath.maintenanceList,
       name: 'maintenance-list-screen',
       pageBuilder: (context, state) {
+        final args = state.extra as MaintenanceListArgs;
+
         return SlideTransitionPage(
           beginOffset: const Offset(1, 0),
-          page: const MaintenanceListScreen(),
+          page: MaintenanceListScreen(
+            unitId: args.unitId,
+            isFromResident: args.isFromResident,
+          ),
         );
       },
     ),

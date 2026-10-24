@@ -15,8 +15,14 @@ class VisitorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFinalStatus =
+        visitor.status == VisitorStatus.cancelled ||
+        visitor.status == VisitorStatus.checkedOut;
+
+    final updatedAt = visitor.updatedAt;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 8, top: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: context.surface, width: 1.0),
@@ -44,9 +50,7 @@ class VisitorCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-
                 const SizedBox(width: 10),
-
                 StatusTag(
                   status: visitor.status.label,
                   color: visitor.status.color,
@@ -71,52 +75,67 @@ class VisitorCard extends StatelessWidget {
             ),
 
             // Visit date and time
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_month_outlined,
-                  size: 16,
-                  color: context.secondary.withValues(alpha: 0.75),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    StrHelper.formatDateTime(visitor.visitAt),
-                    style: context.bodyMedium?.copyWith(
-                      color: context.secondary.withValues(alpha: 0.75),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            _VisitorInfoRow(
+              icon: Icons.calendar_month_outlined,
+              text: StrHelper.formatDateTime(visitor.visitAt),
+              color: context.secondary,
             ),
 
-            // Visitor phone number
+            // Phone number
             if (visitor.phone != null && visitor.phone!.trim().isNotEmpty)
-              Row(
-                children: [
-                  Icon(
-                    Icons.phone_outlined,
-                    size: 16,
-                    color: context.secondary.withValues(alpha: 0.75),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      visitor.phone!,
-                      style: context.bodyMedium?.copyWith(
-                        color: context.secondary.withValues(alpha: 0.75),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+              _VisitorInfoRow(
+                icon: Icons.phone_outlined,
+                text: visitor.phone!.trim(),
+                color: context.secondary,
+              ),
+
+            // Final status and last updated time
+            if (isFinalStatus)
+              _VisitorInfoRow(
+                icon: visitor.status == VisitorStatus.checkedOut
+                    ? Icons.logout_rounded
+                    : Icons.event_busy_outlined,
+                text: updatedAt != null
+                    ? '${visitor.status.label} · '
+                          '${StrHelper.formatDateTime(updatedAt)}'
+                    : visitor.status.label,
+                color: visitor.status.color,
               ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _VisitorInfoRow extends StatelessWidget {
+  const _VisitorInfoRow({
+    required this.icon,
+    required this.text,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final mutedColor = color.withValues(alpha: 0.75);
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: mutedColor),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: context.bodyMedium?.copyWith(color: mutedColor, height: 1.2),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -31,9 +31,7 @@ class MaintenanceStatusBloc
       rejectionReason: event.rejectionReason?.trim(),
     );
 
-    if (response.hasData) {
-      emit(MaintenanceStatusSuccess());
-    } else {
+    if (response.hasError) {
       emit(
         MaintenanceStatusFailed(
           errorMessage:
@@ -41,6 +39,9 @@ class MaintenanceStatusBloc
               'Failed to update maintenance status.',
         ),
       );
+      return;
     }
+
+    emit(MaintenanceStatusSuccess());
   }
 }

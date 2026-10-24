@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/module/admin/visitor/view/list/widgets/visitor_card.dart';
 
 import '../../../../../core/core.dart';
+import '../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
+import '../../../../auth/core/controller/service/auth_service.dart';
+import '../../../../staff/view/security/sheet/visitor_status_update_sheet.dart';
+import '../../controller/bloc/bloc/visitor_list_bloc.dart';
 import '../../controller/bloc/visitor_bloc.dart';
 
 class VisitorListScreen extends StatefulWidget {
@@ -34,124 +37,151 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
   }
 
   void _getVisitors() {
-    if (widget.isFromResident && widget.unitId == null) return;
+    if (widget.isFromResident && (widget.unitId?.trim().isEmpty ?? true)) {
+      return;
+    }
 
-    context.read<VisitorBloc>().add(
+    context.read<VisitorListBloc>().add(
       GetVisitorsEvent(orgId: widget.orgId, unitId: widget.unitId),
     );
   }
 
   void _loadMore() {
-    if (widget.isFromResident && widget.unitId == null) return;
+    if (widget.isFromResident && (widget.unitId?.trim().isEmpty ?? true)) {
+      return;
+    }
 
-    context.read<VisitorBloc>().add(
+    context.read<VisitorListBloc>().add(
       LoadMoreVisitorsEvent(orgId: widget.orgId, unitId: widget.unitId),
+    );
+  }
+
+  Future<void> _refreshVisitors() async {
+    if (widget.isFromResident && (widget.unitId?.trim().isEmpty ?? true)) {
+      return;
+    }
+
+    final bloc = context.read<VisitorListBloc>();
+
+    bloc.add(GetVisitorsEvent(orgId: widget.orgId, unitId: widget.unitId));
+
+    await bloc.stream.firstWhere(
+      (state) => state is VisitorListSuccess || state is VisitorListFailed,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Visitors',
-        leadingOnTap: () =>
-            widget.isFromResident ? null : Navigator.pop(context),
-      ),
-      body: BlocBuilder<VisitorBloc, VisitorState>(
-        builder: (context, state) {
-          // Initial loading
-          if (state is VisitorLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return BlocListener<VisitorBloc, VisitorState>(
+      listener: (context, state) {
+        if (state is VisitorStatusUpdated) {
+          Snack.success("Update status successfully!!!");
 
-          // Error
-          if (state is VisitorFailed) {
-            return ErrorStateView(
-              message: state.message,
-              retryOnTap: _getVisitors,
-            );
-          }
+          context.read<VisitorListBloc>().add(
+            GetVisitorsEvent(orgId: authentication.profile?.orgId ?? ""),
+          );
+        } else if (state is VisitorStatusUpdateFailed) {
+          Snack.error(state.message);
+        }
+      },
 
-          // Success
-          if (state is VisitorListSuccess) {
-            final visitors = state.visitors;
-
-            // Empty
-            if (visitors.isEmpty) {
-              return const EmptyStateView(message: 'No visitors found');
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: 'Visitors',
+          leadingOnTap: () =>
+              widget.isFromResident ? null : Navigator.pop(context),
+        ),
+        body: BlocBuilder<VisitorListBloc, VisitorListState>(
+          builder: (context, state) {
+            // Initial loading
+            if (state is VisitorListLoading) {
+              return const Center(child: CircularProgressIndicator());
             }
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                _getVisitors();
-                await context.read<VisitorBloc>().stream.firstWhere(
-                  (state) =>
-                      state is VisitorListSuccess || state is VisitorFailed,
+            // Error
+            if (state is VisitorListFailed) {
+              return ErrorStateView(
+                message: state.message,
+                retryOnTap: _getVisitors,
+              );
+            }
+
+            // Success
+            if (state is VisitorListSuccess) {
+              final visitors = state.visitors;
+
+              // Empty
+              if (visitors.isEmpty) {
+                return RefreshIndicator(
+                  onRefresh: _refreshVisitors,
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      SizedBox(height: 180),
+                      EmptyStateView(message: 'No visitors found'),
+                    ],
+                  ),
                 );
-              },
-              child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(
-                  AppConsts.pSide,
-                  16,
-                  AppConsts.pSide,
-                  0,
+              }
+
+              return RefreshIndicator(
+                onRefresh: _refreshVisitors,
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppConsts.pSide,
+                    4,
+                    AppConsts.pSide,
+                    0,
+                  ),
+                  itemCount: visitors.length + 1,
+                  itemBuilder: (context, index) {
+                    // Pagination
+                    if (index == visitors.length) {
+                      if (!state.hasMore) {
+                        return const SizedBox(height: 20);
+                      }
+
+                      if (state.isLoadingMore) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      return LoadMoreButton(onTap: _loadMore);
+                    }
+
+                    final visitor = visitors[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        showVisitorStatusUpdateSheet(context, visitor, true);
+                      },
+                      child: VisitorCard(visitor: visitor),
+                    );
+                  },
                 ),
-                itemCount: visitors.length + 1,
-                itemBuilder: (context, index) {
-                  // Pagination
-                  if (index == visitors.length) {
-                    if (!state.hasMore) {
-                      return const SizedBox(height: 20);
-                    }
+              );
+            }
 
-                    if (state.isLoadingMore) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
+            return widget.isFromResident
+                ? const EmptyStateView(message: 'No visitors found')
+                : const SizedBox.shrink();
+          },
+        ),
+        floatingActionButton: widget.isFromResident
+            ? null
+            : FloatingAddButton(
+                title: 'Add Visitor',
+                onTap: () async {
+                  final result = await context.push<bool>('/add-visitor');
 
-                    return LoadMoreButton(onTap: _loadMore);
+                  if (!mounted) return;
+
+                  if (result == true) {
+                    _getVisitors();
                   }
-
-                  final visitor = visitors[index];
-
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: VisitorCard(visitor: visitor),
-                  );
                 },
               ),
-            );
-          }
-
-          return widget.isFromResident
-              ? const EmptyStateView(message: 'No visitors found')
-              : const SizedBox.shrink();
-        },
       ),
-      floatingActionButton: widget.isFromResident
-          ? null
-          : FloatingAddButton(
-              title: 'Add Visitor',
-              onTap: () async {
-                // context.push(RouterPath.addVisitor);
-
-                final result = await context.push<bool>('/add-visitor');
-
-                if (!mounted) return;
-
-                if (result == true) {
-                  // ignore: use_build_context_synchronously
-                  context.read<VisitorBloc>().add(
-                    GetVisitorsEvent(
-                      orgId: widget.orgId,
-                      unitId: widget.unitId,
-                    ),
-                  );
-                }
-              },
-            ),
     );
   }
 }

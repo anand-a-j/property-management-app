@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/core.dart';
+import 'package:naseem/core/widgets/empty_state_view.dart';
+import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../controller/security/bloc/security_lease_movement_bloc.dart';
@@ -42,13 +44,7 @@ class _SecurityRequestsTabState extends State<SecurityRequestsTab> {
             final movements = state.movements;
 
             if (movements.isEmpty) {
-              return ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: const [
-                  SizedBox(height: 120),
-                  Center(child: Text('No lease movements found')),
-                ],
-              );
+              return EmptyStateView(message: "No requests");
             }
 
             return ListView.builder(
@@ -65,28 +61,9 @@ class _SecurityRequestsTabState extends State<SecurityRequestsTab> {
           }
 
           if (state is SecurityLeaseMovementFailed) {
-            return ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                const SizedBox(height: 100),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.error_outline, size: 40),
-                        const SizedBox(height: 12),
-                        Text(state.message, textAlign: TextAlign.center),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _fetchMovements,
-                          child: const Text('Retry'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            return ErrorStateView(
+              retryOnTap: _fetchMovements,
+              message: state.message,
             );
           }
 

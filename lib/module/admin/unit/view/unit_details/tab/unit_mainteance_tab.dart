@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/core.dart';
+import '../../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../../core/widgets/error_state_view.dart';
 import '../../../../../auth/core/controller/service/auth_service.dart';
-import '../../../../maintainence/controller/bloc/maintenance_bloc.dart';
+import '../../../../../staff/controller/maintaince_staff/bloc/status/maintenance_status_bloc.dart';
+import '../../../../../staff/view/maintaince_staff/sheet/show_maintenance_update_sheet.dart';
+import '../../../../maintainence/controller/bloc/bloc/maintenance_list_bloc.dart';
 import '../../../../maintainence/view/list/widgets/maintenance_card.dart';
 
 class UnitMainteanceTab extends StatefulWidget {
@@ -25,7 +28,7 @@ class _UnitMainteanceTabState extends State<UnitMainteanceTab> {
   }
 
   void _getMaintenanceList() {
-    context.read<MaintenanceBloc>().add(
+    context.read<MaintenanceListBloc>().add(
       GetMaintenanceListEvent(
         orgId: authentication.profile?.orgId ?? '',
         unitId: widget.unitId,
@@ -35,49 +38,66 @@ class _UnitMainteanceTabState extends State<UnitMainteanceTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MaintenanceBloc, MaintenanceState>(
-      builder: (context, state) {
-        if (state is MaintenanceLoading) {
-          return const Center(child: CircularProgressIndicator());
+    return BlocListener<MaintenanceStatusBloc, MaintenanceStatusState>(
+      listener: (context, state) {
+        if (state is MaintenanceStatusSuccess) {
+          Snack.success("Maintenance status updated successfully");
+          _getMaintenanceList();
+        } else if (state is MaintenanceStatusFailed) {
+          Snack.error(state.errorMessage);
         }
+      },
 
-        if (state is MaintenanceFailed) {
-          return ErrorStateView(
-            message: state.message,
-            retryOnTap: _getMaintenanceList,
-          );
-        }
+      child: BlocBuilder<MaintenanceListBloc, MaintenanceListState>(
+        builder: (context, state) {
+          if (state is MaintenanceListLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (state is MaintenanceListSuccess) {
-          final maintenanceList = state.maintenanceList;
-
-          if (maintenanceList.isEmpty) {
-            return EmptyStateView(
-              message: 'No maintenance requests for this unit',
+          if (state is MaintenanceListFailed) {
+            return ErrorStateView(
+              message: state.message,
+              retryOnTap: _getMaintenanceList,
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(
-              AppConsts.pSide,
-              15,
-              AppConsts.pSide,
-              10,
-            ),
-            itemCount: maintenanceList.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: MaintenanceCard(
-                  maintenanceRequest: maintenanceList[index],
-                ),
-              );
-            },
-          );
-        }
+          if (state is MaintenanceListSuccess) {
+            final maintenanceList = state.maintenanceList;
 
-        return const SizedBox.shrink();
-      },
+            if (maintenanceList.isEmpty) {
+              return EmptyStateView(
+                message: 'No maintenance requests for this unit',
+              );
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.fromLTRB(
+                AppConsts.pSide,
+                8,
+                AppConsts.pSide,
+                0,
+              ),
+              itemCount: maintenanceList.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    showMaintenanceStatusUpdateSheet(
+                      context,
+                      maintenanceList[index],
+                      true,
+                    );
+                  },
+                  child: MaintenanceCard(
+                    maintenanceRequest: maintenanceList[index],
+                  ),
+                );
+              },
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

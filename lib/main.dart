@@ -11,14 +11,18 @@ import 'package:naseem/module/admin/community/controller/repo/community_repo.dar
 import 'package:naseem/module/admin/home/controller/repo/dashboard_stats_repo.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_bloc.dart';
+import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_list_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/lease_movement_bloc.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_movement_repo.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
+import 'package:naseem/module/admin/maintainence/controller/bloc/bloc/maintenance_list_bloc.dart';
+import 'package:naseem/module/admin/payment/controller/bloc/bloc/payment_list_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/bloc/payment_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/repo/payment_repo.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/bloc/unit_list_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/unit_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/repo/unit_repo.dart';
+import 'package:naseem/module/admin/visitor/controller/bloc/bloc/visitor_list_bloc.dart';
 import 'package:naseem/module/admin/visitor/controller/bloc/visitor_bloc.dart';
 import 'package:naseem/module/admin/visitor/controller/repo/visitor_repo.dart';
 import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
@@ -123,6 +127,19 @@ void main() async {
         BlocProvider<MaintenanceStatusBloc>(
           create: (context) =>
               MaintenanceStatusBloc(maintenanceRepo: MaintenanceRepo()),
+        ),
+        BlocProvider<VisitorListBloc>(
+          create: (context) => VisitorListBloc(visitorRepo: VisitorRepo()),
+        ),
+        BlocProvider<PaymentListBloc>(
+          create: (context) => PaymentListBloc(paymentRepo: PaymentRepo()),
+        ),
+        BlocProvider<LeaseListBloc>(
+          create: (context) => LeaseListBloc(leaseRepo: LeaseRepo()),
+        ),
+        BlocProvider<MaintenanceListBloc>(
+          create: (context) =>
+              MaintenanceListBloc(maintenanceRepo: MaintenanceRepo()),
         ),
       ],
       child: const MyApp(),

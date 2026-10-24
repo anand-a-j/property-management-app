@@ -17,108 +17,106 @@ class SecurityLeaseMovementCard extends StatelessWidget {
     final status = _formatStatus(leaseMovement.status);
 
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      margin: const EdgeInsets.only(top: 8, bottom: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: context.surface, width: 1.0),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 9,
-          children: [
-            // Movement type and status
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    movementType,
-                    style: context.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.primary,
-                      height: 1.2,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 9,
+        children: [
+          // Movement type and status
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  movementType,
+                  style: context.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.primary,
+                    height: 1.2,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: 10),
-                StatusTag(status: status.label, color: status.color),
-              ],
+              ),
+              const SizedBox(width: 10),
+              StatusTag(status: status.label, color: status.color),
+            ],
+          ),
+
+          // Lease number
+          if (_hasValue(leaseMovement.leaseNumber))
+            _buildInfoRow(
+              context,
+              icon: Icons.description_outlined,
+              text: 'Lease: ${leaseMovement.leaseNumber!.trim()}',
             ),
 
-            // Lease number
-            if (_hasValue(leaseMovement.leaseNumber))
-              _buildInfoRow(
-                context,
-                icon: Icons.description_outlined,
-                text: 'Lease: ${leaseMovement.leaseNumber!.trim()}',
-              ),
+          // Unit name and resident name
+          if (_hasValue(leaseMovement.unitName))
+            _buildInfoRow(
+              context,
+              icon: Icons.apartment_outlined,
+              text: 'Unit: ${leaseMovement.unitName!.trim()}',
+            ),
 
-            // Unit name and resident name
-            if (_hasValue(leaseMovement.unitName))
-              _buildInfoRow(
-                context,
-                icon: Icons.apartment_outlined,
-                text: 'Unit: ${leaseMovement.unitName!.trim()}',
-              ),
+          if (_hasValue(leaseMovement.residentName))
+            _buildInfoRow(
+              context,
+              icon: Icons.person_outline,
+              text: 'Resident: ${leaseMovement.residentName!.trim()}',
+            ),
 
-            if (_hasValue(leaseMovement.residentName))
-              _buildInfoRow(
-                context,
-                icon: Icons.person_outline,
-                text: 'Resident: ${leaseMovement.residentName!.trim()}',
-              ),
+          // Requested by
+          if (_hasValue(leaseMovement.requestedByName))
+            _buildInfoRow(
+              context,
+              icon: Icons.person_add_alt_outlined,
+              text:
+                  'Requested by: '
+                  '${leaseMovement.requestedByName!.trim()}',
+            ),
 
-            // Requested by
-            if (_hasValue(leaseMovement.requestedByName))
-              _buildInfoRow(
-                context,
-                icon: Icons.person_add_alt_outlined,
-                text:
-                    'Requested by: '
-                    '${leaseMovement.requestedByName!.trim()}',
-              ),
+          // Request date
+          if (leaseMovement.requestedAt != null)
+            _buildInfoRow(
+              context,
+              icon: Icons.calendar_month_outlined,
+              text: StrHelper.formatDateTime(leaseMovement.requestedAt!),
+            ),
 
-            // Request date
-            if (leaseMovement.requestedAt != null)
-              _buildInfoRow(
-                context,
-                icon: Icons.calendar_month_outlined,
-                text: StrHelper.formatDateTime(leaseMovement.requestedAt!),
+          // Lease duration
+          if (leaseMovement.startDate != null || leaseMovement.endDate != null)
+            _buildInfoRow(
+              context,
+              icon: Icons.date_range_outlined,
+              text: _formatLeaseDuration(
+                leaseMovement.startDate,
+                leaseMovement.endDate,
               ),
+            ),
 
-            // Lease duration
-            if (leaseMovement.startDate != null ||
-                leaseMovement.endDate != null)
-              _buildInfoRow(
-                context,
-                icon: Icons.date_range_outlined,
-                text: _formatLeaseDuration(
-                  leaseMovement.startDate,
-                  leaseMovement.endDate,
-                ),
-              ),
+          // Manager rejection reason
+          if (leaseMovement.status == 'rejected_by_manager' &&
+              _hasValue(leaseMovement.managerRejectionReason))
+            _buildRejectionReason(
+              context,
+              leaseMovement.managerRejectionReason!,
+            ),
 
-            // Manager rejection reason
-            if (leaseMovement.status == 'rejected_by_manager' &&
-                _hasValue(leaseMovement.managerRejectionReason))
-              _buildRejectionReason(
-                context,
-                leaseMovement.managerRejectionReason!,
-              ),
-
-            // Security rejection reason
-            if (leaseMovement.status == 'rejected_by_security' &&
-                _hasValue(leaseMovement.securityRejectionReason))
-              _buildRejectionReason(
-                context,
-                leaseMovement.securityRejectionReason!,
-              ),
-          ],
-        ),
+          // Security rejection reason
+          if (leaseMovement.status == 'rejected_by_security' &&
+              _hasValue(leaseMovement.securityRejectionReason))
+            _buildRejectionReason(
+              context,
+              leaseMovement.securityRejectionReason!,
+            ),
+        ],
       ),
     );
   }

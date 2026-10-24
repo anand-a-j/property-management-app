@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:naseem/module/admin/unit/model/unit_list_item.dart';
 
 import '../../../model/unit.dart';
 import '../../repo/unit_repo.dart';
@@ -18,7 +19,7 @@ class UnitListBloc extends Bloc<UnitListEvent, UnitListState> {
   String _communityId = '';
   String _searchQuery = '';
 
-  List<Unit> _units = [];
+  List<UnitListItem> _units = [];
 
   bool _hasMore = true;
   bool _isLoadingMore = false;

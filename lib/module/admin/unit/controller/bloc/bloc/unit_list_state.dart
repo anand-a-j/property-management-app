@@ -16,7 +16,7 @@ class UnitListLoading extends UnitListState {
 }
 
 class UnitLoadSuccess extends UnitListState {
-  final List<Unit> units;
+  final List<UnitListItem> units;
   final bool hasMore;
   final bool isLoadingMore;
 

@@ -313,7 +313,7 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
           ? null
           : _phoneController.text.trim(),
       visitAt: visitAt,
-      visitType: _visitType!,
+      visitType: _visitType!.name,
       purpose: _purposeController.text.trim().isEmpty
           ? null
           : _purposeController.text.trim(),

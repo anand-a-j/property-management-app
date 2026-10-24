@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/enum/sign_up_type.dart';
+import 'package:naseem/module/admin/resident/controller/bloc/resident_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/staff/controller/stafff_bloc/staff_bloc.dart';
 
@@ -141,6 +142,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Navigator.pop(context);
           } else if (widget.type == SignUpType.resident) {
             Snack.success('Success');
+            context.read<ResidentBloc>().add(
+              FetchResidents(orgId: authentication.profile?.orgId ?? ""),
+            );
             Navigator.pop(context);
           } else {
             Snack.success('Sign up success, more features coming soon');

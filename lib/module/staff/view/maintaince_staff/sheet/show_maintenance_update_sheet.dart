@@ -11,7 +11,12 @@ import '../../../controller/maintaince_staff/bloc/status/maintenance_status_bloc
 void showMaintenanceStatusUpdateSheet(
   BuildContext context,
   MaintenanceRequest request,
+  bool isManager,
 ) {
+  final nextStatuses = request.status.nextStatuses(isManager: isManager);
+
+  if (nextStatuses.isEmpty) return;
+
   showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -27,9 +32,7 @@ void showMaintenanceStatusUpdateSheet(
           remarkHint: 'Enter remarks or describe the work performed',
           submitLabel: 'Update Status',
           remarkLabel: 'Remarks',
-          statuses: MaintenanceStatus.values
-              .where((status) => status != MaintenanceStatus.pendingReview)
-              .toList(),
+          statuses: nextStatuses,
           initialStatus: request.status,
           itemLabel: (status) => status.label,
           showRemark: true,

@@ -22,6 +22,23 @@ enum VisitorStatus {
 }
 
 extension VisitorStatusExtension on VisitorStatus {
+  String get dbValue {
+    switch (this) {
+      case VisitorStatus.pending:
+        return 'pending';
+      case VisitorStatus.approved:
+        return 'approved';
+      case VisitorStatus.rejected:
+        return 'rejected';
+      case VisitorStatus.checkedIn:
+        return 'checked_in';
+      case VisitorStatus.checkedOut:
+        return 'checked_out';
+      case VisitorStatus.cancelled:
+        return 'cancelled';
+    }
+  }
+
   String get label {
     switch (this) {
       case VisitorStatus.pending:
@@ -53,6 +70,34 @@ extension VisitorStatusExtension on VisitorStatus {
         return Colors.teal;
       case VisitorStatus.cancelled:
         return Colors.grey;
+    }
+  }
+
+  List<VisitorStatus> nextStatuses({required bool isManager}) {
+    switch (this) {
+      case VisitorStatus.pending:
+        return isManager
+            ? [
+                VisitorStatus.approved,
+                VisitorStatus.rejected,
+                VisitorStatus.cancelled,
+              ]
+            : [];
+
+      case VisitorStatus.approved:
+        return isManager
+            ? [VisitorStatus.cancelled]
+            : [VisitorStatus.checkedIn, VisitorStatus.cancelled];
+
+      case VisitorStatus.rejected:
+      case VisitorStatus.checkedOut:
+      case VisitorStatus.cancelled:
+        return [];
+
+      case VisitorStatus.checkedIn:
+        return isManager
+            ? [VisitorStatus.cancelled]
+            : [VisitorStatus.checkedOut];
     }
   }
 }

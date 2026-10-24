@@ -16,6 +16,7 @@ import '../../../../auth/core/model/profile.dart';
 import '../../../unit/model/unit.dart';
 import '../../controller/blocs/bloc/active_lease_bloc.dart';
 import '../../controller/blocs/bloc/lease_bloc.dart';
+import '../../controller/blocs/bloc/lease_list_bloc.dart';
 import '../../model/lease.dart';
 
 class AddLeaseScreen extends StatefulWidget {
@@ -98,7 +99,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
             ),
           );
 
-          context.read<LeaseBloc>().add(
+          context.read<LeaseListBloc>().add(
             GetLeases(
               orgId: authentication.profile?.orgId ?? "",
               unitId: widget.unit.id,
@@ -120,7 +121,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
             ),
           );
 
-          context.read<LeaseBloc>().add(
+          context.read<LeaseListBloc>().add(
             GetLeases(
               orgId: authentication.profile?.orgId ?? "",
               unitId: widget.unit.id,

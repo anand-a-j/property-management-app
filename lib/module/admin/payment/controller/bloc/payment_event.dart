@@ -17,6 +17,7 @@ class CreatePaymentEvent extends PaymentEvent {
   final String? chequeNumber;
   final String? description;
   final String? chequeCopyPath;
+  final PaymentStatus status;
 
   const CreatePaymentEvent({
     required this.orgId,
@@ -28,6 +29,7 @@ class CreatePaymentEvent extends PaymentEvent {
     this.chequeNumber,
     this.description,
     this.chequeCopyPath,
+    required this.status,
   });
 
   @override
@@ -41,40 +43,31 @@ class CreatePaymentEvent extends PaymentEvent {
     chequeNumber,
     description,
     chequeCopyPath,
+    status,
   ];
 }
 
-class MarkPaymentAsPaidEvent extends PaymentEvent {
-  final String orgId;
+class UpdatePaymentStatusEvent extends PaymentEvent {
   final String paymentId;
+  final PaymentStatus currentStatus;
+  final PaymentStatus newStatus;
   final DateTime? paidDate;
+  final String? bounceReason;
 
-  const MarkPaymentAsPaidEvent({
-    required this.orgId,
+  const UpdatePaymentStatusEvent({
     required this.paymentId,
+    required this.currentStatus,
+    required this.newStatus,
     this.paidDate,
+    this.bounceReason,
   });
 
   @override
-  List<Object?> get props => [orgId, paymentId, paidDate];
-}
-
-class FetchPaymentsEvent extends PaymentEvent {
-  final String orgId;
-  final String? leaseId;
-
-  const FetchPaymentsEvent({required this.orgId, this.leaseId});
-
-  @override
-  List<Object?> get props => [orgId, leaseId];
-}
-
-class LoadMorePayments extends PaymentEvent {
-  final String orgId;
-  final String? leaseId;
-
-  const LoadMorePayments({required this.orgId, this.leaseId});
-
-  @override
-  List<Object?> get props => [orgId, leaseId];
+  List<Object?> get props => [
+    paymentId,
+    currentStatus,
+    newStatus,
+    paidDate,
+    bounceReason,
+  ];
 }

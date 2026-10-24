@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naseem/core/enum/lease_status.dart';
 import 'package:naseem/core/widgets/status_tag.dart';
 import 'package:naseem/module/admin/community/model/community.dart';
+import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 
 import '../../../../../../core/core.dart';
 import '../../../../../../core/enum/unit_status.dart';
@@ -30,7 +33,7 @@ class UnitHeaderCard extends StatelessWidget {
             width: 70,
             height: 70,
             decoration: BoxDecoration(
-              color: context.surface.withValues(alpha: 0.2),
+              color: AppColorScheme.backgroundColor(2),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(7),
                 bottomLeft: Radius.circular(7),
@@ -40,7 +43,7 @@ class UnitHeaderCard extends StatelessWidget {
               child: Icon(
                 Icons.apartment,
                 size: 36,
-                color: context.secondaryContainer,
+                color: AppColorScheme.iconColor(2),
               ),
             ),
           ),
@@ -67,9 +70,21 @@ class UnitHeaderCard extends StatelessWidget {
 
                     const SizedBox(width: 8),
 
-                    StatusTag(
-                      status: unit.status?.label ?? 'Unassigned',
-                      color: unit.status?.color ?? Colors.grey,
+                    BlocBuilder<ActiveLeaseBloc, ActiveLeaseState>(
+                      builder: (context, state) {
+                        final lease = state is ActiveLeaseSuccess
+                            ? state.lease
+                            : null;
+
+                        final unitStatus = lease?.status == LeaseStatus.active
+                            ? UnitStatus.occupied
+                            : unit.status ?? UnitStatus.unassigned;
+
+                        return StatusTag(
+                          status: unitStatus.label,
+                          color: unitStatus.color,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -81,6 +96,13 @@ class UnitHeaderCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
+
+                Text(
+                  unit.unitType ?? "",
+                  style: context.bodySmall?.copyWith(
+                    color: context.secondary.withValues(alpha: 0.5),
+                  ),
+                ),
                 // Text(
                 //   unit.description,
                 //   style: context.bodySmall?.copyWith(

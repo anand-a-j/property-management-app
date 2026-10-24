@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -68,6 +67,42 @@ extension MaintenanceStatusX on MaintenanceStatus {
         return Colors.grey;
       case MaintenanceStatus.cancelled:
         return Colors.grey;
+    }
+  }
+
+  List<MaintenanceStatus> nextStatuses({required bool isManager}) {
+    switch (this) {
+      case MaintenanceStatus.pendingReview:
+        return isManager
+            ? [MaintenanceStatus.approved, MaintenanceStatus.rejected]
+            : [];
+
+      case MaintenanceStatus.rejected:
+        return isManager ? [MaintenanceStatus.approved] : [];
+
+      case MaintenanceStatus.approved:
+        return isManager
+            ? [MaintenanceStatus.assigned, MaintenanceStatus.cancelled]
+            : [];
+
+      case MaintenanceStatus.assigned:
+        return [
+          MaintenanceStatus.inProgress,
+          if (isManager) MaintenanceStatus.cancelled,
+        ];
+
+      case MaintenanceStatus.inProgress:
+        return [
+          MaintenanceStatus.completed,
+          if (isManager) MaintenanceStatus.cancelled,
+        ];
+
+      case MaintenanceStatus.completed:
+        return isManager ? [MaintenanceStatus.closed] : [];
+
+      case MaintenanceStatus.closed:
+      case MaintenanceStatus.cancelled:
+        return [];
     }
   }
 }

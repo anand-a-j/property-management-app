@@ -59,8 +59,8 @@ class ResidentHomeNav extends StatelessWidget {
           ),
           BottomNavItemTile.build(
             context,
-            asset: Assets.resident,
-            label: "Visitor",
+            asset: Assets.property,
+            label: "Maintenance",
             index: 1,
             selectedIndex: selectedIndex,
           ),

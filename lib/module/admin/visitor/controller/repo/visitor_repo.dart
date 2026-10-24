@@ -61,7 +61,7 @@ class VisitorRepo {
       await _client
           .from('visitor')
           .update({
-            'status': status.name,
+            'status': status.dbValue,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           })
           .eq('id', id);

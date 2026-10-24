@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
+import '../../../../../core/enum/payment_status.dart';
 import '../../../../../core/enum/payment_type.dart';
 import '../../../../../core/utils/error_log.dart';
 import '../../model/payment.dart';
@@ -16,6 +17,7 @@ class PaymentRepo {
     required DateTime dueDate,
     required double amount,
     required PaymentType paymentType,
+    required PaymentStatus status,
     String? chequeNumber,
     String? description,
     String? chequeCopyPath,
@@ -30,6 +32,7 @@ class PaymentRepo {
             'due_date': dueDate.toIso8601String().split('T').first,
             'amount': amount,
             'payment_type': paymentType.name,
+            'status': status.name,
             'cheque_number': chequeNumber,
             'description': description,
             'cheque_copy_path': chequeCopyPath,
@@ -45,30 +48,53 @@ class PaymentRepo {
     }
   }
 
-  // MARK AS PAID
-  Future<DataResponse<void>> markAsPaid({
-    required String orgId,
+  Future<DataResponse<void>> updatePaymentStatus({
     required String paymentId,
+    required PaymentStatus currentStatus,
+    required PaymentStatus newStatus,
     DateTime? paidDate,
+    String? bounceReason,
   }) async {
     try {
-      await _client
-          .from('payments')
-          .update({
-            'status': 'paid',
-            'paid_date': (paidDate ?? DateTime.now())
-                .toIso8601String()
-                .split('T')
-                .first,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('id', paymentId)
-          .eq('org_id', orgId)
-          .isFilter('deleted_at', null);
+      // Validate the transition.
+      if (!currentStatus.nextStatuses().contains(newStatus)) {
+        throw ArgumentError(
+          'Invalid payment status transition: '
+          '${currentStatus.name} → ${newStatus.name}',
+        );
+      }
+
+      // Require a reason when a payment is bounced.
+      if (newStatus == PaymentStatus.bounced &&
+          (bounceReason == null || bounceReason.trim().isEmpty)) {
+        throw ArgumentError('A reason is required when bouncing a payment.');
+      }
+
+      final updates = <String, dynamic>{
+        'status': newStatus.name,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      };
+
+      if (newStatus == PaymentStatus.paid) {
+        final date = paidDate ?? DateTime.now();
+
+        updates['paid_date'] = date.toIso8601String().split('T').first;
+
+        // Clear any previous bounce information.
+        updates['bounce_reason'] = null;
+      }
+
+      if (newStatus == PaymentStatus.bounced) {
+        updates['bounce_reason'] = bounceReason!.trim();
+      }
+
+      await _client.from('payments').update(updates).eq('id', paymentId);
 
       return DataResponse(data: null);
     } catch (e, stack) {
-      return DataResponse(error: errorlog('PaymentRepo.markAsPaid', e, stack));
+      return DataResponse(
+        error: errorlog('PaymentRepo.updatePaymentStatus', e, stack),
+      );
     }
   }
 

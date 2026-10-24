@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/enum/visitor_type.dart';
 
 part 'create_visitor.freezed.dart';
 part 'create_visitor.g.dart';
@@ -12,7 +11,7 @@ abstract class CreateVisitor with _$CreateVisitor {
     required String name,
     String? phone,
     @JsonKey(name: 'visit_at') required DateTime visitAt,
-    @JsonKey(name: 'visit_type') required VisitType visitType,
+    @JsonKey(name: 'visit_type') required String visitType,
     String? purpose,
     @JsonKey(name: 'unit_id') String? unitId,
     @JsonKey(name: 'created_by') required String createdBy,

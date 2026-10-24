@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naseem/module/admin/maintainence/view/list/maintenance_list_screen.dart';
 import 'package:naseem/module/admin/visitor/view/list/visitor_list_screen.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/resident/home/view/resident_dashboard_screen.dart';
@@ -84,10 +85,9 @@ class _ResidentHomeScreenState extends State<ResidentHomeScreen> {
               allowImplicitScrolling: false,
               children: [
                 ResidentDashboardScreen(),
-                VisitorListScreen(
-                  orgId: orgId,
-                  unitId: appCubit.unitId,
+                MaintenanceListScreen(
                   isFromResident: true,
+                  unitId: appCubit.unitId,
                 ),
                 PaymentListScreen(
                   isFromResident: true,

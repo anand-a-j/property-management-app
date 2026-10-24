@@ -48,4 +48,25 @@ extension PaymentStatusX on PaymentStatus {
         return Colors.grey;
     }
   }
+
+  List<PaymentStatus> nextStatuses() {
+    switch (this) {
+      case PaymentStatus.draft:
+        return [PaymentStatus.pending, PaymentStatus.cancelled];
+
+      case PaymentStatus.pending:
+        return [
+          PaymentStatus.paid,
+          PaymentStatus.bounced,
+          PaymentStatus.cancelled,
+        ];
+
+      case PaymentStatus.bounced:
+        return [PaymentStatus.pending, PaymentStatus.cancelled];
+
+      case PaymentStatus.paid:
+      case PaymentStatus.cancelled:
+        return [];
+    }
+  }
 }

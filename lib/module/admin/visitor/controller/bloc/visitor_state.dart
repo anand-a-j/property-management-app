@@ -19,21 +19,6 @@ class VisitorCreateSuccess extends VisitorState {
   const VisitorCreateSuccess();
 }
 
-class VisitorListSuccess extends VisitorState {
-  final List<Visitor> visitors;
-  final bool hasMore;
-  final bool isLoadingMore;
-
-  const VisitorListSuccess({
-    required this.visitors,
-    this.hasMore = false,
-    this.isLoadingMore = false,
-  });
-
-  @override
-  List<Object?> get props => [visitors, hasMore, isLoadingMore];
-}
-
 class VisitorFailed extends VisitorState {
   final String message;
 

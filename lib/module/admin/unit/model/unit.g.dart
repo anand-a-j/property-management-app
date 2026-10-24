@@ -14,7 +14,9 @@ _Unit _$UnitFromJson(Map<String, dynamic> json) => _Unit(
   area: json['area'] as String,
   description: json['description'] as String,
   createdAt: DateTime.parse(json['created_at'] as String),
-  updatedAt: DateTime.parse(json['updated_at'] as String),
+  updatedAt: json['updated_at'] == null
+      ? null
+      : DateTime.parse(json['updated_at'] as String),
   deletedAt: json['deleted_at'] == null
       ? null
       : DateTime.parse(json['deleted_at'] as String),
@@ -29,7 +31,7 @@ Map<String, dynamic> _$UnitToJson(_Unit instance) => <String, dynamic>{
   'area': instance.area,
   'description': instance.description,
   'created_at': instance.createdAt.toIso8601String(),
-  'updated_at': instance.updatedAt.toIso8601String(),
+  'updated_at': instance.updatedAt?.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
   'status': _$UnitStatusEnumMap[instance.status],
 };

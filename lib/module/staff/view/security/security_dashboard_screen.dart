@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naseem/module/admin/visitor/controller/bloc/bloc/visitor_list_bloc.dart'
+    show VisitorListBloc, GetVisitorsEvent;
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/module/platform_admin/view/widgets/platform_logout_button.dart'
     show PlatformLogoutButton;
@@ -12,7 +14,6 @@ import '../../../../core/utils/snackbar_manager.dart';
 import '../../../../routes/router_path.dart';
 import '../../../admin/visitor/controller/bloc/visitor_bloc.dart'
     show
-        GetVisitorsEvent,
         VisitorBloc,
         VisitorState,
         VisitorStatusUpdateFailed,
@@ -47,14 +48,11 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
             if (state is VisitorStatusUpdated) {
               Snack.success("Update status successfully!!!");
 
-              context.read<VisitorBloc>().add(
+              context.read<VisitorListBloc>().add(
                 GetVisitorsEvent(orgId: authentication.profile?.orgId ?? ""),
               );
             } else if (state is VisitorStatusUpdateFailed) {
               Snack.error(state.message);
-              context.read<VisitorBloc>().add(
-                GetVisitorsEvent(orgId: authentication.profile?.orgId ?? ""),
-              );
             }
           },
         ),
@@ -101,7 +99,7 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Hello, //${authentication.profile?.name ?? ''}',
+                      'Hello, ${authentication.profile?.name ?? ''}',
                       style: context.bodyMedium?.copyWith(
                         color: context.secondaryContainer,
                       ),
@@ -133,17 +131,15 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
           floatingActionButton: FloatingAddButton(
             title: 'Add Visitor',
             onTap: () async {
-              // context.push(RouterPath.addVisitor);
-
               final result = await context.push<bool>('/add-visitor');
 
               if (!mounted) return;
 
               if (result == true) {
                 // ignore: use_build_context_synchronously
-                context.read<VisitorBloc>().add(
+                context.read<VisitorListBloc>().add(
                   GetVisitorsEvent(
-                    orgId: authentication.profile?.orgId ?? "",
+                    orgId: authentication.profile?.orgId ?? '',
                     unitId: null,
                   ),
                 );

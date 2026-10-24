@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/bloc/cubit/app_cubit.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
+import 'package:naseem/routes/args/maintenance_list_args.dart';
 import 'package:naseem/routes/args/visitor_list_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
@@ -44,8 +45,14 @@ class SettingsScreen extends StatelessWidget {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          color: context.surface,
+                          color: AppColorScheme.backgroundColor(3),
                           borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.person_2_outlined,
+                            color: AppColorScheme.iconColor(3),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -133,7 +140,10 @@ class SettingsScreen extends StatelessWidget {
                       title: 'Maintenance',
                       showTrailingIcon: true,
                       onTap: () {
-                        context.push(RouterPath.maintenanceList);
+                        context.push(
+                          RouterPath.maintenanceList,
+                          extra: MaintenanceListArgs(),
+                        );
                       },
                     ),
                   ],
