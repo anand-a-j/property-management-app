@@ -7,13 +7,15 @@ part of 'unit.dart';
 // **************************************************************************
 
 _Unit _$UnitFromJson(Map<String, dynamic> json) => _Unit(
-  id: json['id'] as String,
-  communityId: json['community_id'] as String,
+  id: json['id'] as String?,
+  communityId: json['community_id'] as String?,
   unitType: json['unit_type'] as String?,
-  name: json['name'] as String,
-  area: json['area'] as String,
-  description: json['description'] as String,
-  createdAt: DateTime.parse(json['created_at'] as String),
+  name: json['name'] as String?,
+  area: json['area'] as String?,
+  description: json['description'] as String?,
+  createdAt: json['created_at'] == null
+      ? null
+      : DateTime.parse(json['created_at'] as String),
   updatedAt: json['updated_at'] == null
       ? null
       : DateTime.parse(json['updated_at'] as String),
@@ -30,7 +32,7 @@ Map<String, dynamic> _$UnitToJson(_Unit instance) => <String, dynamic>{
   'name': instance.name,
   'area': instance.area,
   'description': instance.description,
-  'created_at': instance.createdAt.toIso8601String(),
+  'created_at': instance.createdAt?.toIso8601String(),
   'updated_at': instance.updatedAt?.toIso8601String(),
   'deleted_at': instance.deletedAt?.toIso8601String(),
   'status': _$UnitStatusEnumMap[instance.status],

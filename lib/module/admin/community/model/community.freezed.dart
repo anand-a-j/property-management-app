@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Community {
 
- String get id;@JsonKey(name: 'org_id') String get orgId;@JsonKey(name: 'development_type') String get developmentType;@JsonKey(name: 'community_type') String get communityType; String get name; String get address; String get description;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt;// Unit counts
+ String? get id;@JsonKey(name: 'org_id') String? get orgId;@JsonKey(name: 'development_type') String? get developmentType;@JsonKey(name: 'community_type') String? get communityType; String? get name; String? get address; String? get description;@JsonKey(name: 'created_at') DateTime? get createdAt;@JsonKey(name: 'updated_at') DateTime? get updatedAt;@JsonKey(name: 'deleted_at') DateTime? get deletedAt;// Unit counts
 @JsonKey(name: 'total_units') int? get totalUnits;@JsonKey(name: 'occupied_units') int? get occupiedUnits;@JsonKey(name: 'vacant_units') int? get vacantUnits;
 /// Create a copy of Community
 /// with the given fields replaced by the non-null parameter values.
@@ -49,7 +49,7 @@ abstract mixin class $CommunityCopyWith<$Res>  {
   factory $CommunityCopyWith(Community value, $Res Function(Community) _then) = _$CommunityCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'org_id') String orgId,@JsonKey(name: 'development_type') String developmentType,@JsonKey(name: 'community_type') String communityType, String name, String address, String description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt,@JsonKey(name: 'total_units') int? totalUnits,@JsonKey(name: 'occupied_units') int? occupiedUnits,@JsonKey(name: 'vacant_units') int? vacantUnits
+ String? id,@JsonKey(name: 'org_id') String? orgId,@JsonKey(name: 'development_type') String? developmentType,@JsonKey(name: 'community_type') String? communityType, String? name, String? address, String? description,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt,@JsonKey(name: 'total_units') int? totalUnits,@JsonKey(name: 'occupied_units') int? occupiedUnits,@JsonKey(name: 'vacant_units') int? vacantUnits
 });
 
 
@@ -66,18 +66,18 @@ class _$CommunityCopyWithImpl<$Res>
 
 /// Create a copy of Community
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? orgId = null,Object? developmentType = null,Object? communityType = null,Object? name = null,Object? address = null,Object? description = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? totalUnits = freezed,Object? occupiedUnits = freezed,Object? vacantUnits = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? orgId = freezed,Object? developmentType = freezed,Object? communityType = freezed,Object? name = freezed,Object? address = freezed,Object? description = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,Object? totalUnits = freezed,Object? occupiedUnits = freezed,Object? vacantUnits = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,orgId: null == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
-as String,developmentType: null == developmentType ? _self.developmentType : developmentType // ignore: cast_nullable_to_non_nullable
-as String,communityType: null == communityType ? _self.communityType : communityType // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,orgId: freezed == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
+as String?,developmentType: freezed == developmentType ? _self.developmentType : developmentType // ignore: cast_nullable_to_non_nullable
+as String?,communityType: freezed == communityType ? _self.communityType : communityType // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,totalUnits: freezed == totalUnits ? _self.totalUnits : totalUnits // ignore: cast_nullable_to_non_nullable
 as int?,occupiedUnits: freezed == occupiedUnits ? _self.occupiedUnits : occupiedUnits // ignore: cast_nullable_to_non_nullable
 as int?,vacantUnits: freezed == vacantUnits ? _self.vacantUnits : vacantUnits // ignore: cast_nullable_to_non_nullable
@@ -166,7 +166,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'org_id')  String orgId, @JsonKey(name: 'development_type')  String developmentType, @JsonKey(name: 'community_type')  String communityType,  String name,  String address,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt, @JsonKey(name: 'total_units')  int? totalUnits, @JsonKey(name: 'occupied_units')  int? occupiedUnits, @JsonKey(name: 'vacant_units')  int? vacantUnits)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id, @JsonKey(name: 'org_id')  String? orgId, @JsonKey(name: 'development_type')  String? developmentType, @JsonKey(name: 'community_type')  String? communityType,  String? name,  String? address,  String? description, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt, @JsonKey(name: 'total_units')  int? totalUnits, @JsonKey(name: 'occupied_units')  int? occupiedUnits, @JsonKey(name: 'vacant_units')  int? vacantUnits)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Community() when $default != null:
 return $default(_that.id,_that.orgId,_that.developmentType,_that.communityType,_that.name,_that.address,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.totalUnits,_that.occupiedUnits,_that.vacantUnits);case _:
@@ -187,7 +187,7 @@ return $default(_that.id,_that.orgId,_that.developmentType,_that.communityType,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'org_id')  String orgId, @JsonKey(name: 'development_type')  String developmentType, @JsonKey(name: 'community_type')  String communityType,  String name,  String address,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt, @JsonKey(name: 'total_units')  int? totalUnits, @JsonKey(name: 'occupied_units')  int? occupiedUnits, @JsonKey(name: 'vacant_units')  int? vacantUnits)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id, @JsonKey(name: 'org_id')  String? orgId, @JsonKey(name: 'development_type')  String? developmentType, @JsonKey(name: 'community_type')  String? communityType,  String? name,  String? address,  String? description, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt, @JsonKey(name: 'total_units')  int? totalUnits, @JsonKey(name: 'occupied_units')  int? occupiedUnits, @JsonKey(name: 'vacant_units')  int? vacantUnits)  $default,) {final _that = this;
 switch (_that) {
 case _Community():
 return $default(_that.id,_that.orgId,_that.developmentType,_that.communityType,_that.name,_that.address,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.totalUnits,_that.occupiedUnits,_that.vacantUnits);case _:
@@ -207,7 +207,7 @@ return $default(_that.id,_that.orgId,_that.developmentType,_that.communityType,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'org_id')  String orgId, @JsonKey(name: 'development_type')  String developmentType, @JsonKey(name: 'community_type')  String communityType,  String name,  String address,  String description, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt, @JsonKey(name: 'total_units')  int? totalUnits, @JsonKey(name: 'occupied_units')  int? occupiedUnits, @JsonKey(name: 'vacant_units')  int? vacantUnits)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id, @JsonKey(name: 'org_id')  String? orgId, @JsonKey(name: 'development_type')  String? developmentType, @JsonKey(name: 'community_type')  String? communityType,  String? name,  String? address,  String? description, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt, @JsonKey(name: 'deleted_at')  DateTime? deletedAt, @JsonKey(name: 'total_units')  int? totalUnits, @JsonKey(name: 'occupied_units')  int? occupiedUnits, @JsonKey(name: 'vacant_units')  int? vacantUnits)?  $default,) {final _that = this;
 switch (_that) {
 case _Community() when $default != null:
 return $default(_that.id,_that.orgId,_that.developmentType,_that.communityType,_that.name,_that.address,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.totalUnits,_that.occupiedUnits,_that.vacantUnits);case _:
@@ -222,18 +222,18 @@ return $default(_that.id,_that.orgId,_that.developmentType,_that.communityType,_
 @JsonSerializable()
 
 class _Community implements Community {
-  const _Community({required this.id, @JsonKey(name: 'org_id') required this.orgId, @JsonKey(name: 'development_type') required this.developmentType, @JsonKey(name: 'community_type') required this.communityType, required this.name, required this.address, required this.description, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'deleted_at') this.deletedAt, @JsonKey(name: 'total_units') this.totalUnits = 0, @JsonKey(name: 'occupied_units') this.occupiedUnits = 0, @JsonKey(name: 'vacant_units') this.vacantUnits = 0});
+  const _Community({this.id, @JsonKey(name: 'org_id') this.orgId, @JsonKey(name: 'development_type') this.developmentType, @JsonKey(name: 'community_type') this.communityType, this.name, this.address, this.description, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt, @JsonKey(name: 'deleted_at') this.deletedAt, @JsonKey(name: 'total_units') this.totalUnits = 0, @JsonKey(name: 'occupied_units') this.occupiedUnits = 0, @JsonKey(name: 'vacant_units') this.vacantUnits = 0});
   factory _Community.fromJson(Map<String, dynamic> json) => _$CommunityFromJson(json);
 
-@override final  String id;
-@override@JsonKey(name: 'org_id') final  String orgId;
-@override@JsonKey(name: 'development_type') final  String developmentType;
-@override@JsonKey(name: 'community_type') final  String communityType;
-@override final  String name;
-@override final  String address;
-@override final  String description;
-@override@JsonKey(name: 'created_at') final  DateTime createdAt;
-@override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
+@override final  String? id;
+@override@JsonKey(name: 'org_id') final  String? orgId;
+@override@JsonKey(name: 'development_type') final  String? developmentType;
+@override@JsonKey(name: 'community_type') final  String? communityType;
+@override final  String? name;
+@override final  String? address;
+@override final  String? description;
+@override@JsonKey(name: 'created_at') final  DateTime? createdAt;
+@override@JsonKey(name: 'updated_at') final  DateTime? updatedAt;
 @override@JsonKey(name: 'deleted_at') final  DateTime? deletedAt;
 // Unit counts
 @override@JsonKey(name: 'total_units') final  int? totalUnits;
@@ -273,7 +273,7 @@ abstract mixin class _$CommunityCopyWith<$Res> implements $CommunityCopyWith<$Re
   factory _$CommunityCopyWith(_Community value, $Res Function(_Community) _then) = __$CommunityCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'org_id') String orgId,@JsonKey(name: 'development_type') String developmentType,@JsonKey(name: 'community_type') String communityType, String name, String address, String description,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt,@JsonKey(name: 'total_units') int? totalUnits,@JsonKey(name: 'occupied_units') int? occupiedUnits,@JsonKey(name: 'vacant_units') int? vacantUnits
+ String? id,@JsonKey(name: 'org_id') String? orgId,@JsonKey(name: 'development_type') String? developmentType,@JsonKey(name: 'community_type') String? communityType, String? name, String? address, String? description,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt,@JsonKey(name: 'deleted_at') DateTime? deletedAt,@JsonKey(name: 'total_units') int? totalUnits,@JsonKey(name: 'occupied_units') int? occupiedUnits,@JsonKey(name: 'vacant_units') int? vacantUnits
 });
 
 
@@ -290,18 +290,18 @@ class __$CommunityCopyWithImpl<$Res>
 
 /// Create a copy of Community
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? orgId = null,Object? developmentType = null,Object? communityType = null,Object? name = null,Object? address = null,Object? description = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? totalUnits = freezed,Object? occupiedUnits = freezed,Object? vacantUnits = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? orgId = freezed,Object? developmentType = freezed,Object? communityType = freezed,Object? name = freezed,Object? address = freezed,Object? description = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,Object? totalUnits = freezed,Object? occupiedUnits = freezed,Object? vacantUnits = freezed,}) {
   return _then(_Community(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,orgId: null == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
-as String,developmentType: null == developmentType ? _self.developmentType : developmentType // ignore: cast_nullable_to_non_nullable
-as String,communityType: null == communityType ? _self.communityType : communityType // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,orgId: freezed == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
+as String?,developmentType: freezed == developmentType ? _self.developmentType : developmentType // ignore: cast_nullable_to_non_nullable
+as String?,communityType: freezed == communityType ? _self.communityType : communityType // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,totalUnits: freezed == totalUnits ? _self.totalUnits : totalUnits // ignore: cast_nullable_to_non_nullable
 as int?,occupiedUnits: freezed == occupiedUnits ? _self.occupiedUnits : occupiedUnits // ignore: cast_nullable_to_non_nullable
 as int?,vacantUnits: freezed == vacantUnits ? _self.vacantUnits : vacantUnits // ignore: cast_nullable_to_non_nullable

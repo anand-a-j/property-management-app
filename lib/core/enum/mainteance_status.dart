@@ -70,6 +70,27 @@ extension MaintenanceStatusX on MaintenanceStatus {
     }
   }
 
+  String get dbValue {
+    switch (this) {
+      case MaintenanceStatus.pendingReview:
+        return 'pending_review';
+      case MaintenanceStatus.rejected:
+        return 'rejected';
+      case MaintenanceStatus.approved:
+        return 'approved';
+      case MaintenanceStatus.assigned:
+        return 'assigned';
+      case MaintenanceStatus.inProgress:
+        return 'in_progress';
+      case MaintenanceStatus.completed:
+        return 'completed';
+      case MaintenanceStatus.closed:
+        return 'closed';
+      case MaintenanceStatus.cancelled:
+        return 'cancelled';
+    }
+  }
+
   List<MaintenanceStatus> nextStatuses({required bool isManager}) {
     switch (this) {
       case MaintenanceStatus.pendingReview:

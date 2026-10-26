@@ -166,9 +166,9 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
             ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
-          _detailRow('Unit', widget.unit.name),
+          _detailRow('Unit', widget.unit.name??""),
           const SizedBox(height: 8),
-          _detailRow('Community', widget.community.name),
+          _detailRow('Community', widget.community.name??""),
         ],
       ),
     );
@@ -309,7 +309,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
 
     final maintenance = AddMaintenance(
       orgId: profile.orgId!,
-      unitId: widget.unit.id,
+      unitId: widget.unit.id??"",
       createdBy: profile.id,
       residentId: profile.id,
       issueTitle: _issueTitleController.text.trim(),

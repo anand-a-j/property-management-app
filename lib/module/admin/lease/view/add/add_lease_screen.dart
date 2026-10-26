@@ -95,7 +95,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
           context.read<ActiveLeaseBloc>().add(
             GetActiveLease(
               orgId: authentication.profile?.orgId ?? "",
-              unitId: widget.unit.id,
+              unitId: widget.unit.id??"",
             ),
           );
 
@@ -117,7 +117,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
           context.read<ActiveLeaseBloc>().add(
             GetActiveLease(
               orgId: authentication.profile?.orgId ?? "",
-              unitId: widget.unit.id,
+              unitId: widget.unit.id??"",
             ),
           );
 
@@ -587,7 +587,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
       context.read<LeaseBloc>().add(
         AddLease(
           orgId: authentication.profile?.orgId ?? "",
-          unitId: widget.unit.id,
+          unitId: widget.unit.id??"",
           residentId: residentId ?? "",
           leaseNumber: leaseNumber,
           startDate: _startDate!,

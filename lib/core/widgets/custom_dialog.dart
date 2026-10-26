@@ -14,8 +14,6 @@ class CustomDialog {
     required Function()? sumbitOnTap,
     bool isLoading = false,
     bool isWarning = false,
-    bool isDislikesDialog = false,
-    bool isFromPayment = false,
   }) async {
     return await showDialog(
       context: context,

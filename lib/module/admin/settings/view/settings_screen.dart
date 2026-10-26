@@ -112,7 +112,7 @@ class SettingsScreen extends StatelessWidget {
 
                     SettingsCard(
                       icon: Icons.manage_accounts_outlined,
-                      title: 'Visors',
+                      title: 'Visitors',
                       onTap: () {
                         context.push(
                           RouterPath.visitorList,

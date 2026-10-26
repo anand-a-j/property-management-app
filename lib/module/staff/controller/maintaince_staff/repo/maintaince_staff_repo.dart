@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
+import '../../../../../core/enum/mainteance_status.dart';
 import '../../../../../core/utils/error_log.dart';
 import '../../../../admin/maintainence/model/maintenance_request.dart';
 import '../../../model/staff_maintenance_overview.dart';
@@ -11,6 +12,7 @@ class MaintainceStaffRepo {
   // GET STAFF MAINTENANCE LIST WITH COUNTS
   Future<DataResponse<StaffMaintenanceOverview>> getStaffMaintenanceList({
     required String orgId,
+    required List<MaintenanceStatus> statuses,
     int page = 1,
     int limit = 10,
   }) async {
@@ -21,11 +23,14 @@ class MaintainceStaffRepo {
       final from = (safePage - 1) * safeLimit;
       final to = from + safeLimit - 1;
 
-      // Fetch all ticket counts for the organization.
+      final statusValues = statuses.map((status) => status.dbValue).toList();
+
+      // Fetch only matching maintenance tickets.
       final countData = await _client
           .from('maintenance_requests')
           .select('id, status')
-          .eq('org_id', orgId);
+          .eq('org_id', orgId)
+          .inFilter('status', statusValues);
 
       final totalTickets = countData.length;
 
@@ -47,6 +52,7 @@ class MaintainceStaffRepo {
           .from('maintenance_requests')
           .select()
           .eq('org_id', orgId)
+          .inFilter('status', statusValues)
           .order('created_at', ascending: false)
           .range(from, to);
 

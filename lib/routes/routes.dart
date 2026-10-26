@@ -27,6 +27,7 @@ import '../module/admin/lease/view/list/lease_list_screen.dart';
 import '../module/admin/maintainence/view/add/add_maintainence_screen.dart';
 import '../module/admin/maintainence/view/list/maintenance_list_screen.dart';
 import '../module/admin/payment/view/screen/add/payment_add_screen.dart';
+import '../module/admin/resident/view/resident_details_screen.dart';
 import '../module/admin/resident/view/resident_list_screen.dart';
 import '../module/admin/unit/view/unit_list/unit_list_screen.dart';
 import '../module/admin/visitor/view/add/add_visitor_screen.dart';
@@ -45,6 +46,7 @@ import 'args/add_payment_args.dart';
 import 'args/add_unit_args.dart';
 import 'args/lease_details_args.dart';
 import 'args/maintenance_list_args.dart';
+import 'args/resident_details_args.dart';
 import 'args/unit_details_args.dart';
 import 'args/unit_list_args.dart';
 import 'args/visitor_list_args.dart';
@@ -152,6 +154,19 @@ final GoRouter router = GoRouter(
         return SlideTransitionPage(
           beginOffset: const Offset(1, 0),
           page: ResidentListScreen(isSelectionMode: isSelectionMode),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.residentDetails,
+      name: 'resident-details-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as ResidentDetailsArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(1, 0),
+          page: ResidentDetailsScreen(resident: args.resident),
         );
       },
     ),

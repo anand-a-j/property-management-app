@@ -74,7 +74,7 @@ class NoActiveLeaseCard extends StatelessWidget {
 
                   if (lease != null && context.mounted) {
                     context.read<ActiveLeaseBloc>().add(
-                      AssignLeaseToUnit(leaseId: lease.id, unitId: unit.id),
+                      AssignLeaseToUnit(leaseId: lease.id, unitId: unit.id??""),
                     );
                   }
                 },

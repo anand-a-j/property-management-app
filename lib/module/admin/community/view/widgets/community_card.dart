@@ -58,18 +58,18 @@ class CommunityCard extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      community.name,
+                      community.name??"",
                       style: context.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (community.communityType.isNotEmpty) ...[
+                    if (community.communityType?.isNotEmpty??false) ...[
                       const SizedBox(height: 2),
                       // Property Type
                       Text(
-                        community.communityType,
+                        community.communityType??"",
                         style: context.bodySmall?.copyWith(
                           color: context.onSecondary.withValues(alpha: 0.75),
                         ),
@@ -80,7 +80,7 @@ class CommunityCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     // Location
                     Text(
-                      community.address,
+                      community.address??"",
                       style: context.bodySmall?.copyWith(
                         color: context.secondary.withValues(alpha: 0.5),
                       ),

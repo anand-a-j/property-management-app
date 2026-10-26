@@ -76,7 +76,7 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
           if (!context.mounted) return;
 
           context.read<UnitListBloc>().add(
-            GetUnits(communityId: widget.community.id),
+            GetUnits(communityId: widget.community.id??""),
           );
 
           Navigator.pop(context);
@@ -88,7 +88,7 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
           if (!context.mounted) return;
 
           context.read<UnitListBloc>().add(
-            GetUnits(communityId: widget.community.id),
+            GetUnits(communityId: widget.community.id??""),
           );
 
           Navigator.pop(context);
@@ -262,7 +262,7 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
       context.read<UnitBloc>().add(
         UpdateUnit(
           unitId: widget.unit?.id ?? '',
-          communityId: communityId,
+          communityId: communityId??"",
           unitType: unitType,
           name: unitName,
           area: sizeArea,
@@ -275,7 +275,7 @@ class _AddUnitScreenState extends State<AddUnitScreen> {
 
     context.read<UnitBloc>().add(
       AddUnit(
-        communityId: communityId,
+        communityId: communityId??"",
         unitType: unitType,
         name: unitName,
         area: sizeArea,

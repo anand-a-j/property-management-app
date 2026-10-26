@@ -38,11 +38,13 @@ class StrHelper {
     return '${formatter.format(from)} - ${formatter.format(to)}';
   }
 
-  static String formatDate(DateTime date) {
+  static String formatDate(DateTime? date) {
+    if (date == null) return '-';
     return DateFormat('dd MMM yyyy').format(date);
   }
 
-  static String formatDateTime(DateTime dateTime) {
+  static String formatDateTime(DateTime? dateTime) {
+    if (dateTime == null) return '-';
     return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
   }
 

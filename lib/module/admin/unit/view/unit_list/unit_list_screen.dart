@@ -32,19 +32,19 @@ class _UnitListScreenState extends State<UnitListScreen> {
     super.initState();
 
     context.read<UnitListBloc>().add(
-      GetUnits(communityId: widget.community.id),
+      GetUnits(communityId: widget.community.id??""),
     );
   }
 
   void _onSearch(String query) {
     context.read<UnitListBloc>().add(
-      SearchUnits(communityId: widget.community.id, searchQuery: query),
+      SearchUnits(communityId: widget.community.id??"", searchQuery: query),
     );
   }
 
   void _loadMore() {
     context.read<UnitListBloc>().add(
-      LoadMoreUnits(communityId: widget.community.id),
+      LoadMoreUnits(communityId: widget.community.id??""),
     );
   }
 
@@ -73,7 +73,7 @@ class _UnitListScreenState extends State<UnitListScreen> {
                   return ErrorStateView(
                     retryOnTap: () {
                       context.read<UnitListBloc>().add(
-                        GetUnits(communityId: widget.community.id),
+                        GetUnits(communityId: widget.community.id??""),
                       );
                     },
                     message: state.message,

@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-
 part 'create_visitor.freezed.dart';
 part 'create_visitor.g.dart';
 
@@ -8,12 +7,34 @@ part 'create_visitor.g.dart';
 abstract class CreateVisitor with _$CreateVisitor {
   const factory CreateVisitor({
     @JsonKey(name: 'org_id') required String orgId,
+
     required String name,
+
     String? phone,
-    @JsonKey(name: 'visit_at') required DateTime visitAt,
+
+    // Visit schedule
+    @JsonKey(name: 'visit_start_at') DateTime? visitStartAt,
+
+    @JsonKey(name: 'visit_end_at') DateTime? visitEndAt,
+
+    // Visit classification
     @JsonKey(name: 'visit_type') required String visitType,
+
     String? purpose,
+
+    // Associations
     @JsonKey(name: 'unit_id') String? unitId,
+
+    @JsonKey(name: 'resident_id') String? residentId,
+
+    @JsonKey(name: 'lease_id') String? leaseId,
+
+    // Parking and optional document
+    @JsonKey(name: 'parking_required') @Default(false) bool parkingRequired,
+
+    @JsonKey(name: 'document_id') String? documentId,
+
+    // Creator
     @JsonKey(name: 'created_by') required String createdBy,
   }) = _CreateVisitor;
 

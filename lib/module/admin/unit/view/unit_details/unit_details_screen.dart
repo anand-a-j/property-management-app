@@ -47,7 +47,7 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
     final orgId = authentication.profile?.orgId ?? '';
 
     context.read<ActiveLeaseBloc>().add(
-      GetActiveLease(orgId: orgId, unitId: widget.unit.id),
+      GetActiveLease(orgId: orgId, unitId: widget.unit.id ?? ""),
     );
 
     context.read<LeaseListBloc>().add(
@@ -87,7 +87,7 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
               final orgId = authentication.profile?.orgId ?? '';
 
               context.read<ActiveLeaseBloc>().add(
-                GetActiveLease(orgId: orgId, unitId: widget.unit.id),
+                GetActiveLease(orgId: orgId, unitId: widget.unit.id ?? ""),
               );
 
               context.read<LeaseListBloc>().add(
@@ -103,7 +103,6 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
             }
           },
         ),
-       
       ],
       child: Scaffold(
         appBar: CustomAppBar(
@@ -128,7 +127,7 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
                     unit: widget.unit,
                     community: widget.community,
                   ),
-                  UnitMainteanceTab(unitId: widget.unit.id),
+                  UnitMainteanceTab(unitId: widget.unit.id ?? ""),
                 ],
               ),
             ),

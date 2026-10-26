@@ -59,7 +59,7 @@ class UnitHeaderCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        unit.name,
+                        unit.name??"",
                         style: context.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -90,7 +90,7 @@ class UnitHeaderCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  community.name,
+                  community.name??"",
                   style: context.bodySmall?.copyWith(
                     color: context.secondary.withValues(alpha: 0.7),
                   ),

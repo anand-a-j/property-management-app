@@ -13,6 +13,7 @@ class RouterPath {
   static const String addCommunity = "/add-community";
 
   static const String residentList = "/resident-list";
+  static const String residentDetails = '/resident-details';
 
   static const String addUnit = "/add-unit";
   static const String unitList = "/unit-list";

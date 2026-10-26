@@ -47,8 +47,6 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
         if (state is VisitorCreateSuccess) {
           Snack.success('Visitor added successfully');
 
-         
-
           context.pop<bool>(true);
         }
 
@@ -312,7 +310,8 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
       phone: _phoneController.text.trim().isEmpty
           ? null
           : _phoneController.text.trim(),
-      visitAt: visitAt,
+      visitStartAt: visitAt,
+
       visitType: _visitType!.name,
       purpose: _purposeController.text.trim().isEmpty
           ? null

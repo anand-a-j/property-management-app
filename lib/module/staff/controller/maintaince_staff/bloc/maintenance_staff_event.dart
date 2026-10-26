@@ -12,6 +12,7 @@ class FetchStaffMaintenanceList extends MaintenanceStaffEvent {
   final int page;
   final int limit;
 
+
   const FetchStaffMaintenanceList({
     required this.orgId,
     this.page = 1,

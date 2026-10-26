@@ -9,21 +9,22 @@ part 'unit.g.dart';
 @freezed
 abstract class Unit with _$Unit {
   const factory Unit({
-    required String id,
+    String? id,
 
-    @JsonKey(name: 'community_id') required String communityId,
+    @JsonKey(name: 'community_id') String? communityId,
 
     @JsonKey(name: 'unit_type') String? unitType,
 
-    required String name,
-    required String area,
-    required String description,
+    String? name,
+    String? area,
+    String? description,
 
-    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'created_at') DateTime? createdAt,
 
-    @JsonKey(name: 'updated_at') required DateTime? updatedAt,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
 
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
+
     UnitStatus? status,
   }) = _Unit;
 

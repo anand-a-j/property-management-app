@@ -8,6 +8,7 @@ import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../auth/core/controller/service/auth_service.dart';
+import '../../../../staff/view/maintaince_staff/sheet/show_maintenance_update_sheet.dart';
 import '../../controller/bloc/bloc/maintenance_list_bloc.dart';
 import 'widgets/maintenance_card.dart';
 
@@ -85,14 +86,20 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
             return ListView.builder(
               padding: const EdgeInsets.fromLTRB(
                 AppConsts.pSide,
-                15,
+                0,
                 AppConsts.pSide,
-                10,
+                0,
               ),
               itemCount: maintenanceList.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                return GestureDetector(
+                  onTap: () {
+                    showMaintenanceStatusUpdateSheet(
+                      context,
+                      maintenanceList[index],
+                      true,
+                    );
+                  },
                   child: MaintenanceCard(
                     maintenanceRequest: maintenanceList[index],
                   ),

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../../../core/enum/mainteance_status.dart';
 import '../../../model/staff_maintenance_overview.dart';
 import '../repo/maintaince_staff_repo.dart';
 
@@ -58,6 +59,7 @@ class MaintenanceStaffBloc
         orgId: _orgId,
         page: _currentPage,
         limit: _limit,
+        statuses: [MaintenanceStatus.assigned, MaintenanceStatus.inProgress],
       );
 
       if (response.hasData) {
@@ -121,6 +123,7 @@ class MaintenanceStaffBloc
         orgId: _orgId,
         page: nextPage,
         limit: _limit,
+        statuses: [MaintenanceStatus.assigned, MaintenanceStatus.inProgress],
       );
 
       if (response.hasData) {

@@ -77,7 +77,7 @@ class VisitorCard extends StatelessWidget {
             // Visit date and time
             _VisitorInfoRow(
               icon: Icons.calendar_month_outlined,
-              text: StrHelper.formatDateTime(visitor.visitAt),
+              text: StrHelper.formatDateTime(visitor.visitStartAt),
               color: context.secondary,
             ),
 

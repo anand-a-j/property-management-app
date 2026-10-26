@@ -101,7 +101,9 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
 
                           return GestureDetector(
                             onTap: () {
-                              context.pop<Lease>(lease);
+                              if (widget.isSelectionMode) {
+                                context.pop<Lease>(lease);
+                              } else {}
                             },
                             child: LeaseCard(lease: lease),
                           );

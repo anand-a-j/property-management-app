@@ -8,6 +8,7 @@ import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import '../../../../core/core.dart';
 import '../../../../core/enum/sign_up_type.dart';
 import '../../../../core/widgets/empty_state_view.dart';
+import '../../../../routes/args/resident_details_args.dart';
 import '../../../../routes/router_path.dart';
 import '../../../auth/core/model/profile.dart';
 import '../controller/bloc/resident_bloc.dart';
@@ -82,7 +83,15 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
                             );
                           }
                         },
-                        child: ResidentCard(resident: resident, index: index),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.push(
+                              RouterPath.residentDetails,
+                              extra: ResidentDetailsArgs(resident: resident),
+                            );
+                          },
+                          child: ResidentCard(resident: resident, index: index),
+                        ),
                       );
                     },
                   );

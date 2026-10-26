@@ -6,21 +6,21 @@ part 'community.g.dart';
 @freezed
 abstract class Community with _$Community {
   const factory Community({
-    required String id,
+    String? id,
 
-    @JsonKey(name: 'org_id') required String orgId,
+    @JsonKey(name: 'org_id') String? orgId,
 
-    @JsonKey(name: 'development_type') required String developmentType,
+    @JsonKey(name: 'development_type') String? developmentType,
 
-    @JsonKey(name: 'community_type') required String communityType,
+    @JsonKey(name: 'community_type') String? communityType,
 
-    required String name,
-    required String address,
-    required String description,
+    String? name,
+    String? address,
+    String? description,
 
-    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'created_at') DateTime? createdAt,
 
-    @JsonKey(name: 'updated_at') required DateTime updatedAt,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
 
     @JsonKey(name: 'deleted_at') DateTime? deletedAt,
 

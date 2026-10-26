@@ -6,6 +6,7 @@ import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/current_resident_card.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/no_active_lease_card.dart';
+import 'package:naseem/module/admin/unit/view/unit_details/widgets/unit_lease_history_list_view.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/routes/args/lease_details_args.dart';
 import 'package:naseem/routes/router_path.dart';
@@ -81,95 +82,8 @@ class UnitOverviewTab extends StatelessWidget {
 
           const SizedBox(height: AppConsts.pMedium),
 
-          _LeaseHistoryBody(unit: unit, community: community),
+          UnitLeaseHistoryListView(unit: unit, community: community),
         ],
-      ),
-    );
-  }
-}
-
-class _LeaseHistoryBody extends StatelessWidget {
-  const _LeaseHistoryBody({required this.unit, required this.community});
-
-  final Unit unit;
-  final Community community;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LeaseListBloc, LeaseListState>(
-      builder: (context, state) {
-        if (state is LeaseListLoading) {
-          return const SizedBox(
-            height: 400,
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (state is LeaseListFailed) {
-          return ErrorStateView(
-            isHalf: true,
-            message: state.message,
-            retryOnTap: () => _fetchLeases(context),
-          );
-        }
-
-        if (state is! LeaseListSuccess) {
-          return const SizedBox.shrink();
-        }
-
-        if (state.leases.isEmpty) {
-          return EmptyStateView(
-            message: 'No lease history found',
-            isHalf: true,
-          );
-        }
-
-        return Column(
-          children: [
-            ...state.leases.map(
-              (lease) => Padding(
-                padding: const EdgeInsets.only(bottom: AppConsts.pMedium),
-                child: GestureDetector(
-                  onTap: () {
-                    context.push(
-                      RouterPath.leaseDetails,
-                      extra: LeaseDetailsArgs(
-                        lease: lease,
-                        unit: unit,
-                        community: community,
-                      ),
-                    );
-                  },
-                  child: LeaseCard(lease: lease),
-                ),
-              ),
-            ),
-
-            if (state.isLoadingMore)
-              const Padding(
-                padding: EdgeInsets.all(AppConsts.pMedium),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (state.hasMore)
-              TextButton(
-                onPressed: () {
-                  context.read<LeaseListBloc>().add(const LoadMoreLeases());
-                },
-                child: const Text('Load more leases'),
-              ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _fetchLeases(BuildContext context) {
-    context.read<LeaseListBloc>().add(
-      GetLeases(
-        orgId: authentication.profile?.orgId ?? '',
-        unitId: unit.id,
-        searchQuery: '',
-        isDraftOnly: false,
       ),
     );
   }

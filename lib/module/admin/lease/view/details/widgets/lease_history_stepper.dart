@@ -9,6 +9,8 @@ import '../../../../../../core/enum/lease_movement_status.dart';
 import '../../../../../../core/enum/lease_status.dart';
 import '../../../../../../core/extension/lease_movement_extension.dart';
 import '../../../../../../core/extension/lease_stepper_status.dart';
+import '../../../../../../core/widgets/error_state_view.dart';
+import '../../../../../../core/widgets/reason_dialog_body.dart';
 import '../../../controller/blocs/bloc/lease_movement_bloc.dart';
 import '../../../model/lease_movement.dart';
 import 'lease_history_stepper_tile.dart';
@@ -117,7 +119,12 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
   Future<String?> _askReason(String title) {
     return showDialog<String>(
       context: context,
-      builder: (_) => _ReasonDialog(title: title),
+      builder: (_) => ReasonDialogBody(
+        title: title,
+        cancelTitle: 'Cancel',
+        submitTitle: 'Reject',
+        isWarning: true,
+      ),
     );
   }
 
@@ -153,7 +160,11 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
 
         if (!_loaded) {
           if (state is LeaseMovementFailed) {
-            return _ErrorView(message: state.message, onRetry: _fetch);
+            return ErrorStateView(
+              retryOnTap: _fetch,
+              isHalf: true,
+              message: state.message,
+            );
           }
 
           return const Center(child: CircularProgressIndicator());
@@ -395,81 +406,5 @@ class _LeaseHistoryStepperState extends State<LeaseHistoryStepper> {
     );
 
     return tiles;
-  }
-}
-
-// -------------------------------------------------------------- helpers
-
-class _ReasonDialog extends StatefulWidget {
-  const _ReasonDialog({required this.title});
-
-  final String title;
-
-  @override
-  State<_ReasonDialog> createState() => _ReasonDialogState();
-}
-
-class _ReasonDialogState extends State<_ReasonDialog> {
-  final _controller = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title),
-      content: Form(
-        key: _formKey,
-        child: TextFormField(
-          controller: _controller,
-          autofocus: true,
-          maxLines: 3,
-          decoration: const InputDecoration(labelText: 'Reason'),
-          validator: (value) => (value == null || value.trim().isEmpty)
-              ? 'Reason is required'
-              : null,
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              Navigator.pop(context, _controller.text.trim());
-            }
-          },
-          child: const Text('Reject'),
-        ),
-      ],
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(message, textAlign: TextAlign.center),
-          const SizedBox(height: 12),
-          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
-        ],
-      ),
-    );
   }
 }
