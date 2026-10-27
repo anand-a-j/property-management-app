@@ -19,15 +19,17 @@ class VisitorListSuccess extends VisitorListState {
   final List<Visitor> visitors;
   final bool hasMore;
   final bool isLoadingMore;
+  final String? loadMoreError;
 
   const VisitorListSuccess({
     required this.visitors,
     required this.hasMore,
     this.isLoadingMore = false,
+    this.loadMoreError,
   });
 
   @override
-  List<Object?> get props => [visitors, hasMore, isLoadingMore];
+  List<Object?> get props => [visitors, hasMore, isLoadingMore, loadMoreError];
 }
 
 class VisitorListFailed extends VisitorListState {

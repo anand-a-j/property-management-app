@@ -2,12 +2,12 @@
 ALTER TABLE public.visitor
     RENAME COLUMN visit_at TO visit_start_at;
 
--- 2. Add visitor workflow fields and resident/lease relationships.
+-- 2. Add visitor workflow fields and relationships.
 ALTER TABLE public.visitor
     ADD COLUMN visit_end_at TIMESTAMPTZ,
     ADD COLUMN parking_required BOOLEAN NOT NULL DEFAULT FALSE,
     ADD COLUMN resident_id UUID
-        REFERENCES public.residents(id) ON DELETE RESTRICT,
+        REFERENCES public.profiles(id) ON DELETE RESTRICT,
     ADD COLUMN lease_id UUID
         REFERENCES public.leases(id) ON DELETE RESTRICT,
     ADD COLUMN approved_by UUID

@@ -181,17 +181,26 @@ class LeaseRepo {
     }
   }
 
-  // GET ALL LEASES
-  // GET ALL LEASES
   Future<DataResponse<List<Lease>>> getAllLeases({
     required String orgId,
     String? unitId,
+    String? residentId,
     String? searchQuery,
     bool draftOnly = false,
     int page = 1,
-    int limit = 15,
+    int limit = 3,
   }) async {
     try {
+      if (page < 1 || limit < 1) {
+        return DataResponse(error: 'Page and limit must be greater than zero.');
+      }
+
+      final normalizedOrgId = orgId.trim();
+
+      if (normalizedOrgId.isEmpty) {
+        return DataResponse(error: 'Organization ID is required.');
+      }
+
       final from = (page - 1) * limit;
       final to = from + limit - 1;
 
@@ -207,27 +216,35 @@ class LeaseRepo {
             role
           )
         ''')
-          .eq('org_id', orgId)
+          .eq('org_id', normalizedOrgId)
           .isFilter('deleted_at', null);
 
-      if (unitId != null) {
-        query = query.eq('unit_id', unitId);
+      final normalizedUnitId = unitId?.trim();
+      if (normalizedUnitId != null && normalizedUnitId.isNotEmpty) {
+        query = query.eq('unit_id', normalizedUnitId);
+      }
+
+      final normalizedResidentId = residentId?.trim();
+      if (normalizedResidentId != null && normalizedResidentId.isNotEmpty) {
+        query = query.eq('resident_id', normalizedResidentId);
       }
 
       if (draftOnly) {
         query = query.eq('status', 'draft');
       }
 
-      if (searchQuery != null && searchQuery.trim().isNotEmpty) {
-        query = query.ilike('lease_number', '%${searchQuery.trim()}%');
+      final normalizedSearch = searchQuery?.trim();
+      if (normalizedSearch != null && normalizedSearch.isNotEmpty) {
+        query = query.ilike('lease_number', '%$normalizedSearch%');
       }
 
       final data = await query
           .order('created_at', ascending: false)
+          .order('id', ascending: false)
           .range(from, to);
 
       final leases = (data as List)
-          .map((json) => Lease.fromJson(json))
+          .map((json) => Lease.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
 
       return DataResponse(data: leases);

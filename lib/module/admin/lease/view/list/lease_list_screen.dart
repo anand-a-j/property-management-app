@@ -1,3 +1,5 @@
+import 'dart:async' show Timer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,10 +23,18 @@ class LeaseListScreen extends StatefulWidget {
 }
 
 class _LeaseListScreenState extends State<LeaseListScreen> {
+  Timer? _searchDebounce;
+
   @override
   void initState() {
     super.initState();
     _fetchLeases();
+  }
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    super.dispose();
   }
 
   void _fetchLeases({String searchQuery = ''}) {
@@ -38,13 +48,19 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
   }
 
   void _onSearch(String query) {
-    context.read<LeaseListBloc>().add(
-      SearchLeases(
-        orgId: authentication.profile?.orgId ?? '',
-        searchQuery: query.trim(),
-        isDraftOnly: widget.isSelectionMode,
-      ),
-    );
+    _searchDebounce?.cancel();
+
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+
+      context.read<LeaseListBloc>().add(
+        SearchLeases(
+          orgId: authentication.profile?.orgId ?? '',
+          searchQuery: query.trim(),
+          isDraftOnly: widget.isSelectionMode,
+        ),
+      );
+    });
   }
 
   void _loadMore() {
@@ -61,10 +77,11 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
       body: Column(
         children: [
           SearchTextField(title: 'Search Leases', onChanged: _onSearch),
+          const SizedBox(height: 10),
           Expanded(
             child: BlocBuilder<LeaseListBloc, LeaseListState>(
               builder: (context, state) {
-                if (state is LeaseListLoading) {
+                if (state is LeaseListInitial || state is LeaseListLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
@@ -85,45 +102,52 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
                   return const EmptyStateView(message: 'Lease not found');
                 }
 
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(
-                          AppConsts.pSide,
-                          15,
-                          AppConsts.pSide,
-                          10,
-                        ),
-                        itemCount: leases.length,
-                        itemBuilder: (context, index) {
-                          final lease = leases[index];
+                // Include the footer as a list item so it appears
+                // immediately after the last lease card.
+                final showFooter =
+                    state.hasMore ||
+                    state.isLoadingMore ||
+                    state.loadMoreError != null;
 
-                          return GestureDetector(
-                            onTap: () {
-                              if (widget.isSelectionMode) {
-                                context.pop<Lease>(lease);
-                              } else {}
-                            },
-                            child: LeaseCard(lease: lease),
-                          );
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppConsts.pSide,
+                  ),
+                  itemCount: leases.length + (showFooter ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < leases.length) {
+                      final lease = leases[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.isSelectionMode) {
+                            context.pop<Lease>(lease);
+                          }
                         },
-                      ),
-                    ),
+                        child: LeaseCard(lease: lease),
+                      );
+                    }
 
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        AppConsts.pSide,
-                        8,
-                        AppConsts.pSide,
-                        16,
-                      ),
-                      child: LoadMoreButton(
+                    // Pagination footer.
+                    if (state.isLoadingMore) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    if (state.loadMoreError != null) {
+                      LoadMoreButton(
                         onTap: _loadMore,
-                        isLoading: state.isLoadingMore,
-                      ),
-                    ),
-                  ],
+                        title: 'View More',
+                        isError: true,
+                      );
+                    }
+
+                    return Center(
+                      child: LoadMoreButton(onTap: _loadMore, isLoading: false),
+                    );
+                  },
                 );
               },
             ),

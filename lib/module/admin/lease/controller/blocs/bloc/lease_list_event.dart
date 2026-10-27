@@ -10,20 +10,27 @@ abstract class LeaseListEvent extends Equatable {
 class GetLeases extends LeaseListEvent {
   final String orgId;
   final String? unitId;
+  final String? residentId;
   final String? searchQuery;
   final bool isDraftOnly;
 
   const GetLeases({
     required this.orgId,
     this.unitId,
+    this.residentId,
     this.searchQuery,
     this.isDraftOnly = false,
   });
 
   @override
-  List<Object?> get props => [orgId, unitId, searchQuery, isDraftOnly];
+  List<Object?> get props => [
+    orgId,
+    unitId,
+    residentId,
+    searchQuery,
+    isDraftOnly,
+  ];
 }
-
 class LoadMoreLeases extends LeaseListEvent {
   const LoadMoreLeases();
 }

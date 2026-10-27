@@ -11,10 +11,14 @@ class UnitRepo {
   Future<DataResponse<List<UnitListItem>>> getUnits({
     required String communityId,
     int page = 1,
-    int limit = 15,
+    int limit = 6,
     String? searchQuery,
   }) async {
     try {
+      if (page < 1 || limit < 1) {
+        throw ArgumentError('Page and limit must be positive.');
+      }
+
       final from = (page - 1) * limit;
       final to = from + limit - 1;
 
@@ -23,12 +27,15 @@ class UnitRepo {
           .select()
           .eq('community_id', communityId);
 
-      if (searchQuery != null && searchQuery.trim().isNotEmpty) {
-        query = query.ilike('name', '%${searchQuery.trim()}%');
+      final search = searchQuery?.trim();
+
+      if (search != null && search.isNotEmpty) {
+        query = query.ilike('name', '%$search%');
       }
 
       final data = await query
           .order('created_at', ascending: false)
+          .order('id', ascending: false)
           .range(from, to);
 
       final units = (data as List)

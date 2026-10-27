@@ -28,7 +28,8 @@ class VisitorRepo {
   Future<DataResponse<List<Visitor>>> getVisitors({
     required String orgId,
     String? unitId,
-    int limit = 20,
+    String? residentId,
+    int limit = 8,
     int offset = 0,
   }) async {
     try {
@@ -38,12 +39,19 @@ class VisitorRepo {
         query = query.eq('unit_id', unitId);
       }
 
+      if (residentId != null) {
+        query = query.eq('resident_id', residentId);
+      }
+
       final data = await query
           .order('created_at', ascending: false)
+          .order('id', ascending: false)
           .range(offset, offset + limit - 1);
 
       final visitors = (data as List)
-          .map((json) => Visitor.fromJson(Map<String, dynamic>.from(json)))
+          .map(
+            (json) => Visitor.fromJson(Map<String, dynamic>.from(json as Map)),
+          )
           .toList();
 
       return DataResponse(data: visitors);
@@ -58,13 +66,24 @@ class VisitorRepo {
     required VisitorStatus status,
   }) async {
     try {
-      await _client
-          .from('visitor')
-          .update({
-            'status': status.dbValue,
-            'updated_at': DateTime.now().toUtc().toIso8601String(),
-          })
-          .eq('id', id);
+      final now = DateTime.now().toUtc().toIso8601String();
+
+      final updates = <String, dynamic>{
+        'status': status.dbValue,
+        'updated_at': now,
+      };
+
+      switch (status.dbValue) {
+        case 'checked_in':
+          updates['checked_in_at'] = now;
+          break;
+
+        case 'checked_out':
+          updates['checked_out_at'] = now;
+          break;
+      }
+
+      await _client.from('visitor').update(updates).eq('id', id);
 
       return DataResponse(data: null);
     } catch (e, stack) {

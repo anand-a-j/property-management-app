@@ -44,6 +44,7 @@ import 'args/add_lease_args.dart';
 import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
 import 'args/add_unit_args.dart';
+import 'args/add_visitor_args.dart';
 import 'args/lease_details_args.dart';
 import 'args/maintenance_list_args.dart';
 import 'args/resident_details_args.dart';
@@ -344,9 +345,15 @@ final GoRouter router = GoRouter(
       path: RouterPath.addVisitor,
       name: 'add-visitor-screen',
       pageBuilder: (context, state) {
+        final args = state.extra as AddVisitorArgs;
         return SlideTransitionPage(
           beginOffset: const Offset(1, 0),
-          page: const AddVisitorScreen(),
+          page: AddVisitorScreen(
+            isResident: args.isResident,
+            leaseId: args.leaseId,
+            residentId: args.residentId,
+            unitId: args.unitId,
+          ),
         );
       },
     ),

@@ -13,9 +13,11 @@ class VisitorListBloc extends Bloc<VisitorListEvent, VisitorListState> {
   static const int _limit = 8;
 
   int _currentPage = 1;
+  int _requestVersion = 0;
 
   String _orgId = '';
   String? _unitId;
+  String? _residentId;
 
   List<Visitor> _visitors = [];
 
@@ -29,16 +31,20 @@ class VisitorListBloc extends Bloc<VisitorListEvent, VisitorListState> {
     on<LoadMoreVisitorsEvent>(_onLoadMoreVisitors);
   }
 
+  String? _normalizeId(String? id) {
+    final value = id?.trim();
+    return value == null || value.isEmpty ? null : value;
+  }
+
   Future<void> _onGetVisitors(
     GetVisitorsEvent event,
     Emitter<VisitorListState> emit,
   ) async {
-    _orgId = event.orgId.trim();
-    _unitId = event.unitId?.trim();
+    final version = ++_requestVersion;
 
-    if (_unitId?.isEmpty ?? false) {
-      _unitId = null;
-    }
+    _orgId = event.orgId.trim();
+    _unitId = _normalizeId(event.unitId);
+    _residentId = _normalizeId(event.residentId);
 
     _currentPage = 1;
     _visitors = [];
@@ -47,49 +53,63 @@ class VisitorListBloc extends Bloc<VisitorListEvent, VisitorListState> {
 
     emit(const VisitorListLoading());
 
-    final response = await _visitorRepo.getVisitors(
-      orgId: _orgId,
-      unitId: _unitId,
-      limit: _limit,
-      offset: 0,
-    );
+    try {
+      final response = await _visitorRepo.getVisitors(
+        orgId: _orgId,
+        unitId: _unitId,
+        residentId: _residentId,
+        limit: _limit,
+        offset: 0,
+      );
 
-    if (response.hasError) {
+      if (version != _requestVersion || emit.isDone) return;
+
+      if (response.hasError) {
+        emit(
+          VisitorListFailed(
+            message: response.error?.toString() ?? 'Failed to fetch visitors',
+          ),
+        );
+        return;
+      }
+
+      _visitors = response.data ?? [];
+      _currentPage = 1;
+      _hasMore = _visitors.length == _limit;
+
       emit(
-        VisitorListFailed(
-          message: response.error?.toString() ?? 'Failed to fetch visitors',
+        VisitorListSuccess(
+          visitors: List.unmodifiable(_visitors),
+          hasMore: _hasMore,
         ),
       );
-      return;
+    } catch (e) {
+      if (version != _requestVersion || emit.isDone) return;
+
+      emit(
+        VisitorListFailed(message: 'Failed to fetch visitors. Please retry.'),
+      );
     }
-
-    _visitors = response.data ?? [];
-    _hasMore = _visitors.length == _limit;
-
-    emit(
-      VisitorListSuccess(
-        visitors: List.unmodifiable(_visitors),
-        hasMore: _hasMore,
-      ),
-    );
   }
 
   Future<void> _onLoadMoreVisitors(
     LoadMoreVisitorsEvent event,
     Emitter<VisitorListState> emit,
   ) async {
-    if (_isLoadingMore || !_hasMore) return;
+    if (_isLoadingMore || !_hasMore || emit.isDone) return;
 
     final requestedOrgId = event.orgId.trim();
-    final requestedUnitId = event.unitId?.trim();
+    final requestedUnitId = _normalizeId(event.unitId);
+    final requestedResidentId = _normalizeId(event.residentId);
 
-    final normalizedUnitId = requestedUnitId == null || requestedUnitId.isEmpty
-        ? null
-        : requestedUnitId;
-
-    if (requestedOrgId != _orgId || normalizedUnitId != _unitId) {
+    if (requestedOrgId != _orgId ||
+        requestedUnitId != _unitId ||
+        requestedResidentId != _residentId) {
       return;
     }
+
+    final version = _requestVersion;
+    final nextPage = _currentPage + 1;
 
     _isLoadingMore = true;
 
@@ -101,42 +121,61 @@ class VisitorListBloc extends Bloc<VisitorListEvent, VisitorListState> {
       ),
     );
 
-    final nextPage = _currentPage + 1;
+    try {
+      final response = await _visitorRepo.getVisitors(
+        orgId: _orgId,
+        unitId: _unitId,
+        residentId: _residentId,
+        limit: _limit,
+        offset: (nextPage - 1) * _limit,
+      );
 
-    final response = await _visitorRepo.getVisitors(
-      orgId: _orgId,
-      unitId: _unitId,
-      limit: _limit,
-      offset: (nextPage - 1) * _limit,
-    );
+      if (version != _requestVersion || emit.isDone) return;
 
-    if (response.hasError) {
-      _isLoadingMore = false;
+      if (response.hasError) {
+        emit(
+          VisitorListSuccess(
+            visitors: List.unmodifiable(_visitors),
+            hasMore: _hasMore,
+            loadMoreError:
+                response.error?.toString() ?? 'Failed to load more visitors.',
+          ),
+        );
+        return;
+      }
 
-      // Preserve the currently loaded visitors.
+      final newVisitors = response.data ?? [];
+
+      // Avoid duplicates when pages overlap.
+      final existingIds = _visitors.map((visitor) => visitor.id).toSet();
+      final uniqueVisitors = newVisitors
+          .where((visitor) => existingIds.add(visitor.id))
+          .toList();
+
+      _visitors = [..._visitors, ...uniqueVisitors];
+      _currentPage = nextPage;
+      _hasMore = newVisitors.length == _limit;
+
       emit(
         VisitorListSuccess(
           visitors: List.unmodifiable(_visitors),
           hasMore: _hasMore,
-          isLoadingMore: false,
         ),
       );
-      return;
+    } catch (e) {
+      if (version != _requestVersion || emit.isDone) return;
+
+      emit(
+        VisitorListSuccess(
+          visitors: List.unmodifiable(_visitors),
+          hasMore: _hasMore,
+          loadMoreError: 'Failed to load more visitors. Please retry.',
+        ),
+      );
+    } finally {
+      if (version == _requestVersion) {
+        _isLoadingMore = false;
+      }
     }
-
-    final newVisitors = response.data ?? [];
-
-    _visitors.addAll(newVisitors);
-    _currentPage = nextPage;
-    _hasMore = newVisitors.length == _limit;
-    _isLoadingMore = false;
-
-    emit(
-      VisitorListSuccess(
-        visitors: List.unmodifiable(_visitors),
-        hasMore: _hasMore,
-        isLoadingMore: false,
-      ),
-    );
   }
 }

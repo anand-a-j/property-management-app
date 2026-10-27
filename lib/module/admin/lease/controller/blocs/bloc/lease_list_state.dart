@@ -19,15 +19,17 @@ class LeaseListSuccess extends LeaseListState {
   final List<Lease> leases;
   final bool hasMore;
   final bool isLoadingMore;
+  final String? loadMoreError;
 
   const LeaseListSuccess({
     required this.leases,
     required this.hasMore,
     this.isLoadingMore = false,
+    this.loadMoreError,
   });
 
   @override
-  List<Object?> get props => [leases, hasMore, isLoadingMore];
+  List<Object?> get props => [leases, hasMore, isLoadingMore, loadMoreError];
 }
 
 class LeaseListFailed extends LeaseListState {

@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +14,6 @@ import 'package:naseem/routes/router_path.dart';
 
 import '../../../../../core/core.dart';
 import '../../controller/bloc/bloc/unit_list_bloc.dart';
-import '../../controller/bloc/unit_bloc.dart';
 
 class UnitListScreen extends StatefulWidget {
   const UnitListScreen({super.key, required this.community});
@@ -27,24 +25,44 @@ class UnitListScreen extends StatefulWidget {
 }
 
 class _UnitListScreenState extends State<UnitListScreen> {
+  Timer? _searchDebounce;
+
   @override
   void initState() {
     super.initState();
 
     context.read<UnitListBloc>().add(
-      GetUnits(communityId: widget.community.id??""),
+      GetUnits(communityId: widget.community.id ?? ''),
     );
   }
 
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    super.dispose();
+  }
+
   void _onSearch(String query) {
-    context.read<UnitListBloc>().add(
-      SearchUnits(communityId: widget.community.id??"", searchQuery: query),
-    );
+    _searchDebounce?.cancel();
+
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+
+      context.read<UnitListBloc>().add(
+        SearchUnits(communityId: widget.community.id ?? '', searchQuery: query),
+      );
+    });
   }
 
   void _loadMore() {
     context.read<UnitListBloc>().add(
-      LoadMoreUnits(communityId: widget.community.id??""),
+      LoadMoreUnits(communityId: widget.community.id ?? ''),
+    );
+  }
+
+  void _refresh() {
+    context.read<UnitListBloc>().add(
+      GetUnits(communityId: widget.community.id ?? ''),
     );
   }
 
@@ -55,89 +73,104 @@ class _UnitListScreenState extends State<UnitListScreen> {
         title: 'Units',
         leadingOnTap: () => Navigator.pop(context),
       ),
-
       body: Column(
         children: [
           SearchTextField(title: 'Search Units', onChanged: _onSearch),
-
           Expanded(
             child: BlocBuilder<UnitListBloc, UnitListState>(
               builder: (context, state) {
-                // Initial loading
-                if (state is UnitListLoading) {
+                if (state is UnitListInitial || state is UnitListLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                // Error
                 if (state is UnitListFailed) {
                   return ErrorStateView(
-                    retryOnTap: () {
-                      context.read<UnitListBloc>().add(
-                        GetUnits(communityId: widget.community.id??""),
-                      );
-                    },
                     message: state.message,
+                    retryOnTap: _refresh,
                   );
                 }
 
-                // Success
-                if (state is UnitLoadSuccess) {
-                  final units = state.units;
+                if (state is! UnitLoadSuccess) {
+                  return const SizedBox.shrink();
+                }
 
-                  // Empty
-                  if (units.isEmpty) {
-                    return const EmptyStateView(message: 'Unit not found');
-                  }
+                final units = state.units;
 
-                  return ListView.builder(
+                if (units.isEmpty) {
+                  return const EmptyStateView(message: 'Unit not found');
+                }
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    _refresh();
+
+                    // Wait for the first-page request to finish.
+                    await context.read<UnitListBloc>().stream.firstWhere(
+                      (nextState) =>
+                          nextState is UnitLoadSuccess ||
+                          nextState is UnitListFailed,
+                    );
+                  },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(
                       AppConsts.pSide,
                       15,
                       AppConsts.pSide,
-                      0,
+                      16,
                     ),
                     itemCount: units.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == units.length) {
-                        if (!state.hasMore) {
-                          return const SizedBox(height: 20);
-                        }
+                      if (index < units.length) {
+                        final unit = units[index];
 
-                        return LoadMoreButton(
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: () {
-                            if (state.isLoadingMore) {
-                              _loadMore();
-                            }
+                            context.push(
+                              RouterPath.unitDetails,
+                              extra: UnitDetailsArgs(
+                                unit: unit.toUnit(),
+                                community: widget.community,
+                              ),
+                            );
                           },
+                          child: UnitCard(unit: unit, index: index),
                         );
                       }
 
-                      final unit = units[index];
+                      // Footer remains below the last item.
+                      if (state.isLoadingMore) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
 
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          context.push(
-                            RouterPath.unitDetails,
-                            extra: UnitDetailsArgs(
-                              unit: unit.toUnit(),
-                              community: widget.community,
-                            ),
-                          );
-                        },
-                        child: UnitCard(unit: unit, index: index),
+                      if (state.loadMoreError != null) {
+                        return LoadMoreButton(
+                          onTap: _loadMore,
+                          title: 'Retry',
+                          isError: true,
+                        );
+                      }
+
+                      if (!state.hasMore) return const SizedBox.shrink();
+
+                      return Center(
+                        child: LoadMoreButton(
+                          onTap: _loadMore,
+                          isLoading: false,
+                        ),
                       );
                     },
-                  );
-                }
-
-                return const SizedBox.shrink();
+                  ),
+                );
               },
             ),
           ),
         ],
       ),
-
       floatingActionButton: FloatingAddButton(
         title: 'Add Unit',
         onTap: () {

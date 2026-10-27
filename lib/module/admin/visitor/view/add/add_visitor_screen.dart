@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide DateUtils;
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/enum/visitor_type.dart';
@@ -13,7 +12,25 @@ import '../../../../auth/core/controller/service/auth_service.dart';
 import '../../controller/bloc/visitor_bloc.dart';
 
 class AddVisitorScreen extends StatefulWidget {
-  const AddVisitorScreen({super.key});
+  const AddVisitorScreen({
+    super.key,
+    required this.isResident,
+    this.unitId,
+    this.leaseId,
+    this.residentId,
+  }) : assert(
+         !isResident ||
+             (unitId != null && leaseId != null && residentId != null),
+         'unitId, leaseId and residentId are required when isResident is true',
+       );
+
+  /// true  -> resident pre-registers a visitor (schedule, parking, document)
+  /// false -> security/manager adds a visitor who is at the gate right now
+  final bool isResident;
+
+  final String? unitId;
+  final String? leaseId;
+  final String? residentId;
 
   @override
   State<AddVisitorScreen> createState() => _AddVisitorScreenState();
@@ -24,18 +41,23 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _visitDateController = TextEditingController();
+  final TextEditingController _visitStartController = TextEditingController();
+  final TextEditingController _visitEndController = TextEditingController();
+  // final TextEditingController _documentIdController = TextEditingController();
   final TextEditingController _purposeController = TextEditingController();
 
-  DateTime? _visitDate;
-
+  DateTime? _visitStartAt;
+  DateTime? _visitEndAt;
   VisitType? _visitType;
+  bool _parkingRequired = false;
 
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _visitDateController.dispose();
+    _visitStartController.dispose();
+    _visitEndController.dispose();
+    // _documentIdController.dispose();
     _purposeController.dispose();
     super.dispose();
   }
@@ -46,7 +68,6 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
       listener: (context, state) {
         if (state is VisitorCreateSuccess) {
           Snack.success('Visitor added successfully');
-
           context.pop<bool>(true);
         }
 
@@ -81,7 +102,9 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
                     const SizedBox(height: AppConsts.pSmall),
 
                     Text(
-                      'Enter the visitor details below',
+                      widget.isResident
+                          ? 'Let us know who is visiting and when'
+                          : 'Enter the visitor details below',
                       style: context.bodyMedium?.copyWith(
                         color: context.secondaryContainer,
                       ),
@@ -90,20 +113,28 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
                     const SizedBox(height: AppConsts.pLarge),
 
                     _nameField(),
-
                     const SizedBox(height: AppConsts.pSide),
 
                     _phoneField(),
-
                     const SizedBox(height: AppConsts.pSide),
 
                     _visitTypeField(),
-
                     const SizedBox(height: AppConsts.pSide),
 
-                    _visitDateField(),
+                    // Resident-only: expected schedule, parking, legal document
+                    if (widget.isResident) ...[
+                      _visitStartField(),
+                      const SizedBox(height: AppConsts.pSide),
 
-                    const SizedBox(height: AppConsts.pSide),
+                      _visitEndField(),
+                      const SizedBox(height: AppConsts.pSide),
+
+                      _parkingField(),
+                      // const SizedBox(height: AppConsts.pSide),
+
+                      // _documentIdField(),
+                      const SizedBox(height: AppConsts.pSide),
+                    ],
 
                     _purposeField(),
 
@@ -135,6 +166,10 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
       ),
     );
   }
+
+  // ---------------------------------------------------------------------------
+  // Fields
+  // ---------------------------------------------------------------------------
 
   Widget _nameField() {
     return CustomTextField(
@@ -176,18 +211,53 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
     );
   }
 
-  Widget _visitDateField() {
+  Widget _visitStartField() {
     return CustomTextField(
-      controller: _visitDateController,
+      controller: _visitStartController,
       textInputType: TextInputType.datetime,
-      labelText: 'Visit Date',
-      hintText: 'Select visit date',
+      labelText: 'Expected Arrival',
+      hintText: 'Select arrival date and time',
       readOnly: true,
       suffixIcon: const Icon(Icons.calendar_month_outlined),
-      onTap: _selectVisitDate,
+      onTap: _selectVisitStart,
       validator: (value) => InputVaildator.required(value),
     );
   }
+
+  Widget _visitEndField() {
+    return CustomTextField(
+      controller: _visitEndController,
+      textInputType: TextInputType.datetime,
+      labelText: 'Expected Departure (Optional)',
+      hintText: 'Select departure date and time',
+      readOnly: true,
+      suffixIcon: const Icon(Icons.calendar_month_outlined),
+      onTap: _selectVisitEnd,
+    );
+  }
+
+  Widget _parkingField() {
+    return SwitchListTile.adaptive(
+      contentPadding: EdgeInsets.zero,
+      title: const Text('Parking required'),
+      subtitle: const Text('Turn on if the visitor will bring a vehicle'),
+      value: _parkingRequired,
+      onChanged: (value) {
+        setState(() {
+          _parkingRequired = value;
+        });
+      },
+    );
+  }
+
+  // Widget _documentIdField() {
+  //   return CustomTextField(
+  //     controller: _documentIdController,
+  //     textInputType: TextInputType.text,
+  //     labelText: 'Legal Document ID (Optional)',
+  //     hintText: 'Enter document ID',
+  //   );
+  // }
 
   Widget _purposeField() {
     return CustomTextField(
@@ -199,12 +269,65 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
     );
   }
 
-  Future<void> _selectVisitDate() async {
-    final now = DateTime.now();
-    DateTime selectedDateTime =
-        _visitDate ?? now.add(const Duration(minutes: 15));
+  // ---------------------------------------------------------------------------
+  // Date & time pickers
+  // ---------------------------------------------------------------------------
 
-    final pickedDateTime = await showCupertinoModalPopup<DateTime>(
+  Future<void> _selectVisitStart() async {
+    final picked = await _pickDateTime(minimum: DateTime.now());
+    if (picked == null || !mounted) return;
+
+    setState(() {
+      _visitStartAt = picked;
+      _visitStartController.text = _formatDateTime(picked);
+
+      // Departure must stay after arrival; clear it if it no longer is.
+      if (_visitEndAt != null && !_visitEndAt!.isAfter(picked)) {
+        _visitEndAt = null;
+        _visitEndController.clear();
+      }
+    });
+  }
+
+  Future<void> _selectVisitEnd() async {
+    final start = _visitStartAt;
+    if (start == null) {
+      Snack.error('Select expected arrival first');
+      return;
+    }
+
+    final picked = await _pickDateTime(
+      minimum: start,
+      initial: _visitEndAt ?? start.add(const Duration(hours: 1)),
+    );
+    if (picked == null || !mounted) return;
+
+    if (!picked.isAfter(start)) {
+      Snack.error('Departure must be after arrival');
+      return;
+    }
+
+    setState(() {
+      _visitEndAt = picked;
+      _visitEndController.text = _formatDateTime(picked);
+    });
+  }
+
+  Future<DateTime?> _pickDateTime({
+    required DateTime minimum,
+    DateTime? initial,
+  }) {
+    final now = DateTime.now();
+
+    // The picker requires initialDateTime >= minimumDate, so resolve it once
+    // here and use the same value as the "Done" result (otherwise pressing
+    // Done without scrolling would return a stale/different value).
+    var selected = initial ?? now.add(const Duration(minutes: 15));
+    if (selected.isBefore(minimum)) {
+      selected = minimum.add(const Duration(minutes: 15));
+    }
+
+    return showCupertinoModalPopup<DateTime>(
       context: context,
       builder: (context) => Container(
         height: 320,
@@ -213,7 +336,6 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
           top: false,
           child: Column(
             children: [
-              // Header
               SizedBox(
                 height: 50,
                 child: Row(
@@ -224,25 +346,21 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
                       child: const Text('Cancel'),
                     ),
                     CupertinoButton(
-                      onPressed: () => Navigator.pop(context, selectedDateTime),
+                      onPressed: () => Navigator.pop(context, selected),
                       child: const Text('Done'),
                     ),
                   ],
                 ),
               ),
-
-              // Date and time picker
               Expanded(
                 child: CupertinoDatePicker(
                   mode: CupertinoDatePickerMode.dateAndTime,
-                  initialDateTime: selectedDateTime.isBefore(now)
-                      ? now.add(const Duration(minutes: 15))
-                      : selectedDateTime,
-                  minimumDate: now,
+                  initialDateTime: selected,
+                  minimumDate: minimum,
                   maximumDate: DateTime(2100),
                   use24hFormat: true,
                   onDateTimeChanged: (dateTime) {
-                    selectedDateTime = dateTime;
+                    selected = dateTime;
                   },
                 ),
               ),
@@ -251,18 +369,6 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
         ),
       ),
     );
-
-    if (pickedDateTime == null || !mounted) return;
-
-    if (pickedDateTime.isBefore(DateTime.now())) {
-      Snack.error('Visit date and time cannot be in the past');
-      return;
-    }
-
-    setState(() {
-      _visitDate = pickedDateTime;
-      _visitDateController.text = _formatDateTime(pickedDateTime);
-    });
   }
 
   String _formatDateTime(DateTime date) {
@@ -278,6 +384,15 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
     return '$datePart $timePart';
   }
 
+  // ---------------------------------------------------------------------------
+  // Submit
+  // ---------------------------------------------------------------------------
+
+  String? _trimmedOrNull(TextEditingController controller) {
+    final text = controller.text.trim();
+    return text.isEmpty ? null : text;
+  }
+
   void _submit() {
     FocusScope.of(context).unfocus();
 
@@ -285,37 +400,61 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
       return;
     }
 
-    if (_visitDate == null) {
-      Snack.error('Select visit date and time');
-      return;
-    }
+    final now = DateTime.now();
+    DateTime? visitStartAt;
+    DateTime? visitEndAt;
+    DateTime? checkedInAt;
 
-    final visitAt = DateTime(
-      _visitDate!.year,
-      _visitDate!.month,
-      _visitDate!.day,
-      _visitDate!.hour,
-      _visitDate!.minute,
-    );
+    if (widget.isResident) {
+      // Resident pre-registers: only the expected schedule is stored.
+      // Security will fill checkedInAt / checkedOutAt later.
+      if (_visitStartAt == null) {
+        Snack.error('Select expected arrival date and time');
+        return;
+      }
 
-    if (visitAt.isBefore(DateTime.now())) {
-      Snack.error('Visit date and time cannot be in the past');
-      return;
+      // 1 minute tolerance so "now" picked a moment ago is still valid.
+      if (_visitStartAt!.isBefore(now.subtract(const Duration(minutes: 1)))) {
+        Snack.error('Arrival date and time cannot be in the past');
+        return;
+      }
+
+      if (_visitEndAt != null && !_visitEndAt!.isAfter(_visitStartAt!)) {
+        Snack.error('Departure must be after arrival');
+        return;
+      }
+
+      visitStartAt = _visitStartAt;
+      visitEndAt = _visitEndAt;
+    } else {
+      // Security/manager adds a visitor who is present right now:
+      // only the real check-in time is recorded.
+      checkedInAt = now;
     }
 
     final visitor = CreateVisitor(
       orgId: authentication.profile?.orgId ?? '',
-      createdBy: authentication.profile?.id ?? "",
+      createdBy: authentication.profile?.id ?? '',
       name: _nameController.text.trim(),
-      phone: _phoneController.text.trim().isEmpty
-          ? null
-          : _phoneController.text.trim(),
-      visitStartAt: visitAt,
-
+      phone: _trimmedOrNull(_phoneController),
       visitType: _visitType!.name,
-      purpose: _purposeController.text.trim().isEmpty
-          ? null
-          : _purposeController.text.trim(),
+      purpose: _trimmedOrNull(_purposeController),
+
+      // Schedule (resident only)
+      visitStartAt: visitStartAt,
+      visitEndAt: visitEndAt,
+
+      // Real-time (security only)
+      checkedInAt: checkedInAt,
+
+      // Resident-only details
+      parkingRequired: widget.isResident ? _parkingRequired : false,
+      // documentId: widget.isResident
+      //     ? _trimmedOrNull(_documentIdController)
+      //     : null,
+      unitId: widget.isResident ? widget.unitId : null,
+      leaseId: widget.isResident ? widget.leaseId : null,
+      residentId: widget.isResident ? widget.residentId : null,
     );
 
     context.read<VisitorBloc>().add(CreateVisitorEvent(visitor: visitor));

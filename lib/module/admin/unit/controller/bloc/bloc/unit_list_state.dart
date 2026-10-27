@@ -16,15 +16,20 @@ class UnitListLoading extends UnitListState {
 }
 
 class UnitLoadSuccess extends UnitListState {
+  const UnitLoadSuccess({
+    required this.units,
+    required this.hasMore,
+    this.isLoadingMore = false,
+    this.loadMoreError,
+  });
+
   final List<UnitListItem> units;
   final bool hasMore;
   final bool isLoadingMore;
+  final String? loadMoreError;
 
-  const UnitLoadSuccess({
-    required this.units,
-    this.hasMore = true,
-    this.isLoadingMore = false,
-  });
+  @override
+  List<Object?> get props => [units, hasMore, isLoadingMore, loadMoreError];
 }
 
 class UnitListFailed extends UnitListState {

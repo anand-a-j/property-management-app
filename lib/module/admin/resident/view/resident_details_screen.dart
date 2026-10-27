@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:naseem/module/admin/community/model/community.dart';
 import 'package:naseem/module/admin/resident/model/resident_list_response.dart';
+import 'package:naseem/module/admin/resident/view/tab/resident_details_lease_list_view.dart';
 import 'package:naseem/module/admin/unit/model/unit.dart';
+import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../core/core.dart';
 import '../../unit/view/unit_details/widgets/unit_lease_history_list_view.dart';
+import 'tab/resident_visitors_list_view.dart';
 import 'widgets/resident_header_card.dart';
 
 class ResidentDetailsScreen extends StatefulWidget {
@@ -54,10 +58,17 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children:  [
-                // UnitLeaseHistoryListView(unit: Unit(id: id, communityId: communityId, name: name, area: area, description: description, createdAt: createdAt, updatedAt: updatedAt), community: community), SizedBox.expand()
-                
-                ],
+              children: [
+                ResidentDetailsLeaseListView(
+                  residentId: widget.resident.profile.id,
+                ),
+
+                ResidentVisitorsListView(
+                  orgId: authentication.profile?.orgId ?? "",
+                  residentId: widget.resident.profile.id,
+                  unitId: widget.resident.currentUnitId ?? "",
+                ),
+              ],
             ),
           ),
         ],
@@ -65,6 +76,3 @@ class _ResidentDetailsScreenState extends State<ResidentDetailsScreen>
     );
   }
 }
-
-
-  

@@ -17,6 +17,11 @@ abstract class CreateVisitor with _$CreateVisitor {
 
     @JsonKey(name: 'visit_end_at') DateTime? visitEndAt,
 
+    @JsonKey(name: 'checked_in_at') DateTime? checkedInAt,
+
+    @JsonKey(name: 'checked_out_at') DateTime? checkedOutAt,
+
+
     // Visit classification
     @JsonKey(name: 'visit_type') required String visitType,
 
@@ -32,7 +37,7 @@ abstract class CreateVisitor with _$CreateVisitor {
     // Parking and optional document
     @JsonKey(name: 'parking_required') @Default(false) bool parkingRequired,
 
-    @JsonKey(name: 'document_id') String? documentId,
+    // @JsonKey(name: 'document_id') String? documentId,
 
     // Creator
     @JsonKey(name: 'created_by') required String createdBy,

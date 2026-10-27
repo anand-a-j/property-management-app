@@ -1,182 +1,153 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:naseem/module/admin/unit/model/unit_list_item.dart';
 
-import '../../../model/unit.dart';
 import '../../repo/unit_repo.dart';
 
 part 'unit_list_event.dart';
 part 'unit_list_state.dart';
 
 class UnitListBloc extends Bloc<UnitListEvent, UnitListState> {
-  final UnitRepo _unitRepo;
-
-  int _currentPage = 1;
-
-  static const int _limit = 8;
-
-  String _communityId = '';
-  String _searchQuery = '';
-
-  List<UnitListItem> _units = [];
-
-  bool _hasMore = true;
-  bool _isLoadingMore = false;
-
   UnitListBloc({required UnitRepo unitRepo})
     : _unitRepo = unitRepo,
       super(const UnitListInitial()) {
     on<GetUnits>(_onGetUnits);
-    on<LoadMoreUnits>(_onLoadMoreUnits);
     on<SearchUnits>(_onSearchUnits);
+    on<LoadMoreUnits>(_onLoadMoreUnits);
   }
 
-  // =========================================================
-  // GET UNITS
-  // =========================================================
+  final UnitRepo _unitRepo;
 
-  Future<void> _onGetUnits(
-    GetUnits event,
+  static const int _limit = 6;
+
+  int _currentPage = 1;
+  int _requestVersion = 0;
+
+  String _communityId = '';
+  String _searchQuery = '';
+
+  bool _hasMore = true;
+  bool _isLoadingMore = false;
+  String? _loadMoreError;
+
+  List<UnitListItem> _units = [];
+
+  Future<void> _onGetUnits(GetUnits event, Emitter<UnitListState> emit) async {
+    await _loadFirstPage(
+      emit: emit,
+      communityId: event.communityId,
+      searchQuery: event.searchQuery ?? '',
+    );
+  }
+
+  Future<void> _onSearchUnits(
+    SearchUnits event,
     Emitter<UnitListState> emit,
   ) async {
-    _communityId = event.communityId.trim();
-    _searchQuery = event.searchQuery?.trim() ?? '';
+    await _loadFirstPage(
+      emit: emit,
+      communityId: event.communityId,
+      searchQuery: event.searchQuery,
+    );
+  }
+
+  Future<void> _loadFirstPage({
+    required Emitter<UnitListState> emit,
+    required String communityId,
+    required String searchQuery,
+  }) async {
+    // Invalidate requests from older searches and pagination.
+    final requestVersion = ++_requestVersion;
+
+    _communityId = communityId.trim();
+    _searchQuery = searchQuery.trim();
 
     _currentPage = 1;
-    _units = [];
     _hasMore = true;
     _isLoadingMore = false;
+    _loadMoreError = null;
+    _units = [];
 
     emit(const UnitListLoading());
 
-    final response = await _unitRepo.getUnits(
-      communityId: _communityId,
-      page: _currentPage,
-      limit: _limit,
-      searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
-    );
-
-    if (response.hasData) {
-      _units = response.data ?? [];
-      _hasMore = _units.length == _limit;
-
-      emit(
-        UnitLoadSuccess(
-          units: List.unmodifiable(_units),
-          hasMore: _hasMore,
-          isLoadingMore: false,
-        ),
+    try {
+      final response = await _unitRepo.getUnits(
+        communityId: _communityId,
+        page: 1,
+        limit: _limit,
+        searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
       );
-    } else {
-      emit(UnitListFailed(response.error ?? 'Something went wrong'));
+
+      if (requestVersion != _requestVersion || emit.isDone) return;
+
+      if (!response.hasData) {
+        emit(UnitListFailed(response.error ?? 'Unable to load units.'));
+        return;
+      }
+
+      _units = response.data ?? [];
+      _currentPage = 1;
+      _hasMore = (response.data ?? []).length == _limit;
+
+      emit(_successState());
+    } catch (e) {
+      if (requestVersion != _requestVersion || emit.isDone) return;
+
+      emit(UnitListFailed('Unable to load units. Please try again.'));
     }
   }
-
-  // =========================================================
-  // LOAD MORE
-  // =========================================================
 
   Future<void> _onLoadMoreUnits(
     LoadMoreUnits event,
     Emitter<UnitListState> emit,
   ) async {
     if (_isLoadingMore || !_hasMore) return;
+    if (event.communityId.trim() != _communityId) return;
 
-    final communityId = event.communityId.trim();
-
-    // Ignore pagination events for another community.
-    if (communityId != _communityId) return;
-
-    _isLoadingMore = true;
-
-    emit(
-      UnitLoadSuccess(
-        units: List.unmodifiable(_units),
-        hasMore: _hasMore,
-        isLoadingMore: true,
-      ),
-    );
-
+    final requestVersion = _requestVersion;
     final nextPage = _currentPage + 1;
 
-    final response = await _unitRepo.getUnits(
-      communityId: _communityId,
-      page: nextPage,
-      limit: _limit,
-      searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
-    );
+    _isLoadingMore = true;
+    _loadMoreError = null;
+    emit(_successState());
 
-    if (response.hasData) {
-      final newUnits = response.data ?? [];
+    try {
+      final response = await _unitRepo.getUnits(
+        communityId: _communityId,
+        page: nextPage,
+        limit: _limit,
+        searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+      );
 
-      _currentPage = nextPage;
-      _units.addAll(newUnits);
-      _hasMore = newUnits.length == _limit;
+      if (requestVersion != _requestVersion) return;
+
+      if (!response.hasData) {
+        _loadMoreError = response.error ?? 'Unable to load more units.';
+      } else {
+        final newUnits = response.data ?? [];
+        final existingIds = _units.map((u) => u.id).toSet();
+
+        _units.addAll(newUnits.where((u) => existingIds.add(u.id)));
+        _currentPage = nextPage;
+        _hasMore = newUnits.length == _limit;
+      }
+    } catch (e) {
+      if (requestVersion != _requestVersion) return;
+      _loadMoreError = 'Unable to load more units. Please retry.';
     }
+
+    if (requestVersion != _requestVersion || emit.isDone) return;
 
     _isLoadingMore = false;
-
-    if (response.hasError) {
-      // Preserve the already loaded units on pagination failure.
-      emit(
-        UnitLoadSuccess(
-          units: List.unmodifiable(_units),
-          hasMore: _hasMore,
-          isLoadingMore: false,
-        ),
-      );
-      return;
-    }
-
-    emit(
-      UnitLoadSuccess(
-        units: List.unmodifiable(_units),
-        hasMore: _hasMore,
-        isLoadingMore: false,
-      ),
-    );
+    emit(_successState());
   }
 
-  // =========================================================
-  // SEARCH UNITS
-  // =========================================================
-
-  Future<void> _onSearchUnits(
-    SearchUnits event,
-    Emitter<UnitListState> emit,
-  ) async {
-    _communityId = event.communityId.trim();
-    _searchQuery = event.searchQuery.trim();
-
-    // Reset pagination for the new search.
-    _currentPage = 1;
-    _hasMore = true;
-    _isLoadingMore = false;
-    _units = [];
-
-    emit(const UnitListLoading());
-
-    final response = await _unitRepo.getUnits(
-      communityId: _communityId,
-      page: _currentPage,
-      limit: _limit,
-      searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+  UnitLoadSuccess _successState() {
+    return UnitLoadSuccess(
+      units: List.unmodifiable(_units),
+      hasMore: _hasMore,
+      isLoadingMore: _isLoadingMore,
+      loadMoreError: _loadMoreError,
     );
-
-    if (response.hasData) {
-      _units = response.data ?? [];
-      _hasMore = _units.length == _limit;
-
-      emit(
-        UnitLoadSuccess(
-          units: List.unmodifiable(_units),
-          hasMore: _hasMore,
-          isLoadingMore: false,
-        ),
-      );
-    } else {
-      emit(UnitListFailed(response.error ?? 'Something went wrong'));
-    }
   }
 }
