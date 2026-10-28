@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../model/community.dart';
 import '../repo/community_repo.dart';
 
 part 'community_event.dart';
@@ -15,6 +14,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       super(const CommunityInitial()) {
     on<CreateCommunity>(_onCreateCommunity);
     on<UpdateCommunity>(_onUpdateCommunity);
+    on<DeleteCommunity>(_onDeleteCommunity);
   }
 
   Future<void> _onCreateCommunity(
@@ -58,6 +58,21 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       emit(AddUpdateCommunitySuccess());
     } else {
       emit(CommunityFailed(response.error ?? 'Failed to update community'));
+    }
+  }
+
+  Future<void> _onDeleteCommunity(
+    DeleteCommunity event,
+    Emitter<CommunityState> emit,
+  ) async {
+    emit(const CommunityLoading());
+
+    final response = await _communityRepo.deleteCommunity(id: event.id.trim());
+
+    if (response.hasData) {
+      emit(AddUpdateCommunitySuccess());
+    } else {
+      emit(CommunityFailed(response.error ?? 'Failed to delete community'));
     }
   }
 }

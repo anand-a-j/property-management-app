@@ -75,11 +75,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
         }
       },
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: 'Payments',
-          leadingOnTap: () =>
-              widget.isFromResident ? null : Navigator.pop(context),
-        ),
+        appBar: CustomAppBar(title: 'Payments'),
         body: Column(
           children: [
             if (!widget.isFromResident) ...[

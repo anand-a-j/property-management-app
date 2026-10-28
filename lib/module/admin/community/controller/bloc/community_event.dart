@@ -63,3 +63,12 @@ class UpdateCommunity extends CommunityEvent {
     description,
   ];
 }
+
+class DeleteCommunity extends CommunityEvent {
+  final String id;
+
+  const DeleteCommunity({required this.id});
+
+  @override
+  List<Object?> get props => [id];
+}

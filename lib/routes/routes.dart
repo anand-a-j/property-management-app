@@ -40,6 +40,7 @@ import '../module/resident/home/view/resident_home_screen.dart';
 import '../module/resident/lease_details/resident_lease_details_screen.dart';
 import '../module/staff/view/maintaince_staff/staff_maintenance_dashboard_screen.dart';
 import '../module/staff/view/security/security_dashboard_screen.dart';
+import 'args/add_community_args.dart';
 import 'args/add_lease_args.dart';
 import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
@@ -176,11 +177,16 @@ final GoRouter router = GoRouter(
       path: RouterPath.addCommunity,
       name: 'add-community-screen',
       pageBuilder: (context, state) {
+        final args = state.extra as AddCommunityArgs?;
+
         return SlideTransitionPage(
-          beginOffset: Offset(0, 1),
+          beginOffset: const Offset(0, 1),
           page: BlocProvider<CommunityBloc>(
             create: (context) => CommunityBloc(communityRepo: CommunityRepo()),
-            child: AddCommunityScreen(),
+            child: AddCommunityScreen(
+              isEdit: args?.isEdit ?? false,
+              community: args?.community,
+            ),
           ),
         );
       },

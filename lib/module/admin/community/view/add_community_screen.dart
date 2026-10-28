@@ -49,9 +49,9 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
 
     final community = widget.community!;
 
-    _communityNameController.text = community.name??"";
-    _addressController.text = community.address??"";
-    _descriptionController.text = community.description??"";
+    _communityNameController.text = community.name ?? "";
+    _addressController.text = community.address ?? "";
+    _descriptionController.text = community.description ?? "";
 
     // Match the existing community type with the fixed constants.
     final existingType = community.communityType;
@@ -121,9 +121,11 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
 
                     const SizedBox(height: AppConsts.pLarge),
 
-                    _communityTypeDropdown(),
+                    if (!widget.isEdit) ...[
+                      _communityTypeDropdown(),
 
-                    const SizedBox(height: AppConsts.pSide),
+                      const SizedBox(height: AppConsts.pSide),
+                    ],
 
                     _communityNameField(),
 
@@ -241,7 +243,7 @@ class _AddCommunityScreenState extends State<AddCommunityScreen> {
 
       bloc.add(
         UpdateCommunity(
-          id: community.id??"",
+          id: community.id ?? "",
           developmentType: '',
           communityType: communityType,
           name: communityName,

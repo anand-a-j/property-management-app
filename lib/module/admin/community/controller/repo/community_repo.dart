@@ -90,4 +90,25 @@ class CommunityRepo {
       );
     }
   }
+
+  Future<DataResponse<bool>> deleteCommunity({required String id}) async {
+    try {
+      await _client
+          .from('communities')
+          .update({
+            'deleted_at': DateTime.now().toUtc().toIso8601String(),
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', id)
+          .isFilter('deleted_at', null)
+          .select()
+          .single();
+
+      return DataResponse(data: true);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('CommunityRepo.deleteCommunity', e, stack),
+      );
+    }
+  }
 }
