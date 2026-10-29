@@ -19,6 +19,10 @@ class VisitorCreateSuccess extends VisitorState {
   const VisitorCreateSuccess();
 }
 
+class VisitorSuccess extends VisitorState {
+  const VisitorSuccess();
+}
+
 class VisitorFailed extends VisitorState {
   final String message;
 

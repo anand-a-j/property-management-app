@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/module/admin/visitor/view/list/widgets/visitor_card.dart';
+import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 import 'package:naseem/routes/args/add_visitor_args.dart';
 
 import '../../../../../core/core.dart';
@@ -9,6 +10,9 @@ import '../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
+import '../../../../../core/widgets/more_options/more_option_item.dart';
+import '../../../../../core/widgets/more_options/more_options_sheet.dart';
+import '../../../../../routes/router_path.dart';
 import '../../../../staff/view/security/sheet/visitor_status_update_sheet.dart';
 import '../../controller/bloc/bloc/visitor_list_bloc.dart';
 import '../../controller/bloc/visitor_bloc.dart';
@@ -181,13 +185,66 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
 
                         return GestureDetector(
                           onTap: () {
-                            if (!widget.isFromResident) {
-                              showVisitorStatusUpdateSheet(
-                                context,
-                                visitor,
-                                true,
-                              );
-                            }
+                            // if (!widget.isFromResident) {
+                            //   showVisitorStatusUpdateSheet(
+                            //     context,
+                            //     visitor,
+                            //     true,
+                            //   );
+                            // }
+
+                            if (widget.isFromResident) return;
+
+                            MoreOptionsBottomSheet.show(
+                              context: context,
+                              title: 'Visitor Options',
+                              subtitle: visitor.name,
+                              items: [
+                                MoreOptionItem(
+                                  title: 'Update Status',
+                                  icon: Icons.sync,
+                                  onTap: () {
+                                    showVisitorStatusUpdateSheet(
+                                      context,
+                                      visitor,
+                                      true,
+                                    );
+                                  },
+                                ),
+                                MoreOptionItem(
+                                  title: 'Edit Visitor',
+                                  icon: Icons.edit_outlined,
+                                  onTap: () {
+                                    context.push(
+                                      RouterPath.addVisitor,
+                                      extra: AddVisitorArgs(
+                                        isResident: widget.isFromResident,
+                                        isEdit: true,
+                                        visitor: visitor,
+                                      ),
+                                    );
+                                  },
+                                ),
+
+                                MoreOptionItem(
+                                  title: 'Delete Visitor',
+                                  icon: Icons.delete_outline_rounded,
+                                  isDestructive: true,
+                                  confirmTitle: 'Delete Visitor?',
+                                  confirmMessage:
+                                      'Are you sure you want to delete ?',
+
+                                  onTap: () async {
+                                    context.read<VisitorBloc>().add(
+                                      DeleteVisitorEvent(
+                                        visitor.id,
+                                        authentication.profile?.id ?? "",
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
                           },
                           child: VisitorCard(visitor: visitor),
                         );

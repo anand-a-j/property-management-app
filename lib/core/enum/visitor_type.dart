@@ -32,5 +32,16 @@ extension VisitTypeExtension on VisitType {
         return 'Other';
     }
   }
-}
 
+  static VisitType? fromString(String? value) {
+    if (value == null || value.isEmpty) return null;
+
+    for (final type in VisitType.values) {
+      if (type.name == value || type.label == value) {
+        return type;
+      }
+    }
+
+    return null;
+  }
+}

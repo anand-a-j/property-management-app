@@ -92,4 +92,111 @@ class VisitorRepo {
       );
     }
   }
+
+  // EDIT VISITOR DETAILS
+  Future<DataResponse<void>> updateVisitor({
+    required String id,
+    required String orgId,
+    required String name,
+    String? phone,
+    DateTime? visitStartAt,
+    DateTime? visitEndAt,
+    required String visitType,
+    String? purpose,
+    required bool parkingRequired,
+    String? unitId,
+    String? residentId,
+    String? leaseId,
+  }) async {
+    try {
+      // Validate required fields.
+      if (name.trim().isEmpty) {
+        throw ArgumentError('Visitor name is required.');
+      }
+
+      if (visitType.trim().isEmpty) {
+        throw ArgumentError('Visit type is required.');
+      }
+
+      // Validate dates only when both are provided.
+      if (visitStartAt != null &&
+          visitEndAt != null &&
+          !visitEndAt.isAfter(visitStartAt)) {
+        throw ArgumentError('Visit end time must be after the start time.');
+      }
+
+      final now = DateTime.now().toUtc().toIso8601String();
+
+      final updates = <String, dynamic>{
+        'name': name.trim(),
+        'phone': _nullableTrim(phone),
+        'visit_start_at': visitStartAt?.toUtc().toIso8601String(),
+        'visit_end_at': visitEndAt?.toUtc().toIso8601String(),
+        'visit_type': visitType.trim(),
+        'purpose': _nullableTrim(purpose),
+        'parking_required': parkingRequired,
+        'unit_id': unitId,
+        'resident_id': residentId,
+        'lease_id': leaseId,
+        'updated_at': now,
+      };
+
+      final result = await _client
+          .from('visitor')
+          .update(updates)
+          .eq('id', id)
+          .eq('org_id', orgId)
+          .eq('status', 'pending')
+          .select('id')
+          .maybeSingle();
+
+      if (result == null) {
+        return DataResponse(
+          error: 'Visitor not found or cannot be edited in its current status.',
+        );
+      }
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('VisitorRepo.updateVisitor', e, stack),
+      );
+    }
+  }
+
+  /// Converts null, empty, or whitespace-only strings to null.
+  String? _nullableTrim(String? value) {
+    final trimmed = value?.trim();
+    return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+  }
+
+  // DELETE VISITOR
+  Future<DataResponse<void>> deleteVisitor({
+    required String id,
+    required String orgId,
+  }) async {
+    try {
+      final result = await _client
+          .from('visitor')
+          .delete()
+          .eq('id', id)
+          .eq('org_id', orgId)
+          .inFilter('status', ['pending', 'cancelled'])
+          .select('id')
+          .maybeSingle();
+
+      if (result == null) {
+        return DataResponse(
+          error:
+              'Visitor not found or cannot be deleted in its current status.',
+        );
+      }
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('VisitorRepo.deleteVisitor', e, stack),
+      );
+    }
+  }
 }

@@ -359,6 +359,8 @@ final GoRouter router = GoRouter(
             leaseId: args.leaseId,
             residentId: args.residentId,
             unitId: args.unitId,
+            isEdit: args.isEdit,
+            visitor: args.visitor,
           ),
         );
       },
