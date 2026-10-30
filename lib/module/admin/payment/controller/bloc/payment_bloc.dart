@@ -16,7 +16,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     : _paymentRepo = paymentRepo,
       super(const PaymentInitial()) {
     on<CreatePaymentEvent>(_onCreatePayment);
+    on<UpdatePaymentEvent>(_onUpdatePayment);
     on<UpdatePaymentStatusEvent>(_onUpdatePaymentStatus);
+    on<DeletePaymentEvent>(_onDeletePayment);
   }
 
   // =========================================================
@@ -56,6 +58,44 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
+  // =========================================================
+  // UPDATE PAYMENT
+  // =========================================================
+
+  Future<void> _onUpdatePayment(
+    UpdatePaymentEvent event,
+    Emitter<PaymentState> emit,
+  ) async {
+    emit(const PaymentLoading());
+
+    final response = await _paymentRepo.updatePayment(
+      paymentId: event.paymentId.trim(),
+      dueDate: event.dueDate,
+      amount: event.amount,
+      paymentType: event.paymentType,
+      chequeNumber: event.chequeNumber?.trim(),
+      description: event.description?.trim(),
+    );
+
+    if (response.hasError) {
+      emit(
+        PaymentFailed(response.error?.toString() ?? 'Failed to update payment'),
+      );
+      return;
+    }
+
+    emit(
+      PaymentSuccess(
+        payment: response.data,
+        message: 'Payment updated successfully',
+      ),
+    );
+  }
+
+  // =========================================================
+  // UPDATE PAYMENT STATUS
+  // =========================================================
+
   Future<void> _onUpdatePaymentStatus(
     UpdatePaymentStatusEvent event,
     Emitter<PaymentState> emit,
@@ -75,6 +115,31 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         PaymentFailed(
           response.error?.toString() ?? 'Failed to update payment status',
         ),
+      );
+      return;
+    }
+
+    emit(const PaymentStatusUpdated());
+  }
+
+  // =========================================================
+  // DELETE PAYMENT
+  // =========================================================
+
+  Future<void> _onDeletePayment(
+    DeletePaymentEvent event,
+    Emitter<PaymentState> emit,
+  ) async {
+    emit(const PaymentLoading());
+
+    final response = await _paymentRepo.deletePayment(
+      paymentId: event.paymentId.trim(),
+      currentStatus: event.currentStatus,
+    );
+
+    if (response.hasError) {
+      emit(
+        PaymentFailed(response.error?.toString() ?? 'Failed to delete payment'),
       );
       return;
     }

@@ -38,10 +38,7 @@ class ResidentRepo {
         query = query.ilike('resident_name', '%$normalizedSearch%');
       }
 
-      final data = await query
-          .order('resident_name')
-          .order('id')
-          .range(from, to);
+      final data = await query.order('resident_name').range(from, to);
 
       final residents = (data as List)
           .map(

@@ -104,7 +104,7 @@ class PaymentRepo {
   Future<DataResponse<List<Payment>>> getAllPayments({
     required String orgId,
     int page = 1,
-    int limit = 15,
+    int limit = 6,
     String? leaseId,
   }) async {
     try {
@@ -144,6 +144,69 @@ class PaymentRepo {
     } catch (e, stack) {
       return DataResponse<List<Payment>>(
         error: errorlog('PaymentRepo.getAllPayments', e, stack),
+      );
+    }
+  }
+
+  // UPDATE PAYMENT
+  Future<DataResponse<Payment>> updatePayment({
+    required String paymentId,
+    required DateTime dueDate,
+    required double amount,
+    required PaymentType paymentType,
+    String? chequeNumber,
+    String? description,
+  }) async {
+    try {
+      final data = await _client
+          .from('payments')
+          .update({
+            'due_date': dueDate.toIso8601String().split('T').first,
+            'amount': amount,
+            'payment_type': paymentType.name,
+            'cheque_number': chequeNumber,
+            'description': description,
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', paymentId)
+          .isFilter('deleted_at', null)
+          .select()
+          .single();
+
+      return DataResponse<Payment>(data: Payment.fromJson(data));
+    } catch (e, stack) {
+      return DataResponse<Payment>(
+        error: errorlog('PaymentRepo.updatePayment', e, stack),
+      );
+    }
+  }
+
+  Future<DataResponse<void>> deletePayment({
+    required String paymentId,
+    required PaymentStatus currentStatus,
+  }) async {
+    try {
+      // Validate whether the payment can be deleted.
+      if (currentStatus != PaymentStatus.pending) {
+        throw ArgumentError(
+          'Cannot delete a payment with status: ${currentStatus.name}. '
+          'Only pending payments can be deleted.',
+        );
+      }
+
+      await _client
+          .from('payments')
+          .update({
+            'deleted_at': DateTime.now().toUtc().toIso8601String(),
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', paymentId)
+          .isFilter('deleted_at', null);
+
+      return DataResponse<void>(data: null);
+    } catch (e, stack) {
+      return DataResponse<void>(
+        error: errorlog('PaymentRepo.deletePayment', e, stack),
       );
     }
   }

@@ -10,7 +10,7 @@ part 'payment_list_state.dart';
 class PaymentListBloc extends Bloc<PaymentListEvent, PaymentListState> {
   final PaymentRepo _paymentRepo;
 
-  static const int _limit = 8;
+  static const int _limit = 6;
 
   int _currentPage = 1;
   String _orgId = '';

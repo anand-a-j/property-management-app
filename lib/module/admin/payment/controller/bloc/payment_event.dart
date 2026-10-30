@@ -71,3 +71,44 @@ class UpdatePaymentStatusEvent extends PaymentEvent {
     bounceReason,
   ];
 }
+
+class UpdatePaymentEvent extends PaymentEvent {
+  final String paymentId;
+  final DateTime dueDate;
+  final double amount;
+  final PaymentType paymentType;
+  final String? chequeNumber;
+  final String? description;
+
+  const UpdatePaymentEvent({
+    required this.paymentId,
+    required this.dueDate,
+    required this.amount,
+    required this.paymentType,
+    this.chequeNumber,
+    this.description,
+  });
+
+  @override
+  List<Object?> get props => [
+    paymentId,
+    dueDate,
+    amount,
+    paymentType,
+    chequeNumber,
+    description,
+  ];
+}
+
+final class DeletePaymentEvent extends PaymentEvent {
+  const DeletePaymentEvent({
+    required this.paymentId,
+    required this.currentStatus,
+  });
+
+  final String paymentId;
+  final PaymentStatus currentStatus;
+
+  @override
+  List<Object?> get props => [paymentId, currentStatus];
+}

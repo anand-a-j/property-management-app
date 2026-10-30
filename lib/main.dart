@@ -20,6 +20,7 @@ import 'package:naseem/module/admin/maintainence/controller/bloc/bloc/maintenanc
 import 'package:naseem/module/admin/payment/controller/bloc/bloc/payment_list_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/bloc/payment_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/repo/payment_repo.dart';
+import 'package:naseem/module/admin/resident/controller/bloc/bloc/residient_list_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/bloc/unit_list_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/unit_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/repo/unit_repo.dart';
@@ -142,6 +143,9 @@ void main() async {
           create: (context) =>
               MaintenanceListBloc(maintenanceRepo: MaintenanceRepo()),
         ),
+        BlocProvider<ResidentListBloc>(
+          create: (context) => ResidentListBloc(repo: ResidentRepo()),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -175,4 +179,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-                                                                                 

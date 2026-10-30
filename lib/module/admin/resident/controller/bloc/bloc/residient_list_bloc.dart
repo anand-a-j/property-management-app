@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../model/resident_list_response.dart';
 import '../../repo/resident_repo.dart';

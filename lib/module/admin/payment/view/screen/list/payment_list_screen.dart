@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/core.dart';
 import 'package:naseem/module/admin/payment/view/dialog/payment_status_update_dialog.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
@@ -10,7 +11,11 @@ import '../../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../../core/widgets/error_state_view.dart';
 import '../../../../../../core/widgets/load_more_button.dart';
+import '../../../../../../core/widgets/more_options/more_option_item.dart';
+import '../../../../../../core/widgets/more_options/more_options_sheet.dart';
 import '../../../../../../core/widgets/stats_card.dart';
+import '../../../../../../routes/args/add_payment_args.dart';
+import '../../../../../../routes/router_path.dart';
 import '../../../controller/bloc/bloc/payment_list_bloc.dart';
 import '../../../controller/bloc/payment_bloc.dart';
 import '../../widgets/payment_card.dart';
@@ -116,9 +121,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
             Expanded(
               child: BlocBuilder<PaymentListBloc, PaymentListState>(
                 builder: (context, state) {
-                  // Initial state and initial loading
-                  if (state is PaymentListInitial ||
-                      state is PaymentListLoading) {
+                  if (state is PaymentListLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
@@ -141,9 +144,9 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(
                         AppConsts.pSide,
-                        15,
-                        AppConsts.pSide,
                         0,
+                        AppConsts.pSide,
+                        50,
                       ),
                       itemCount: payments.length + 1,
                       itemBuilder: (context, index) {
@@ -169,7 +172,53 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                           payment: payment,
                           onTap: () {
                             if (!widget.isFromResident) {
-                              showPaymentStatusUpdateDialog(context, payment);
+                              MoreOptionsBottomSheet.show(
+                                context: context,
+                                items: [
+                                  MoreOptionItem(
+                                    title: 'Edit Payment',
+                              
+                                    icon: Icons.edit_outlined,
+                                    onTap: () {
+                                      context.push(
+                                        RouterPath.addPayment,
+                                        extra: AddPaymentArgs(
+                                          isEdit: true,
+                                          payment: payment,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  MoreOptionItem(
+                                    title: 'Update Payment Status',
+                            
+                                    icon: Icons.sync_outlined,
+                                    onTap: () {
+                                      showPaymentStatusUpdateDialog(
+                                        context,
+                                        payment,
+                                      );
+                                    },
+                                  ),
+                                  MoreOptionItem(
+                                    title: 'Delete Payment',
+                            
+                                    icon: Icons.delete_outline_rounded,
+                                    isDestructive: true,
+                                    confirmTitle: 'Delete Payment?',
+                                    confirmMessage:
+                                        'Are you sure you want to delete payment ${payment.paymentNumber}?',
+                                    onTap: () {
+                                      context.read<PaymentBloc>().add(
+                                        DeletePaymentEvent(
+                                          paymentId: payment.id,
+                                          currentStatus: payment.status,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
                             }
                           },
                         );

@@ -293,6 +293,8 @@ final GoRouter router = GoRouter(
             lease: args.lease,
             community: args.community,
             unit: args.unit,
+            isEdit: args.isEdit,
+            payment: args.payment,
           ),
         );
       },

@@ -198,7 +198,7 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
                             MoreOptionsBottomSheet.show(
                               context: context,
                               title: 'Visitor Options',
-                              subtitle: visitor.name,
+
                               items: [
                                 MoreOptionItem(
                                   title: 'Update Status',

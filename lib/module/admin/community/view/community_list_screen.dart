@@ -93,7 +93,7 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                                 items: [
                                   MoreOptionItem(
                                     title: 'View Units',
-                                    subtitle: 'View units in this community',
+
                                     icon: Icons.apartment_outlined,
                                     onTap: () {
                                       context.push(
@@ -106,7 +106,7 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                                   ),
                                   MoreOptionItem(
                                     title: 'Edit Community',
-                                    subtitle: 'Update community information',
+
                                     icon: Icons.edit_outlined,
                                     onTap: () {
                                       context.push(
@@ -120,7 +120,7 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                                   ),
                                   MoreOptionItem(
                                     title: 'Delete Community',
-                                    subtitle: 'Delete this community',
+
                                     icon: Icons.delete_outline_rounded,
                                     isDestructive: true,
                                     confirmTitle: 'Delete Community?',
@@ -128,7 +128,6 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                                         'Are you sure you want to delete ${community.name}?',
 
                                     onTap: () async {
-                                    
                                       context.read<CommunityBloc>().add(
                                         DeleteCommunity(id: community.id ?? ""),
                                       );

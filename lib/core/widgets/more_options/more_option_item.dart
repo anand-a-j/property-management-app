@@ -7,7 +7,7 @@ class MoreOptionItem {
     required this.title,
     required this.icon,
     required this.onTap,
-    this.subtitle,
+
     this.isDestructive = false,
     this.enabled = true,
     this.confirmTitle,
@@ -16,7 +16,6 @@ class MoreOptionItem {
 
   final String title;
   final IconData icon;
-  final String? subtitle;
 
   /// Supports both synchronous and asynchronous actions.
   final FutureOr<void> Function() onTap;

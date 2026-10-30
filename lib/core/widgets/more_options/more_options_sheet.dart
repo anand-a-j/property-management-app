@@ -11,7 +11,6 @@ class MoreOptionsBottomSheet {
     required BuildContext context,
     required List<MoreOptionItem> items,
     String title = 'More Options',
-    String? subtitle,
     bool showDragHandle = true,
     bool isDismissible = true,
   }) async {
@@ -27,7 +26,7 @@ class MoreOptionsBottomSheet {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) =>
-          MoreOptionsSheetBody(title: title, subtitle: subtitle, items: items,),
+          MoreOptionsSheetBody(title: title,items: items,),
     );
   }
 }

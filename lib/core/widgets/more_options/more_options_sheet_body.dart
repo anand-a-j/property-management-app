@@ -8,12 +8,10 @@ class MoreOptionsSheetBody extends StatelessWidget {
     super.key,
     required this.items,
     this.title = 'More Options',
-    this.subtitle,
   });
 
   final List<MoreOptionItem> items;
   final String title;
-  final String? subtitle;
 
   Future<void> _handleAction(BuildContext context, MoreOptionItem item) async {
     if (!item.enabled) return;
@@ -49,20 +47,10 @@ class MoreOptionsSheetBody extends StatelessWidget {
           children: [
             Text(
               title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
             ),
-
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colors.onSurfaceVariant,
-                ),
-              ),
-            ],
 
             const SizedBox(height: 12),
 
@@ -93,15 +81,15 @@ class MoreOptionsSheetBody extends StatelessWidget {
                       height: 42,
                       decoration: BoxDecoration(
                         color: item.isDestructive
-                            ? colors.errorContainer
-                            : colors.secondaryContainer,
+                            ? colors.error
+                            : colors.surface,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Icon(
                         item.icon,
                         color: item.isDestructive
-                            ? colors.onErrorContainer
-                            : colors.onSurfaceVariant,
+                            ? colors.onPrimary
+                            : colors.secondary,
                         size: 21,
                       ),
                     ),
@@ -112,9 +100,7 @@ class MoreOptionsSheetBody extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    subtitle: item.subtitle == null
-                        ? null
-                        : Text(item.subtitle!),
+
                     trailing: Icon(
                       Icons.chevron_right_rounded,
                       color: colors.onSurfaceVariant,
