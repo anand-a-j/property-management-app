@@ -59,7 +59,11 @@ class MaintenanceStaffBloc
         orgId: _orgId,
         page: _currentPage,
         limit: _limit,
-        statuses: [MaintenanceStatus.assigned, MaintenanceStatus.inProgress],
+        statuses: [
+          MaintenanceStatus.approved,
+          MaintenanceStatus.inProgress,
+          MaintenanceStatus.completed,
+        ],
       );
 
       if (response.hasData) {
@@ -123,7 +127,11 @@ class MaintenanceStaffBloc
         orgId: _orgId,
         page: nextPage,
         limit: _limit,
-        statuses: [MaintenanceStatus.assigned, MaintenanceStatus.inProgress],
+        statuses: [
+          MaintenanceStatus.approved,
+          MaintenanceStatus.inProgress,
+          MaintenanceStatus.completed,
+        ],
       );
 
       if (response.hasData) {

@@ -44,7 +44,6 @@ class MaintenanceCard extends StatelessWidget {
         remark = hasNote ? note : null;
         break;
 
-      case MaintenanceStatus.assigned:
       case MaintenanceStatus.inProgress:
       case MaintenanceStatus.completed:
         remarkTitle = 'Work Update';

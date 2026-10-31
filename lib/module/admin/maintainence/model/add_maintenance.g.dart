@@ -48,7 +48,6 @@ const _$MaintenanceStatusEnumMap = {
   MaintenanceStatus.pendingReview: 'pending_review',
   MaintenanceStatus.rejected: 'rejected',
   MaintenanceStatus.approved: 'approved',
-  MaintenanceStatus.assigned: 'assigned',
   MaintenanceStatus.inProgress: 'in_progress',
   MaintenanceStatus.completed: 'completed',
   MaintenanceStatus.closed: 'closed',

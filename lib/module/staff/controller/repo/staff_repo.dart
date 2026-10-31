@@ -9,13 +9,14 @@ class StaffRepo {
 
   Future<DataResponse<List<Profile>>> fetchStaffs({
     required String orgId,
+    required List<String> roles,
   }) async {
     try {
       final data = await _client
           .from('profiles')
           .select()
           .eq('org_id', orgId)
-          .inFilter('role', ['security', 'maintenance'])
+          .inFilter('role', roles)
           .limit(20);
 
       final staffs = (data as List)

@@ -11,9 +11,6 @@ enum MaintenanceStatus {
   @JsonValue('approved')
   approved,
 
-  @JsonValue('assigned')
-  assigned,
-
   @JsonValue('in_progress')
   inProgress,
 
@@ -36,8 +33,8 @@ extension MaintenanceStatusX on MaintenanceStatus {
         return 'Rejected';
       case MaintenanceStatus.approved:
         return 'Approved';
-      case MaintenanceStatus.assigned:
-        return 'Assigned';
+      // case MaintenanceStatus.assigned:
+      //   return 'Assigned';
       case MaintenanceStatus.inProgress:
         return 'In Progress';
       case MaintenanceStatus.completed:
@@ -57,8 +54,6 @@ extension MaintenanceStatusX on MaintenanceStatus {
         return Colors.red;
       case MaintenanceStatus.approved:
         return Colors.blue;
-      case MaintenanceStatus.assigned:
-        return Colors.indigo;
       case MaintenanceStatus.inProgress:
         return Colors.deepOrange;
       case MaintenanceStatus.completed:
@@ -78,8 +73,6 @@ extension MaintenanceStatusX on MaintenanceStatus {
         return 'rejected';
       case MaintenanceStatus.approved:
         return 'approved';
-      case MaintenanceStatus.assigned:
-        return 'assigned';
       case MaintenanceStatus.inProgress:
         return 'in_progress';
       case MaintenanceStatus.completed:
@@ -103,14 +96,8 @@ extension MaintenanceStatusX on MaintenanceStatus {
 
       case MaintenanceStatus.approved:
         return isManager
-            ? [MaintenanceStatus.assigned, MaintenanceStatus.cancelled]
-            : [];
-
-      case MaintenanceStatus.assigned:
-        return [
-          MaintenanceStatus.inProgress,
-          if (isManager) MaintenanceStatus.cancelled,
-        ];
+            ? [MaintenanceStatus.approved, MaintenanceStatus.cancelled]
+            : [MaintenanceStatus.inProgress, MaintenanceStatus.completed];
 
       case MaintenanceStatus.inProgress:
         return [

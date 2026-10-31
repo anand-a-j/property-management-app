@@ -73,18 +73,19 @@ class MaintenanceRepo {
         'pending_review',
         'rejected',
         'approved',
-        'assigned',
         'in_progress',
         'completed',
         'closed',
         'cancelled',
       };
 
+      // Only progress updates are written to maintenance_updates.
+      const historyStatuses = {'in_progress', 'completed'};
+
       if (!allowedStatuses.contains(status)) {
         throw ArgumentError('Invalid maintenance status: $status');
       }
 
-      // Validate required fields before making database changes.
       if (status == 'rejected' &&
           (rejectionReason == null || rejectionReason.trim().isEmpty)) {
         throw ArgumentError(
@@ -92,13 +93,10 @@ class MaintenanceRepo {
         );
       }
 
-      if ((status == 'assigned' || status == 'in_progress') &&
-          (assignedTo == null || assignedTo.trim().isEmpty)) {
-        throw ArgumentError('An assignee is required for this status.');
+      // Validate an explicitly provided assignee.
+      if (assignedTo != null && assignedTo.trim().isEmpty) {
+        throw ArgumentError('Assignee cannot be empty.');
       }
-
-      // maintenance_updates only supports these three statuses.
-      const historyStatuses = {'assigned', 'in_progress', 'completed'};
 
       if (historyStatuses.contains(status) &&
           (note == null || note.trim().isEmpty)) {
@@ -131,7 +129,9 @@ class MaintenanceRepo {
       }
 
       // Assignment information
-      if (status == 'assigned' || status == 'in_progress') {
+      // Only update when a staff member is explicitly selected.
+      // Otherwise, preserve the existing assignment.
+      if (status == 'approved' && assignedTo != null) {
         updates['assigned_to'] = assignedTo;
       }
 

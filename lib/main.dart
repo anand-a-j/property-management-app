@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/core/bloc/cubit/app_cubit.dart';
 import 'package:naseem/core/utils/bloc_observer.dart';
@@ -20,6 +19,8 @@ import 'package:naseem/module/admin/maintainence/controller/bloc/bloc/maintenanc
 import 'package:naseem/module/admin/payment/controller/bloc/bloc/payment_list_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/bloc/payment_bloc.dart';
 import 'package:naseem/module/admin/payment/controller/repo/payment_repo.dart';
+import 'package:naseem/module/admin/recent_activity/controller/bloc/recent_activity_bloc.dart';
+import 'package:naseem/module/admin/recent_activity/controller/repo/recent_activity_repo.dart';
 import 'package:naseem/module/admin/resident/controller/bloc/bloc/residient_list_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/bloc/unit_list_bloc.dart';
 import 'package:naseem/module/admin/unit/controller/bloc/unit_bloc.dart';
@@ -145,6 +146,10 @@ void main() async {
         ),
         BlocProvider<ResidentListBloc>(
           create: (context) => ResidentListBloc(repo: ResidentRepo()),
+        ),
+        BlocProvider<RecentActivityBloc>(
+          create: (context) =>
+              RecentActivityBloc(recentActivityRepo: RecentActivityRepo()),
         ),
       ],
       child: const MyApp(),

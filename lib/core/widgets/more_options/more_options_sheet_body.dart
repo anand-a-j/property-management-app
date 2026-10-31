@@ -74,7 +74,7 @@ class MoreOptionsSheetBody extends StatelessWidget {
                       vertical: 2,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     leading: Container(
                       width: 42,
@@ -82,7 +82,7 @@ class MoreOptionsSheetBody extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: item.isDestructive
                             ? colors.error
-                            : colors.surface,
+                            : colors.surface.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Icon(

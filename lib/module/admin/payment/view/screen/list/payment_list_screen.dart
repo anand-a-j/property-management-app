@@ -16,6 +16,7 @@ import '../../../../../../core/widgets/more_options/more_options_sheet.dart';
 import '../../../../../../core/widgets/stats_card.dart';
 import '../../../../../../routes/args/add_payment_args.dart';
 import '../../../../../../routes/router_path.dart';
+import '../../../../home/controller/cubit/dashboard_stats_cubit.dart';
 import '../../../controller/bloc/bloc/payment_list_bloc.dart';
 import '../../../controller/bloc/payment_bloc.dart';
 import '../../widgets/payment_card.dart';
@@ -85,33 +86,38 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
           children: [
             if (!widget.isFromResident) ...[
               AppHorizontalPadding(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 20,
-                  children: [
-                    Expanded(
-                      child: StatCard(
-                        title: 'Rent Collected',
-                        icon: Icons.account_balance_wallet_outlined,
-                        iconColor: Colors.teal,
-                        value: '0',
-                        borderColor: context.surface,
-                        titleColor: context.secondary,
-                        valueColor: context.primary,
-                      ),
-                    ),
-                    Expanded(
-                      child: StatCard(
-                        title: 'Due',
-                        icon: Icons.event_busy_outlined,
-                        iconColor: Colors.red,
-                        value: '0',
-                        borderColor: context.surface,
-                        titleColor: context.secondary,
-                        valueColor: Colors.red,
-                      ),
-                    ),
-                  ],
+                child: BlocBuilder<DashboardStatsCubit, DashboardStatsState>(
+                  builder: (context, state) {
+                    return Row(
+                      spacing: 12,
+                      children: [
+                        Expanded(
+                          child: StatCard(
+                            title: "Overdue",
+                            icon: Icons.event_busy_outlined,
+                            iconColor: context.error,
+                            bgColor: context.error.withValues(alpha: 0.06),
+                            value: "${state.stats.overdueCount}",
+                            borderColor: context.error.withValues(alpha: 0.20),
+                            titleColor: context.secondary,
+                            valueColor: context.error,
+                          ),
+                        ),
+                        Expanded(
+                          child: StatCard(
+                            title: "Rent Collected",
+                            icon: Icons.account_balance_wallet_outlined,
+                            iconColor: Colors.teal.shade700,
+                            bgColor: Colors.teal.withValues(alpha: 0.06),
+                            value: "${state.stats.rentCollected} AED",
+                            borderColor: Colors.teal.withValues(alpha: 0.20),
+                            titleColor: context.secondary,
+                            valueColor: Colors.teal.shade700,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],
@@ -177,7 +183,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                 items: [
                                   MoreOptionItem(
                                     title: 'Edit Payment',
-                              
+
                                     icon: Icons.edit_outlined,
                                     onTap: () {
                                       context.push(
@@ -191,7 +197,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                   ),
                                   MoreOptionItem(
                                     title: 'Update Payment Status',
-                            
+
                                     icon: Icons.sync_outlined,
                                     onTap: () {
                                       showPaymentStatusUpdateDialog(
@@ -202,7 +208,7 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                   ),
                                   MoreOptionItem(
                                     title: 'Delete Payment',
-                            
+
                                     icon: Icons.delete_outline_rounded,
                                     isDestructive: true,
                                     confirmTitle: 'Delete Payment?',

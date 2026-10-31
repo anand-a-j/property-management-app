@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/core.dart';
-import 'package:naseem/core/extension/common.dart';
-import 'package:naseem/core/widgets/custom_button.dart';
-import 'package:naseem/core/widgets/custom_dialog.dart';
 import 'package:naseem/routes/router_path.dart';
 
-import '../../../core/constants/constants.dart';
 import '../../../core/enum/sign_up_type.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -47,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Image.asset(Assets.welcome, fit: BoxFit.cover),
             Container(
               decoration: BoxDecoration(
-                color: context.secondary.withValues(alpha: 0.25),
+                color: context.secondary.withValues(alpha: 0.45),
               ),
             ),
             Padding(
@@ -64,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         "Live comfortably, stay connected\nManage your home,\nlease & payments with ease.",
                         style: context.titleMedium?.copyWith(
                           color: context.onPrimary,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: AppConsts.pMedium),

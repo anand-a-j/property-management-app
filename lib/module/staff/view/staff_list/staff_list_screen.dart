@@ -12,26 +12,38 @@ import '../../controller/stafff_bloc/staff_bloc.dart';
 import 'widgets/staff_card.dart';
 
 class StaffListScreen extends StatefulWidget {
-  const StaffListScreen({super.key});
+  const StaffListScreen({super.key, required this.isSelectionMode});
+
+  final bool isSelectionMode;
 
   @override
   State<StaffListScreen> createState() => _StaffListScreenState();
 }
 
 class _StaffListScreenState extends State<StaffListScreen> {
-  @override
-  void initState() {
-    super.initState();
+  List<String> get _staffRoles {
+    return widget.isSelectionMode
+        ? ['maintenance']
+        : ['security', 'maintenance'];
+  }
 
+  void _fetchStaffs() {
     context.read<StaffBloc>().add(
-      FetchStaffs(orgId: authentication.profile?.orgId ?? ""),
+      FetchStaffs(
+        orgId: authentication.profile?.orgId ?? '',
+        roles: _staffRoles,
+      ),
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchStaffs();
+  }
+
   void _retry() {
-    context.read<StaffBloc>().add(
-      FetchStaffs(orgId: authentication.profile?.orgId ?? ""),
-    );
+    _fetchStaffs();
   }
 
   @override
@@ -40,7 +52,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
       appBar: CustomAppBar(title: 'Staffs', leadingOnTap: () => context.pop()),
       body: Column(
         children: [
-          SearchTextField(title: "Search Staffs", onChanged: (query) {}),
+          SearchTextField(title: 'Search Staffs', onChanged: (query) {}),
 
           const SizedBox(height: AppConsts.pMedium),
 
@@ -66,7 +78,14 @@ class _StaffListScreenState extends State<StaffListScreen> {
                     itemBuilder: (context, index) {
                       final staff = state.staffs[index];
 
-                      return StaffCard(profile: staff, index: index);
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.isSelectionMode) {
+                            context.pop(staff);
+                          }
+                        },
+                        child: StaffCard(profile: staff, index: index),
+                      );
                     },
                   );
                 }
@@ -84,12 +103,17 @@ class _StaffListScreenState extends State<StaffListScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingAddButton(
-        title: 'Add Staff',
-        onTap: () {
-          context.push(RouterPath.signUp, extra: {'type': SignUpType.staff});
-        },
-      ),
+      floatingActionButton: widget.isSelectionMode
+          ? null
+          : FloatingAddButton(
+              title: 'Add Staff',
+              onTap: () {
+                context.push(
+                  RouterPath.signUp,
+                  extra: {'type': SignUpType.staff},
+                );
+              },
+            ),
     );
   }
 }

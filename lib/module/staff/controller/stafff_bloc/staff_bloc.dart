@@ -21,7 +21,10 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   ) async {
     emit(const StaffLoading());
 
-    final response = await _repo.fetchStaffs(orgId: event.orgId);
+    final response = await _repo.fetchStaffs(
+      orgId: event.orgId,
+      roles: event.roles,
+    );
 
     if (response.hasData) {
       emit(StaffSuccess(response.data ?? []));

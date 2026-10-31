@@ -11,6 +11,7 @@ class StatCard extends StatelessWidget {
   final Color? titleColor;
   final Color? valueColor;
   final Color? iconColor;
+  final Color? bgColor;
 
   const StatCard({
     super.key,
@@ -21,6 +22,7 @@ class StatCard extends StatelessWidget {
     this.titleColor,
     this.valueColor,
     this.iconColor,
+    this.bgColor,
   });
 
   @override
@@ -28,13 +30,20 @@ class StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppConsts.pMedium),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: bgColor ?? Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color:
               borderColor ?? context.secondaryContainer.withValues(alpha: 0.4),
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: bgColor ?? Colors.black.withValues(alpha: 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

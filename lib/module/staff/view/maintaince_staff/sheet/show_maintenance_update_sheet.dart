@@ -5,8 +5,8 @@ import 'package:naseem/module/admin/maintainence/model/maintenance_request.dart'
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../../core/enum/mainteance_status.dart';
-import '../../../../../core/widgets/status_update_bottom_sheet.dart';
 import '../../../controller/maintaince_staff/bloc/status/maintenance_status_bloc.dart';
+import 'update_maintenance_status_body.dart';
 
 void showMaintenanceStatusUpdateSheet(
   BuildContext context,
@@ -27,41 +27,30 @@ void showMaintenanceStatusUpdateSheet(
           borderRadius: BorderRadius.circular(AppConsts.rMedium),
         ),
         backgroundColor: Colors.white,
-        child: StatusUpdateBottomSheet<MaintenanceStatus>(
-          title: 'Update Maintenance Status',
-          remarkHint: 'Enter remarks or describe the work performed',
-          submitLabel: 'Update Status',
-          remarkLabel: 'Remarks',
-          statuses: nextStatuses,
-          initialStatus: request.status,
-          itemLabel: (status) => status.label,
-          showRemark: true,
+        child: UpdateMaintenanceStatusBody(
+          request: request,
+          isManager: isManager,
           isLoading: false,
-          onSubmit: (status, remark) async {
-            final updatedBy = authentication.profile?.id ?? "";
+          onSubmit:
+              ({
+                required status,
+                required assignedTo,
+                required note,
+                required rejectionReason,
+              }) async {
+                final updatedBy = authentication.profile?.id ?? '';
 
-            context.read<MaintenanceStatusBloc>().add(
-              UpdateMaintenanceStatusEvent(
-                requestId: request.id,
-                status: status.name,
-                updatedBy: updatedBy,
-                assignedTo:
-                    status == MaintenanceStatus.assigned ||
-                        status == MaintenanceStatus.inProgress
-                    ? request.assignedTo
-                    : null,
-                note:
-                    status == MaintenanceStatus.assigned ||
-                        status == MaintenanceStatus.inProgress ||
-                        status == MaintenanceStatus.completed
-                    ? remark?.trim()
-                    : null,
-                rejectionReason: status == MaintenanceStatus.rejected
-                    ? remark?.trim()
-                    : null,
-              ),
-            );
-          },
+                context.read<MaintenanceStatusBloc>().add(
+                  UpdateMaintenanceStatusEvent(
+                    requestId: request.id,
+                    status: status.dbValue,
+                    updatedBy: updatedBy,
+                    assignedTo: isManager ? assignedTo : request.assignedTo,
+                    note: note,
+                    rejectionReason: rejectionReason,
+                  ),
+                );
+              },
         ),
       );
     },

@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/module/admin/community/controller/repo/community_repo.dart';
 import 'package:naseem/module/admin/community/view/add_community_screen.dart';
-import 'package:naseem/module/admin/resident/controller/bloc/resident_bloc.dart'
-    show ResidentBloc;
-import 'package:naseem/module/admin/resident/controller/repo/resident_repo.dart';
+
 import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/unit_details_screen.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
@@ -372,9 +370,10 @@ final GoRouter router = GoRouter(
       path: RouterPath.staffList,
       name: 'staff-list-screen',
       pageBuilder: (context, state) {
+        final isSelectionMode = state.extra as bool? ?? false;
         return SlideTransitionPage(
           beginOffset: Offset(1, 0),
-          page: StaffListScreen(),
+          page: StaffListScreen(isSelectionMode: isSelectionMode),
         );
       },
     ),

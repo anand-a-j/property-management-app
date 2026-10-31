@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:naseem/core/utils/snackbar_manager.dart';
 
@@ -62,17 +63,53 @@ class _PaymentStatusUpdateBottomSheetState
 
   Future<void> _selectPaidDate() async {
     final now = DateTime.now();
+    final initialDate = _paidDate ?? now;
 
-    final selectedDate = await showDatePicker(
+    DateTime selectedDate = initialDate;
+
+    await showCupertinoModalPopup<void>(
       context: context,
-      initialDate: _paidDate ?? now,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      builder: (context) => Container(
+        height: 280,
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 44,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CupertinoButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        if (mounted) {
+                          setState(() => _paidDate = selectedDate);
+                        }
+                      },
+                      child: const Text('Done'),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: initialDate,
+                  minimumDate: DateTime(2000),
+                  maximumDate: DateTime(2100),
+                  onDateTimeChanged: (date) {
+                    selectedDate = date;
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
-
-    if (selectedDate != null && mounted) {
-      setState(() => _paidDate = selectedDate);
-    }
   }
 
   void _onStatusChanged(PaymentStatus? status) {
@@ -164,7 +201,7 @@ class _PaymentStatusUpdateBottomSheetState
                         ? null
                         : () => Navigator.of(context).pop(),
                     child: CircleAvatar(
-                      backgroundColor: context.secondaryContainer,
+                      backgroundColor: context.surface.withValues(alpha: 0.5),
                       radius: 18,
                       child: Icon(
                         Icons.close,
@@ -188,7 +225,7 @@ class _PaymentStatusUpdateBottomSheetState
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppConsts.pMedium),
                 decoration: BoxDecoration(
-                  color: context.secondaryContainer,
+                  color: context.surface.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -239,7 +276,10 @@ class _PaymentStatusUpdateBottomSheetState
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.calendar_today_outlined),
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          color: context.secondary,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(

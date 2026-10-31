@@ -6,6 +6,10 @@ abstract class StaffEvent {
 
 class FetchStaffs extends StaffEvent {
   final String orgId;
+  final List<String> roles;
 
-  const FetchStaffs({required this.orgId});
+  const FetchStaffs({
+    required this.orgId,
+    this.roles = const ['security', 'maintenance'],
+  });
 }

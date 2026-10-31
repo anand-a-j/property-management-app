@@ -130,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (state is AuthSuccess) {
           if (widget.type == SignUpType.staff) {
             context.read<StaffBloc>().add(
-              FetchStaffs(orgId: authentication.profile?.orgId ?? ''),
+              FetchStaffs(orgId: authentication.profile?.orgId ?? '',  ),
             );
 
             Snack.success('Success');

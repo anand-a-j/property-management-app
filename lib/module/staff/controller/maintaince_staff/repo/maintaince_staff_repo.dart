@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../../core/api/data_response.dart';
@@ -16,6 +18,7 @@ class MaintainceStaffRepo {
     int page = 1,
     int limit = 10,
   }) async {
+    log("maintaince request log : ${orgId} ${statuses.toList().toString()}");
     try {
       final safePage = page < 1 ? 1 : page;
       final safeLimit = limit < 1 ? 10 : limit;
@@ -55,6 +58,8 @@ class MaintainceStaffRepo {
           .inFilter('status', statusValues)
           .order('created_at', ascending: false)
           .range(from, to);
+
+      log("maintaince list data response : ${listData.toList().toString()}");
 
       final maintenanceList = listData
           .map((json) => MaintenanceRequest.fromJson(json))
