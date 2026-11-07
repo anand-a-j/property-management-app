@@ -29,17 +29,17 @@ class EmptyStateView extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.15),
+                  color: Colors.transparent,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 26, color: context.primary),
+                child: Icon(icon, size: 42, color: context.primary),
               ),
-              const SizedBox(height: AppConsts.pMedium),
+              const SizedBox(height: 10),
               Text(
                 message,
                 textAlign: TextAlign.center,
                 style: context.bodyMedium?.copyWith(
-                  color: context.secondary.withValues(alpha: 0.75),
+                  color: context.secondary.withValues(alpha: 0.5),
                   fontWeight: FontWeight.w500,
                 ),
               ),

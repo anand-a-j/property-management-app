@@ -26,7 +26,6 @@ class CommunityCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Left side thumbnail placeholder
             Expanded(
               flex: 3,
               child: Container(
@@ -47,7 +46,6 @@ class CommunityCard extends StatelessWidget {
               ),
             ),
 
-            // Right side content
             Expanded(
               flex: 7,
               child: Padding(
@@ -58,37 +56,38 @@ class CommunityCard extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      community.name??"",
-                      style: context.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      community.name ?? "",
+                      style: context.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.3,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (community.communityType?.isNotEmpty??false) ...[
-                      const SizedBox(height: 2),
-                      // Property Type
+                    if (community.communityType?.isNotEmpty ?? false) ...[
+                      const SizedBox(height: 5),
+
                       Text(
-                        community.communityType??"",
-                        style: context.bodySmall?.copyWith(
+                        community.communityType ?? "",
+                        style: context.bodyMedium?.copyWith(
                           color: context.onSecondary.withValues(alpha: 0.75),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    const SizedBox(height: 2),
-                    // Location
+                    const SizedBox(height: 3),
+
                     Text(
-                      community.address??"",
-                      style: context.bodySmall?.copyWith(
+                      community.address ?? "",
+                      style: context.bodyMedium?.copyWith(
                         color: context.secondary.withValues(alpha: 0.5),
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 15),
-                    // Metrics Row (Units, Occupied, Vacant)
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

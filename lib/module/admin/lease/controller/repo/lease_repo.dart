@@ -252,4 +252,17 @@ class LeaseRepo {
       return DataResponse(error: errorlog('LeaseRepo.getAllLeases', e, stack));
     }
   }
+
+  Future<DataResponse<bool>> deleteLease({required String leaseId}) async {
+    try {
+      await _client
+          .from('leases')
+          .update({'deleted_at': DateTime.now().toIso8601String()})
+          .eq('id', leaseId);
+
+      return DataResponse(data: true);
+    } catch (e, stack) {
+      return DataResponse(error: errorlog('LeaseRepo.deleteLease', e, stack));
+    }
+  }
 }

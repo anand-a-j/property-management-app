@@ -18,6 +18,7 @@ class ResidentListBloc extends Bloc<ResidentListEvent, ResidentListState> {
   String _orgId = '';
   String _searchQuery = '';
 
+  bool _isSelectionMode = false;
   bool _hasMore = true;
   bool _isLoadingMore = false;
 
@@ -35,7 +36,12 @@ class ResidentListBloc extends Bloc<ResidentListEvent, ResidentListState> {
     FetchResidents event,
     Emitter<ResidentListState> emit,
   ) async {
-    await _loadFirstPage(emit: emit, orgId: event.orgId, searchQuery: '');
+    await _loadFirstPage(
+      emit: emit,
+      orgId: event.orgId,
+      searchQuery: '',
+      isSelectionMode: event.isSelectionMode,
+    );
   }
 
   Future<void> _onSearchResidents(
@@ -46,6 +52,7 @@ class ResidentListBloc extends Bloc<ResidentListEvent, ResidentListState> {
       emit: emit,
       orgId: event.orgId,
       searchQuery: event.searchQuery,
+      isSelectionMode: event.isSelectionMode,
     );
   }
 
@@ -53,11 +60,13 @@ class ResidentListBloc extends Bloc<ResidentListEvent, ResidentListState> {
     required Emitter<ResidentListState> emit,
     required String orgId,
     required String searchQuery,
+    required bool isSelectionMode,
   }) async {
     final requestVersion = ++_requestVersion;
 
     _orgId = orgId.trim();
     _searchQuery = searchQuery.trim();
+    _isSelectionMode = isSelectionMode;
 
     _currentPage = 1;
     _hasMore = true;
@@ -72,6 +81,7 @@ class ResidentListBloc extends Bloc<ResidentListEvent, ResidentListState> {
         searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
         page: 1,
         limit: _limit,
+        isSelectionMode: _isSelectionMode,
       );
 
       // Ignore stale requests.
@@ -124,6 +134,7 @@ class ResidentListBloc extends Bloc<ResidentListEvent, ResidentListState> {
         searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
         page: nextPage,
         limit: _limit,
+        isSelectionMode: _isSelectionMode,
       );
 
       // Ignore responses from an older search or fetch.

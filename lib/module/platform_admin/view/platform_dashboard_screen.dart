@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:naseem/core/widgets/floating_add_button.dart';
 import 'package:naseem/core/widgets/status_tag.dart';
 import 'package:naseem/module/platform_admin/view/widgets/platform_appbar.dart';
 import 'package:naseem/module/platform_admin/view/widgets/platform_logout_button.dart';

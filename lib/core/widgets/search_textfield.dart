@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:naseem/core/core.dart';
 
-import '../extension/common.dart';
-
 class SearchTextField extends StatefulWidget {
   const SearchTextField({
     super.key,
@@ -48,10 +46,10 @@ class _SearchTextFieldState extends State<SearchTextField> {
           filled: true,
           hintText: widget.title,
           hintStyle: context.bodyMedium?.copyWith(
-            color: context.secondaryContainer,
+            color: context.secondary.withValues(alpha: 0.5),
           ),
           prefixIcon: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.only(left: 15, right: 5),
             child: Icon(Icons.search),
           ),
           fillColor: context.onPrimary,

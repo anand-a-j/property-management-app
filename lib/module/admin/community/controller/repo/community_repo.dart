@@ -9,23 +9,42 @@ class CommunityRepo {
 
   Future<DataResponse<List<Community>>> getCommunities({
     required String orgId,
+    int page = 1,
+    int limit = 6,
+    String? searchQuery,
   }) async {
     try {
-      final data = await _client
+      if (page < 1 || limit < 1) {
+        throw ArgumentError('Page and limit must be positive.');
+      }
+
+      final from = (page - 1) * limit;
+      final to = from + limit - 1;
+
+      var query = _client
           .from('communities_with_unit_counts')
           .select()
-          .eq('org_id', orgId)
+          .eq('org_id', orgId);
+
+      final search = searchQuery?.trim();
+
+      if (search != null && search.isNotEmpty) {
+        query = query.ilike('name', '%$search%');
+      }
+
+      final data = await query
           .order('created_at', ascending: false)
-          .limit(15);
+          .order('id', ascending: false)
+          .range(from, to);
 
       final communities = (data as List)
-          .map((json) => Community.fromJson(json as Map<String, dynamic>))
+          .map((json) => Community.fromJson(Map<String, dynamic>.from(json)))
           .toList();
 
       return DataResponse(data: communities);
     } catch (e, stack) {
       return DataResponse(
-        error: errorlog("CommunityRepo.getCommunities", e, stack),
+        error: errorlog('CommunityRepo.getCommunities', e, stack),
       );
     }
   }

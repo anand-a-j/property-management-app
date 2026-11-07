@@ -8,12 +8,13 @@ abstract class ResidentListEvent extends Equatable {
 }
 
 class FetchResidents extends ResidentListEvent {
-  final String orgId;
+  const FetchResidents({required this.orgId, this.isSelectionMode = false});
 
-  const FetchResidents({required this.orgId});
+  final String orgId;
+  final bool isSelectionMode;
 
   @override
-  List<Object?> get props => [orgId];
+  List<Object?> get props => [orgId, isSelectionMode];
 }
 
 class LoadMoreResidents extends ResidentListEvent {
@@ -21,11 +22,16 @@ class LoadMoreResidents extends ResidentListEvent {
 }
 
 class SearchResidents extends ResidentListEvent {
+  const SearchResidents({
+    required this.orgId,
+    required this.searchQuery,
+    this.isSelectionMode = false,
+  });
+
   final String orgId;
   final String searchQuery;
-
-  const SearchResidents({required this.orgId, required this.searchQuery});
+  final bool isSelectionMode;
 
   @override
-  List<Object?> get props => [orgId, searchQuery];
+  List<Object?> get props => [orgId, searchQuery, isSelectionMode];
 }

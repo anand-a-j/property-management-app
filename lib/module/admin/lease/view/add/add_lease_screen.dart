@@ -68,7 +68,37 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
   @override
   void initState() {
     super.initState();
-    _leaseNumberController.text = generateLeaseNumber();
+    if (widget.isEdit && widget.lease != null) {
+      final lease = widget.lease!;
+
+      _leaseNumberController.text = lease.leaseNumber;
+
+      _residentController.text = lease.resident?.name ?? '';
+
+      _startDate = lease.startDate;
+      _endDate = lease.endDate;
+
+      _startDateController.text = _startDate == null
+          ? ""
+          : _formatDate(_startDate!);
+      _endDateController.text = _endDate == null ? "" : _formatDate(_endDate!);
+
+      _annualRentController.text = lease.annualRent.toString();
+
+      _securityDepositController.text = lease.securityDeposit.toString();
+
+      _numberOfChequesController.text = lease.numberOfCheques.toString();
+
+      _descriptionController.text = lease.description ?? '';
+
+      _paymentFrequency = PaymentFrequency.values
+          .where((e) => e.name == lease.paymentFrequency.name)
+          .firstOrNull;
+
+      _selectedResident = lease.resident;
+    } else {
+      _leaseNumberController.text = generateLeaseNumber();
+    }
   }
 
   @override
@@ -95,7 +125,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
           context.read<ActiveLeaseBloc>().add(
             GetActiveLease(
               orgId: authentication.profile?.orgId ?? "",
-              unitId: widget.unit.id??"",
+              unitId: widget.unit.id ?? "",
             ),
           );
 
@@ -117,7 +147,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
           context.read<ActiveLeaseBloc>().add(
             GetActiveLease(
               orgId: authentication.profile?.orgId ?? "",
-              unitId: widget.unit.id??"",
+              unitId: widget.unit.id ?? "",
             ),
           );
 
@@ -498,7 +528,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
   Future<void> _selectStartDate() async {
     final selectedDate = await _showCupertinoDatePicker(
       initialDate: _startDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: _startDate ?? DateTime.now(),
       lastDate: DateTime(2100),
     );
 
@@ -587,7 +617,7 @@ class _AddLeaseScreenState extends State<AddLeaseScreen> {
       context.read<LeaseBloc>().add(
         AddLease(
           orgId: authentication.profile?.orgId ?? "",
-          unitId: widget.unit.id??"",
+          unitId: widget.unit.id ?? "",
           residentId: residentId ?? "",
           leaseNumber: leaseNumber,
           startDate: _startDate!,

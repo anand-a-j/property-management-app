@@ -20,111 +20,116 @@ class UnitCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: context.surface, width: 1),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image / placeholder
-          Container(
-            width: 95,
-            height: 125,
-            decoration: BoxDecoration(
-              color: AppColorScheme.backgroundColor(index),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(7),
-                bottomLeft: Radius.circular(7),
-              ),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.door_front_door_outlined,
-                size: 36,
-                color: AppColorScheme.iconColor(index),
-              ),
-            ),
-          ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Image / placeholder
+            Container(
+              width: 95,
 
-          // Details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Unit name + status
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          unit.name,
-                          style: context.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
+              decoration: BoxDecoration(
+                color: AppColorScheme.backgroundColor(index),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(7),
+                  bottomLeft: Radius.circular(7),
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.door_front_door_outlined,
+                  size: 36,
+                  color: AppColorScheme.iconColor(index),
+                ),
+              ),
+            ),
+
+            // Details
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Unit name + status
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            unit.name,
+                            style: context.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
+
+                        const SizedBox(width: 8),
+
+                        StatusTag(
+                          status: unit.status?.label ?? 'Unassigned',
+                          color: unit.status?.color ?? Colors.grey,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    // Area / Size
+                    Text(
+                      unit.unitType ?? "",
+                      style: context.bodySmall?.copyWith(
+                        color: context.secondary.withValues(alpha: 0.75),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
 
-                      const SizedBox(width: 8),
+                    const SizedBox(height: 4),
 
-                      StatusTag(
-                        status: unit.status?.label ?? 'Unassigned',
-                        color: unit.status?.color ?? Colors.grey,
+                    // Area / Size
+                    Text(
+                      "${unit.area} sq. ft.",
+                      style: context.bodySmall?.copyWith(
+                        color: context.secondary.withValues(alpha: 0.5),
                       ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  // Area / Size
-                  Text(
-                    unit.unitType ?? "",
-                    style: context.bodySmall?.copyWith(
-                      color: context.secondary.withValues(alpha: 0.75),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
 
-                  const SizedBox(height: 4),
+                    const SizedBox(height: 8),
 
-                  // Area / Size
-                  Text(
-                    unit.area,
-                    style: context.bodySmall?.copyWith(
-                      color: context.secondary.withValues(alpha: 0.5),
+                    // Description
+                    Text(
+                      unit.description ?? "",
+                      style: context.bodySmall?.copyWith(
+                        color: context.secondary.withValues(alpha: 0.5),
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                    const SizedBox(height: 4),
 
-                  const SizedBox(height: 4),
-
-                  // Description
-                  Text(
-                    unit.description ?? "",
-                    style: context.bodySmall?.copyWith(
-                      color: context.secondary.withValues(alpha: 0.5),
+                    // Description
+                    Text(
+                      unit.residentName ?? "",
+                      style: context.bodySmall?.copyWith(
+                        color: context.secondary.withValues(alpha: 0.75),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Description
-                  Text(
-                    unit.residentName ?? "",
-                    style: context.bodySmall?.copyWith(
-                      color: context.secondary.withValues(alpha: 0.75),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

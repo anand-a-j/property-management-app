@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naseem/module/admin/visitor/view/list/visitor_list_screen.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
@@ -71,7 +72,20 @@ class _ResidentHomeScreenState extends State<ResidentHomeScreen> {
         if (currentIndex != 0) {
           _onIndexChanged(0);
         } else {
-          Navigator.pop(context);
+          return CustomDialog.confirmationDialog(
+            context: context,
+            title: 'Exit',
+            subTitle: 'Are you sure you want to exit the app?',
+            cancelTitle: 'No',
+            sumbitTitle: 'Yes',
+            cancelOnTap: () {
+              Navigator.pop(context);
+            },
+            sumbitOnTap: () {
+              Navigator.pop(context);
+              SystemNavigator.pop();
+            },
+          );
         }
       },
       child: ColoredBox(

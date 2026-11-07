@@ -1,0 +1,94 @@
+# Major issue 
+
+
+
+# Unit Maintaince by admin
+maintaince card list handle which unit and community have the problem 
+
+maintaince list while status updating , reload not triggering
+maintainence list pagination 
+
+maintanance approved but remark assign to not reflected in card while listing that also important
+
+approved status can again change to approved need to fix that issue
+
+
+
+
+
+
+# Unit details page 
+
+-- maintaince crud operation missing in unit details page
+
+
+# Add lease
+
+
+
+-- Hide tabs for drafted lease
+-- lease description missing in lease details 
+
+
+
+-- lease crud operation missing 
+-- active lease ontap not working
+
+
+
+
+
+-- while selecting resident only need to show onboarding proitry one , and exited
+
+
+## Check last
+-- while adding start date it should be start from today only , no past date allowed
+-- lease number of check vaildation need to verify properly
+
+
+
+
+
+
+
+
+
+
+
+
+# Finished==================================================================================
+when click back button from manager dashboard it going blank black screen on APP
+
+
+# Community 
+
+If the community name is big its not taking two lines ,
+
+need ot reduce the font size 2 pixel of name
+
+reduce 10 pixel width of image section side
+
+need to verify appbar name spelling
+
+more option reduce height on top
+
+update empty state content
+
+search not working
+
+
+# Unit
+- In unit list it is little confusing which community unit is it will be
+
+- update empty state of unit text , 
+- update empty state found color reduce opcacity
+
+- wrap with safe area
+- search textfield size gap with icon need to reduce , imporve hint text color
+
+- Size/Area value need to define
+-- descriptoin need to be multi line 
+- Unit crud operation missing
+-- unit all details need to show properly thats the point of unit 
+-- remove view all in lease history title
+-- empty state text need to update

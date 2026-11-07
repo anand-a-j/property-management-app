@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:naseem/module/admin/lease/controller/repo/lease_repo.dart';
@@ -15,7 +17,7 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
       super(const LeaseInitial()) {
     on<AddLease>(_onAddLease);
     on<UpdateLease>(_onUpdateLease);
-  
+    on<DeleteLease>(_onDeleteLease);
   }
 
   Future<void> _onAddLease(AddLease event, Emitter<LeaseState> emit) async {
@@ -65,6 +67,23 @@ class LeaseBloc extends Bloc<LeaseEvent, LeaseState> {
 
     if (response.hasData) {
       emit(LeaseUpdateSuccess(response.data!));
+    } else {
+      emit(LeaseFailed(response.error ?? 'Something went wrong'));
+    }
+  }
+
+  Future<void> _onDeleteLease(
+    DeleteLease event,
+    Emitter<LeaseState> emit,
+  ) async {
+    emit(const LeaseLoading());
+
+    final response = await _leaseRepo.deleteLease(
+      leaseId: event.leaseId.trim(),
+    );
+
+    if (response.hasData) {
+      emit(LeaseDeleteSuccess());
     } else {
       emit(LeaseFailed(response.error ?? 'Something went wrong'));
     }

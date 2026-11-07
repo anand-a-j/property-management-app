@@ -29,7 +29,7 @@ class VisitorRepo {
     required String orgId,
     String? unitId,
     String? residentId,
-    int limit = 8,
+    int limit = 6,
     int offset = 0,
   }) async {
     try {

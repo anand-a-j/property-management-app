@@ -21,99 +21,135 @@ class UnitHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsGeometry.symmetric(
-        horizontal: AppConsts.pSide,
-        vertical: AppConsts.pMedium,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              color: AppColorScheme.backgroundColor(2),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(7),
-                bottomLeft: Radius.circular(7),
-              ),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.apartment,
-                size: 36,
-                color: AppColorScheme.iconColor(2),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 15),
-          // Unit Details Column
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        unit.name??"",
-                        style: context.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    BlocBuilder<ActiveLeaseBloc, ActiveLeaseState>(
-                      builder: (context, state) {
-                        final lease = state is ActiveLeaseSuccess
-                            ? state.lease
-                            : null;
-
-                        final unitStatus = lease?.status == LeaseStatus.active
-                            ? UnitStatus.occupied
-                            : unit.status ?? UnitStatus.unassigned;
-
-                        return StatusTag(
-                          status: unitStatus.label,
-                          color: unitStatus.color,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  community.name??"",
-                  style: context.bodySmall?.copyWith(
-                    color: context.secondary.withValues(alpha: 0.7),
-                  ),
-                ),
-                const SizedBox(height: 2),
-
-                Text(
-                  unit.unitType ?? "",
-                  style: context.bodySmall?.copyWith(
-                    color: context.secondary.withValues(alpha: 0.5),
-                  ),
-                ),
-                // Text(
-                //   unit.description,
-                //   style: context.bodySmall?.copyWith(
-                //     color: context.secondary.withValues(alpha: 0.7),
-                //   ),
-                // ),
-              ],
-            ),
+    return Container(
+      margin: const EdgeInsets.all(AppConsts.pSide),
+      padding: const EdgeInsets.all(AppConsts.pSide),
+      decoration: BoxDecoration(
+        color: context.secondary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(AppConsts.rSmall),
+        border: Border.all(color: context.surface),
+        boxShadow: [
+          BoxShadow(
+            color: context.secondary.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColorScheme.backgroundColor(2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.apartment,
+                  size: 26,
+                  color: AppColorScheme.iconColor(2),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      unit.name ?? '',
+                      style: context.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      community.name ?? '',
+                      style: context.bodySmall?.copyWith(
+                        color: context.secondary.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              BlocBuilder<ActiveLeaseBloc, ActiveLeaseState>(
+                builder: (context, state) {
+                  final lease = state is ActiveLeaseSuccess
+                      ? state.lease
+                      : null;
+
+                  final status = lease?.status == LeaseStatus.active
+                      ? UnitStatus.occupied
+                      : unit.status ?? UnitStatus.unassigned;
+
+                  return StatusTag(status: status.label, color: status.color);
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Divider(height: 1, color: context.surface),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _infoItem(
+                  context,
+                  'Unit Type',
+                  unit.unitType,
+                  Icons.category_outlined,
+                ),
+              ),
+              Expanded(
+                child: _infoItem(
+                  context,
+                  'Area',
+                  unit.area?.isNotEmpty == true ? '${unit.area} sq. ft.' : null,
+                  Icons.square_foot_outlined,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoItem(
+    BuildContext context,
+    String label,
+    String? value,
+    IconData icon,
+  ) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: context.secondary.withValues(alpha: 0.6)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: context.bodySmall?.copyWith(
+                  color: context.secondary.withValues(alpha: 0.6),
+                ),
+              ),
+              Text(
+                value?.isNotEmpty == true ? value! : '-',
+                style: context.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

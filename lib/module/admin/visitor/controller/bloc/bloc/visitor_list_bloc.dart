@@ -10,7 +10,7 @@ part 'visitor_list_state.dart';
 class VisitorListBloc extends Bloc<VisitorListEvent, VisitorListState> {
   final VisitorRepo _visitorRepo;
 
-  static const int _limit = 8;
+  static const int _limit = 6;
 
   int _currentPage = 1;
   int _requestVersion = 0;

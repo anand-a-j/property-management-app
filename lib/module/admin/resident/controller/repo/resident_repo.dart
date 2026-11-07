@@ -10,6 +10,7 @@ class ResidentRepo {
   Future<DataResponse<List<ResidentListResponse>>> fetchResidents({
     required String orgId,
     String? searchQuery,
+    bool isSelectionMode = false,
     int page = 1,
     int limit = 6,
   }) async {
@@ -27,24 +28,48 @@ class ResidentRepo {
       final from = (page - 1) * limit;
       final to = from + limit - 1;
 
-      var query = _client
-          .from('resident_list_view')
-          .select()
-          .eq('org_id', normalizedOrgId);
-
       final normalizedSearch = searchQuery?.trim();
 
-      if (normalizedSearch != null && normalizedSearch.isNotEmpty) {
-        query = query.ilike('resident_name', '%$normalizedSearch%');
-      }
+      final data = await (() {
+        final baseQuery = _client
+            .from('resident_list_view')
+            .select()
+            .eq('org_id', normalizedOrgId);
 
-      final data = await query.order('resident_name').range(from, to);
+        if (normalizedSearch != null && normalizedSearch.isNotEmpty) {
+          final filteredQuery = baseQuery.ilike(
+            'resident_name',
+            '%$normalizedSearch%',
+          );
 
-      final residents = (data as List)
+          if (isSelectionMode) {
+            return filteredQuery
+                .order('resident_status_priority', ascending: true)
+                .order('resident_created_at', ascending: false)
+                .range(from, to);
+          }
+
+          return filteredQuery
+              .order('resident_name', ascending: true)
+              .range(from, to);
+        }
+
+        if (isSelectionMode) {
+          return baseQuery
+              .order('resident_status_priority', ascending: true)
+              .order('resident_created_at', ascending: false)
+              .range(from, to);
+        }
+
+        return baseQuery
+            .order('resident_name', ascending: true)
+            .range(from, to);
+      })();
+
+      final residents = data
           .map(
-            (json) => ResidentListResponse.fromJson(
-              Map<String, dynamic>.from(json as Map),
-            ),
+            (json) =>
+                ResidentListResponse.fromJson(Map<String, dynamic>.from(json)),
           )
           .toList();
 

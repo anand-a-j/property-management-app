@@ -54,3 +54,9 @@ class LeasesFailed extends LeaseState {
   @override
   List<Object?> get props => [message];
 }
+
+class LeaseDeleteSuccess extends LeaseState {
+
+
+  const LeaseDeleteSuccess();
+}

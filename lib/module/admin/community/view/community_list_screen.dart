@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +16,7 @@ import 'package:naseem/routes/args/unit_list_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/core.dart';
+import '../../../../core/widgets/load_more_button.dart';
 
 class CommunityListScreen extends StatefulWidget {
   const CommunityListScreen({super.key});
@@ -25,15 +26,64 @@ class CommunityListScreen extends StatefulWidget {
 }
 
 class _CommunityListScreenState extends State<CommunityListScreen> {
+  Timer? _debounce;
+
+  String _searchQuery = '';
+
+  static const Duration _debounceDuration = Duration(milliseconds: 400);
+
+  CommunityListingBloc get _listingBloc => context.read<CommunityListingBloc>();
+
   @override
   void initState() {
     super.initState();
 
-    context.read<CommunityListingBloc>().add(const GetCommunities());
+    _listingBloc.add(const GetCommunities());
   }
 
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    _searchQuery = query.trim();
+
+    _debounce?.cancel();
+
+    _debounce = Timer(_debounceDuration, () {
+      if (!mounted) return;
+
+      _listingBloc.add(SearchCommunities(searchQuery: _searchQuery));
+    });
+  }
+
+  // REFRESH / RETRY
   void _retry() {
-    context.read<CommunityListingBloc>().add(const GetCommunities());
+    _debounce?.cancel();
+
+    _listingBloc.add(GetCommunities(searchQuery: _searchQuery));
+  }
+
+  Future<void> _refresh() async {
+    _debounce?.cancel();
+
+    final refreshFuture = _listingBloc.stream.firstWhere(
+      (state) =>
+          state is CommunityListingSuccess || state is CommunityListingFailed,
+    );
+
+    _listingBloc.add(GetCommunities(searchQuery: _searchQuery));
+
+    await refreshFuture;
+  }
+
+  // LOAD MORE
+  void _loadMore() {
+    if (!mounted) return;
+
+    _listingBloc.add(LoadMoreCommunities());
   }
 
   @override
@@ -50,7 +100,10 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
         appBar: const CustomAppBar(title: 'Communities'),
         body: Column(
           children: [
-            SearchTextField(title: "Search Communities", onChanged: (query) {}),
+            SearchTextField(
+              title: 'Search Communities',
+              onChanged: _onSearchChanged,
+            ),
 
             Expanded(
               child: BlocBuilder<CommunityListingBloc, CommunityListingState>(
@@ -66,79 +119,105 @@ class _CommunityListScreenState extends State<CommunityListScreen> {
                       return EmptyStateView(message: 'No communities found');
                     }
 
+                    final showFooter =
+                        state.hasMore ||
+                        state.isLoadingMore ||
+                        state.loadMoreError != null;
                     return RefreshIndicator(
-                      onRefresh: () async {
-                        _retry();
-                      },
+                      onRefresh: _refresh,
                       child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.fromLTRB(
                           AppConsts.pSide,
                           15,
                           AppConsts.pSide,
-                          0,
+                          16,
                         ),
-                        itemCount: communities.length,
+                        itemCount: communities.length + 1,
                         itemBuilder: (context, index) {
-                          final community = communities[index];
+                          // COMMUNITY ITEM
+                          if (index < communities.length) {
+                            final community = communities[index];
 
-                          return GestureDetector(
-                            onTap: () {
-                              // context.push(
-                              //   RouterPath.unitList,
-                              //   extra: UnitListArgs(community: community),
-                              // );
+                            return GestureDetector(
+                              onTap: () {
+                                MoreOptionsBottomSheet.show(
+                                  context: context,
+                                  items: [
+                                    MoreOptionItem(
+                                      title: 'View Units',
+                                      icon: Icons.apartment_outlined,
+                                      onTap: () {
+                                        context.push(
+                                          RouterPath.unitList,
+                                          extra: UnitListArgs(
+                                            community: community,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    MoreOptionItem(
+                                      title: 'Edit Community',
+                                      icon: Icons.edit_outlined,
+                                      onTap: () {
+                                        context.push(
+                                          RouterPath.addCommunity,
+                                          extra: AddCommunityArgs(
+                                            community: community,
+                                            isEdit: true,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    MoreOptionItem(
+                                      title: 'Delete Community',
+                                      icon: Icons.delete_outline_rounded,
+                                      isDestructive: true,
+                                      confirmTitle: 'Delete Community?',
+                                      confirmMessage:
+                                          'Are you sure you want to delete ${community.name}?',
+                                      onTap: () async {
+                                        context.read<CommunityBloc>().add(
+                                          DeleteCommunity(
+                                            id: community.id ?? '',
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                              child: CommunityCard(
+                                community: community,
+                                index: index,
+                              ),
+                            );
+                          }
 
-                              MoreOptionsBottomSheet.show(
-                                context: context,
-                                items: [
-                                  MoreOptionItem(
-                                    title: 'View Units',
+                          // PAGINATION FOOTER
+                          if (state.isLoadingMore) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
 
-                                    icon: Icons.apartment_outlined,
-                                    onTap: () {
-                                      context.push(
-                                        RouterPath.unitList,
-                                        extra: UnitListArgs(
-                                          community: community,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  MoreOptionItem(
-                                    title: 'Edit Community',
+                          if (state.loadMoreError != null) {
+                            return LoadMoreButton(
+                              onTap: _loadMore,
+                              title: 'Retry',
+                              isError: true,
+                            );
+                          }
 
-                                    icon: Icons.edit_outlined,
-                                    onTap: () {
-                                      context.push(
-                                        RouterPath.addCommunity,
-                                        extra: AddCommunityArgs(
-                                          community: community,
-                                          isEdit: true,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  MoreOptionItem(
-                                    title: 'Delete Community',
+                          if (!state.hasMore) {
+                            return const SizedBox.shrink();
+                          }
 
-                                    icon: Icons.delete_outline_rounded,
-                                    isDestructive: true,
-                                    confirmTitle: 'Delete Community?',
-                                    confirmMessage:
-                                        'Are you sure you want to delete ${community.name}?',
-
-                                    onTap: () async {
-                                      context.read<CommunityBloc>().add(
-                                        DeleteCommunity(id: community.id ?? ""),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                            child: CommunityCard(
-                              community: community,
-                              index: index,
+                          return Center(
+                            child: LoadMoreButton(
+                              onTap: _loadMore,
+                              isLoading: false,
                             ),
                           );
                         },

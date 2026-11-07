@@ -16,12 +16,25 @@ class CommunityListingLoading extends CommunityListingState {
 }
 
 class CommunityListingSuccess extends CommunityListingState {
-  final List<Community> communities;
+  const CommunityListingSuccess({
+    required this.communities,
+    required this.hasMore,
+    required this.isLoadingMore,
+    this.loadMoreError,
+  });
 
-  const CommunityListingSuccess({required this.communities});
+  final List<Community> communities;
+  final bool hasMore;
+  final bool isLoadingMore;
+  final String? loadMoreError;
 
   @override
-  List<Object?> get props => [communities];
+  List<Object?> get props => [
+    communities,
+    hasMore,
+    isLoadingMore,
+    loadMoreError,
+  ];
 }
 
 class CommunityListingFailed extends CommunityListingState {

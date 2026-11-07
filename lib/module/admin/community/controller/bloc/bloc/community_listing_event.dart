@@ -8,5 +8,25 @@ abstract class CommunityListingEvent extends Equatable {
 }
 
 class GetCommunities extends CommunityListingEvent {
-  const GetCommunities();
+  const GetCommunities({this.searchQuery});
+
+  final String? searchQuery;
+
+  @override
+  List<Object?> get props => [searchQuery];
+}
+
+class SearchCommunities extends CommunityListingEvent {
+  const SearchCommunities({required this.searchQuery});
+
+  final String searchQuery;
+
+  @override
+  List<Object?> get props => [];
+}
+
+class LoadMoreCommunities extends CommunityListingEvent {
+
+  @override
+  List<Object?> get props => [];
 }

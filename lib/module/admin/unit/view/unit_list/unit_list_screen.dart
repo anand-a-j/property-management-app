@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naseem/core/utils/snackbar_manager.dart';
 import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/core/widgets/load_more_button.dart';
@@ -13,7 +14,10 @@ import 'package:naseem/routes/args/unit_details_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../../core/core.dart';
+import '../../../../../core/widgets/more_options/more_option_item.dart';
+import '../../../../../core/widgets/more_options/more_options_sheet.dart';
 import '../../controller/bloc/bloc/unit_list_bloc.dart';
+import '../../controller/bloc/unit_bloc.dart';
 
 class UnitListScreen extends StatefulWidget {
   const UnitListScreen({super.key, required this.community});
@@ -68,117 +72,199 @@ class _UnitListScreenState extends State<UnitListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Units',
-        leadingOnTap: () => Navigator.pop(context),
-      ),
-      body: Column(
-        children: [
-          SearchTextField(title: 'Search Units', onChanged: _onSearch),
-          Expanded(
-            child: BlocBuilder<UnitListBloc, UnitListState>(
-              builder: (context, state) {
-                if (state is UnitListInitial || state is UnitListLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+    return BlocListener<UnitBloc, UnitState>(
+      listener: (context, state) {
+        if (state is UnitUpdateSuccess) {
+          _refresh();
+        } else if (state is UnitDeleteSuccess) {
+          _refresh();
+        } else if (state is UnitFailed) {
+          Snack.error(state.message);
+        }
+      },
+      child: ColoredBox(
+        color: context.onPrimary,
+        child: SafeArea(
+          child: Scaffold(
+            appBar: CustomAppBar(
+              title: 'Units',
+              leadingOnTap: () => Navigator.pop(context),
+            ),
+            body: Column(
+              children: [
+                AppHorizontalPadding(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.apartment_rounded,
+                        size: 16,
+                        color: context.secondary,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        widget.community.name ?? "",
+                        style: context.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SearchTextField(title: 'Search Units', onChanged: _onSearch),
+                Expanded(
+                  child: BlocBuilder<UnitListBloc, UnitListState>(
+                    builder: (context, state) {
+                      if (state is UnitListInitial ||
+                          state is UnitListLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                if (state is UnitListFailed) {
-                  return ErrorStateView(
-                    message: state.message,
-                    retryOnTap: _refresh,
-                  );
-                }
+                      if (state is UnitListFailed) {
+                        return ErrorStateView(
+                          message: state.message,
+                          retryOnTap: _refresh,
+                        );
+                      }
 
-                if (state is! UnitLoadSuccess) {
-                  return const SizedBox.shrink();
-                }
+                      if (state is! UnitLoadSuccess) {
+                        return const SizedBox.shrink();
+                      }
 
-                final units = state.units;
+                      final units = state.units;
 
-                if (units.isEmpty) {
-                  return const EmptyStateView(message: 'Unit not found');
-                }
+                      if (units.isEmpty) {
+                        return const EmptyStateView(
+                          message: 'No units to show',
+                        );
+                      }
 
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    _refresh();
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          _refresh();
 
-                    // Wait for the first-page request to finish.
-                    await context.read<UnitListBloc>().stream.firstWhere(
-                      (nextState) =>
-                          nextState is UnitLoadSuccess ||
-                          nextState is UnitListFailed,
-                    );
-                  },
-                  child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(
-                      AppConsts.pSide,
-                      15,
-                      AppConsts.pSide,
-                      16,
-                    ),
-                    itemCount: units.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index < units.length) {
-                        final unit = units[index];
+                          // Wait for the first-page request to finish.
+                          await context.read<UnitListBloc>().stream.firstWhere(
+                            (nextState) =>
+                                nextState is UnitLoadSuccess ||
+                                nextState is UnitListFailed,
+                          );
+                        },
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(
+                            AppConsts.pSide,
+                            15,
+                            AppConsts.pSide,
+                            50,
+                          ),
+                          itemCount: units.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index < units.length) {
+                              final unit = units[index];
 
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            context.push(
-                              RouterPath.unitDetails,
-                              extra: UnitDetailsArgs(
-                                unit: unit.toUnit(),
-                                community: widget.community,
+                              return GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  MoreOptionsBottomSheet.show(
+                                    context: context,
+                                    items: [
+                                      MoreOptionItem(
+                                        title: 'View Unit',
+                                        icon: Icons.visibility_outlined,
+                                        onTap: () {
+                                          context.push(
+                                            RouterPath.unitDetails,
+                                            extra: UnitDetailsArgs(
+                                              unit: unit.toUnit(),
+                                              community: widget.community,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      MoreOptionItem(
+                                        title: 'Edit Unit',
+                                        icon: Icons.edit_outlined,
+                                        onTap: () {
+                                          context.push(
+                                            RouterPath.addUnit,
+                                            extra: AddUnitArgs(
+                                              unit: unit.toUnit(),
+                                              community: widget.community,
+                                              isEdit: true,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      MoreOptionItem(
+                                        title: 'Delete Unit',
+                                        icon: Icons.delete_outline_rounded,
+                                        isDestructive: true,
+                                        confirmTitle: 'Delete Unit?',
+                                        confirmMessage:
+                                            'Are you sure you want to delete ${unit.name}?',
+                                        onTap: () {
+                                          context.read<UnitBloc>().add(
+                                            DeleteUnit(
+                                              unitId: unit.id,
+                                              communityId:
+                                                  widget.community.id ?? "",
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                                child: UnitCard(unit: unit, index: index),
+                              );
+                            }
+
+                            // Footer remains below the last item.
+                            if (state.isLoadingMore) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
+                            if (state.loadMoreError != null) {
+                              return LoadMoreButton(
+                                onTap: _loadMore,
+                                title: 'Retry',
+                                isError: true,
+                              );
+                            }
+
+                            if (!state.hasMore) return const SizedBox.shrink();
+
+                            return Center(
+                              child: LoadMoreButton(
+                                onTap: _loadMore,
+                                isLoading: false,
                               ),
                             );
                           },
-                          child: UnitCard(unit: unit, index: index),
-                        );
-                      }
-
-                      // Footer remains below the last item.
-                      if (state.isLoadingMore) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-
-                      if (state.loadMoreError != null) {
-                        return LoadMoreButton(
-                          onTap: _loadMore,
-                          title: 'Retry',
-                          isError: true,
-                        );
-                      }
-
-                      if (!state.hasMore) return const SizedBox.shrink();
-
-                      return Center(
-                        child: LoadMoreButton(
-                          onTap: _loadMore,
-                          isLoading: false,
                         ),
                       );
                     },
                   ),
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingAddButton(
+              title: 'Add Unit',
+              onTap: () {
+                context.push(
+                  RouterPath.addUnit,
+                  extra: AddUnitArgs(community: widget.community),
                 );
               },
             ),
           ),
-        ],
-      ),
-      floatingActionButton: FloatingAddButton(
-        title: 'Add Unit',
-        onTap: () {
-          context.push(
-            RouterPath.addUnit,
-            extra: AddUnitArgs(community: widget.community),
-          );
-        },
+        ),
       ),
     );
   }

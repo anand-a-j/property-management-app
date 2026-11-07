@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:naseem/core/widgets/empty_state_view.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/current_resident_card.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/no_active_lease_card.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/unit_lease_history_list_view.dart';
-import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
-import 'package:naseem/routes/args/lease_details_args.dart';
-import 'package:naseem/routes/router_path.dart';
 
 import '../../../../../../core/core.dart';
 import '../../../../community/model/community.dart';
-import '../../../../lease/controller/blocs/bloc/lease_list_bloc.dart';
-import '../../../../lease/view/list/widgets/lease_card.dart';
+
 import '../../../model/unit.dart';
 
 class UnitOverviewTab extends StatelessWidget {
@@ -45,39 +39,9 @@ class UnitOverviewTab extends StatelessWidget {
 
           const SizedBox(height: AppConsts.pSide),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Lease History',
-                style: context.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              GestureDetector(
-                onTap: () {
-                  // Navigate to full lease history screen.
-                  //
-                  // Example:
-                  //
-                  // context.push(
-                  //   LeaseHistoryScreen.route,
-                  //   extra: {
-                  //     'orgId': orgId,
-                  //     'unitId': unitId,
-                  //   },
-                  // );
-                },
-                child: Text(
-                  'View All',
-                  style: context.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: context.primary,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            'Lease History',
+            style: context.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
 
           const SizedBox(height: AppConsts.pMedium),

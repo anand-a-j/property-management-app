@@ -95,3 +95,15 @@ class UpdateLease extends LeaseEvent {
     description,
   ];
 }
+
+class DeleteLease extends LeaseEvent {
+  final String leaseId;
+
+  const DeleteLease(this.leaseId);
+
+  @override
+  List<Object?> get props => [
+    leaseId,
+   
+  ];
+}

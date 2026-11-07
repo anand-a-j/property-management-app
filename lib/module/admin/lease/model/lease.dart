@@ -31,3 +31,15 @@ abstract class Lease with _$Lease {
 
   factory Lease.fromJson(Map<String, dynamic> json) => _$LeaseFromJson(json);
 }
+
+extension LeaseExtensions on Lease {
+  bool get isDeleted => deletedAt != null;
+
+  bool get canEdit {
+    return !isDeleted && status == LeaseStatus.draft;
+  }
+
+  bool get canDelete {
+    return !isDeleted && status == LeaseStatus.draft;
+  }
+}
