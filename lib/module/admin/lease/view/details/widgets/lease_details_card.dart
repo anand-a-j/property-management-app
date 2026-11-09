@@ -43,7 +43,10 @@ class _LeaseDetailsCardState extends State<LeaseDetailsCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(AppConsts.pSide),
+      margin: const EdgeInsets.symmetric(
+        vertical: 10,
+        horizontal: AppConsts.pSide,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppConsts.rSmall),
         border: Border.all(color: context.surface),
@@ -161,7 +164,7 @@ class LeaseDetailsContent extends StatelessWidget {
           context,
           icon: Icons.business_outlined,
           label: 'Unit',
-          value: '${unit.name}, ${community.name}',
+          value: '${unit.name ?? ""}, ${community.name ?? ""}',
         ),
         _divider(context),
         _buildRow(
@@ -203,6 +206,13 @@ class LeaseDetailsContent extends StatelessWidget {
           icon: Icons.security,
           label: 'Security Deposit',
           value: StrHelper.formatCurrency(lease.securityDeposit),
+        ),
+        _divider(context),
+        _buildRow(
+          context,
+          icon: Icons.note_outlined,
+          label: 'Description',
+          value: lease.description ?? "",
         ),
       ]);
     }

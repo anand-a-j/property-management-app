@@ -1,4 +1,9 @@
-create or replace view public.resident_list_view
+
+-- Drop existing view because CREATE OR REPLACE VIEW
+-- cannot insert columns before existing columns.
+drop view if exists public.resident_list_view;
+
+create view public.resident_list_view
 with (security_invoker = true)
 as
 select

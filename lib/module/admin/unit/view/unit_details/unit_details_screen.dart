@@ -142,6 +142,7 @@ class _UnitDetailsScreenState extends State<UnitDetailsScreen>
                 extra: AddMaintenanceArgs(
                   unit: widget.unit,
                   community: widget.community,
+                  isEdit: false,
                 ),
               );
             } else {

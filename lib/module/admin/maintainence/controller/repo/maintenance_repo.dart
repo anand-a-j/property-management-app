@@ -174,4 +174,54 @@ class MaintenanceRepo {
       );
     }
   }
+
+  Future<DataResponse<void>> updateMaintenance({
+    required String maintenanceId,
+    required AddMaintenance maintenance,
+  }) async {
+    try {
+      final updateData = <String, dynamic>{
+        if (maintenance.issueTitle != null)
+          'issue_title': maintenance.issueTitle,
+        if (maintenance.issueType != null) 'issue_type': maintenance.issueType,
+        if (maintenance.description != null)
+          'description': maintenance.description,
+        if (maintenance.priority != null)
+          'priority': maintenance.priority!.name,
+        if (maintenance.status != null) 'status': maintenance.status!.name,
+      };
+
+      if (updateData.isEmpty) {
+        return DataResponse(error: 'No fields to update.');
+      }
+
+      await _client
+          .from('maintenance_requests')
+          .update(updateData)
+          .eq('id', maintenanceId);
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('MaintenanceRepo.updateMaintenance', e, stack),
+      );
+    }
+  }
+
+  Future<DataResponse<void>> deleteMaintenance({
+    required String maintenanceId,
+  }) async {
+    try {
+      await _client
+          .from('maintenance_requests')
+          .delete()
+          .eq('id', maintenanceId);
+
+      return DataResponse(data: null);
+    } catch (e, stack) {
+      return DataResponse(
+        error: errorlog('MaintenanceRepo.deleteMaintenance', e, stack),
+      );
+    }
+  }
 }

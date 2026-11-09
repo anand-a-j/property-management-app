@@ -9,16 +9,20 @@ part 'add_maintenance.g.dart';
 @freezed
 abstract class AddMaintenance with _$AddMaintenance {
   const factory AddMaintenance({
-    @JsonKey(name: 'org_id') required String orgId,
-    @JsonKey(name: 'unit_id') required String unitId,
-    @JsonKey(name: 'created_by') required String createdBy,
+    String? id,
+    @JsonKey(name: 'org_id') String? orgId,
+    @JsonKey(name: 'unit_id') String? unitId,
+    @JsonKey(name: 'created_by') String? createdBy,
     @JsonKey(name: 'resident_id') String? residentId,
-    @JsonKey(name: 'issue_title') required String issueTitle,
-    @JsonKey(name: 'issue_type') required String issueType,
-    @JsonKey(name: 'ticket_number') required String ticketNumber,
-    required String description,
-    @Default(MaintenancePriority.medium) MaintenancePriority priority,
-    @Default(MaintenanceStatus.pendingReview) MaintenanceStatus status,
+    @JsonKey(name: 'issue_title') String? issueTitle,
+    @JsonKey(name: 'issue_type') String? issueType,
+    @JsonKey(name: 'ticket_number') String? ticketNumber,
+    String? description,
+    MaintenancePriority? priority,
+    MaintenanceStatus? status,
+    @JsonKey(name: 'unit_name') String? unitName,
+    @JsonKey(name: 'community_id') String? communityId,
+    @JsonKey(name: 'community_name') String? communityName,
   }) = _AddMaintenance;
 
   factory AddMaintenance.fromJson(Map<String, dynamic> json) =>

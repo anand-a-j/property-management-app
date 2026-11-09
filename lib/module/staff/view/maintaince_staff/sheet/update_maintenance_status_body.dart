@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -120,9 +118,7 @@ class _UpdateMaintenanceStatusBodyState
       await widget.onSubmit(
         status: status,
         assignedTo: _requiresStaffAssignment ? _selectedStaff!.id : null,
-        note: status == MaintenanceStatus.rejected
-            ? null
-            : remark.isEmpty
+        note: status == MaintenanceStatus.rejected || remark.isEmpty
             ? null
             : remark,
         rejectionReason: status == MaintenanceStatus.rejected

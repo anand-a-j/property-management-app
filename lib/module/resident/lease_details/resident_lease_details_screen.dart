@@ -138,7 +138,11 @@ class _ResidentLeaseDetailsScreenState extends State<ResidentLeaseDetailsScreen>
 
                 context.push(
                   RouterPath.addMaintenance,
-                  extra: AddMaintenanceArgs(unit: unit, community: community),
+                  extra: AddMaintenanceArgs(
+                    unit: unit,
+                    community: community,
+                    isEdit: false,
+                  ),
                 );
               },
             )

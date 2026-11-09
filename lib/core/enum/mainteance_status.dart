@@ -96,7 +96,7 @@ extension MaintenanceStatusX on MaintenanceStatus {
 
       case MaintenanceStatus.approved:
         return isManager
-            ? [MaintenanceStatus.approved, MaintenanceStatus.cancelled]
+            ? [MaintenanceStatus.cancelled]
             : [MaintenanceStatus.inProgress, MaintenanceStatus.completed];
 
       case MaintenanceStatus.inProgress:

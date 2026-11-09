@@ -325,6 +325,8 @@ final GoRouter router = GoRouter(
           page: AddMaintenanceScreen(
             unit: args.unit,
             community: args.community,
+            isEdit: args.isEdit,
+            maintenance: args.maintenance,
           ),
         );
       },

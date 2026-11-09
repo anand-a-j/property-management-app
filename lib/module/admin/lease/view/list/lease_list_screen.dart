@@ -4,12 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/error_state_view.dart' show ErrorStateView;
+import 'package:naseem/module/admin/community/model/community.dart';
 import 'package:naseem/module/admin/lease/view/list/widgets/lease_card.dart';
+import 'package:naseem/module/admin/unit/model/unit.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
 import '../../../../../core/core.dart';
 import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
+import '../../../../../core/widgets/more_options/more_option_item.dart';
+import '../../../../../core/widgets/more_options/more_options_sheet.dart';
+import '../../../../../routes/args/add_lease_args.dart';
+import '../../../../../routes/args/lease_details_args.dart';
+import '../../../../../routes/router_path.dart';
+import '../../controller/blocs/bloc/lease_bloc.dart';
 import '../../controller/blocs/bloc/lease_list_bloc.dart';
 import '../../model/lease.dart';
 
@@ -122,6 +130,56 @@ class _LeaseListScreenState extends State<LeaseListScreen> {
                         onTap: () {
                           if (widget.isSelectionMode) {
                             context.pop<Lease>(lease);
+                          } else {
+                            MoreOptionsBottomSheet.show(
+                              context: context,
+                              items: [
+                                MoreOptionItem(
+                                  title: 'View Details',
+                                  icon: Icons.visibility_outlined,
+                                  onTap: () {
+                                    context.push(
+                                      RouterPath.leaseDetails,
+                                      extra: LeaseDetailsArgs(
+                                        lease: lease,
+                                        unit: Unit(id: lease.unitId),
+                                        community: Community(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                if (lease.canEdit)
+                                  MoreOptionItem(
+                                    title: 'Edit Lease',
+                                    icon: Icons.edit_outlined,
+                                    onTap: () {
+                                      context.push(
+                                        RouterPath.addLease,
+                                        extra: AddLeaseArgs(
+                                          lease: lease,
+                                          unit: Unit(id: lease.unitId),
+                                          community: Community(),
+                                          isEdit: true,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                if (lease.canDelete)
+                                  MoreOptionItem(
+                                    title: 'Delete Lease',
+                                    icon: Icons.delete_outline_rounded,
+                                    isDestructive: true,
+                                    confirmTitle: 'Delete Lease?',
+                                    confirmMessage:
+                                        'Are you sure you want to delete lease ${lease.leaseNumber}?',
+                                    onTap: () {
+                                      context.read<LeaseBloc>().add(
+                                        DeleteLease(lease.id),
+                                      );
+                                    },
+                                  ),
+                              ],
+                            );
                           }
                         },
                         child: LeaseCard(lease: lease),

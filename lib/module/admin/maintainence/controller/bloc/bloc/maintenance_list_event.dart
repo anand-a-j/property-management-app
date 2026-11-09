@@ -23,3 +23,10 @@ class GetMaintenanceListEvent extends MaintenanceListEvent {
   @override
   List<Object?> get props => [orgId, unitId, page, limit];
 }
+
+class LoadMoreMaintenanceEvent extends MaintenanceListEvent {
+  const LoadMoreMaintenanceEvent();
+
+  @override
+  List<Object?> get props => [];
+}

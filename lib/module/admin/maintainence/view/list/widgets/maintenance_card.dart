@@ -24,6 +24,14 @@ class MaintenanceCard extends StatelessWidget {
 
     final hasNote = note != null && note.isNotEmpty;
 
+    // Build location text from unit and community.
+    final locationParts = [
+      request.unitName?.trim(),
+      request.communityName?.trim(),
+    ].where((value) => value != null && value.isNotEmpty).toList();
+
+    final location = locationParts.join(' • ');
+
     // Display the most relevant remark for the current status.
     final String? remarkTitle;
     final String? remark;
@@ -42,7 +50,7 @@ class MaintenanceCard extends StatelessWidget {
       case MaintenanceStatus.approved:
         remarkTitle = 'Review Remarks';
         remark = hasNote ? note : null;
-        break;
+      break;
 
       case MaintenanceStatus.inProgress:
       case MaintenanceStatus.completed:
@@ -125,6 +133,32 @@ class MaintenanceCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
+
+          // Unit and community location
+          if (location.isNotEmpty)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  size: 15,
+                  color: context.secondary.withValues(alpha: 0.75),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    location,
+                    style: context.bodySmall?.copyWith(
+                      color: context.secondary.withValues(alpha: 0.85),
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
 
           // Description
           Text(

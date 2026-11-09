@@ -20,11 +20,13 @@ class AddMaintenanceScreen extends StatefulWidget {
   const AddMaintenanceScreen({
     super.key,
     required this.unit,
-    required this.community,
+    required this.community, required this.isEdit, this.maintenance,
   });
 
-  final Unit unit;
-  final Community community;
+  final Unit? unit;
+  final Community? community;
+  final bool isEdit;
+  final AddMaintenance? maintenance;
 
   @override
   State<AddMaintenanceScreen> createState() => _AddMaintenanceScreenState();
@@ -64,7 +66,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
           context.read<MaintenanceListBloc>().add(
             GetMaintenanceListEvent(
               orgId: authentication.profile?.orgId ?? '',
-              unitId: widget.unit.id,
+              unitId: widget.unit?.id,
             ),
           );
 
@@ -166,9 +168,9 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
             ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
-          _detailRow('Unit', widget.unit.name??""),
+          _detailRow('Unit', widget.unit?.name ?? ""),
           const SizedBox(height: 8),
-          _detailRow('Community', widget.community.name??""),
+          _detailRow('Community', widget.community?.name ?? ""),
         ],
       ),
     );
@@ -309,7 +311,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
 
     final maintenance = AddMaintenance(
       orgId: profile.orgId!,
-      unitId: widget.unit.id??"",
+      unitId: widget.unit?.id ?? "",
+      unitName: widget.unit?.name,
+      communityId: widget.community?.id,
+      communityName: widget.community?.name,
       createdBy: profile.id,
       residentId: profile.id,
       issueTitle: _issueTitleController.text.trim(),

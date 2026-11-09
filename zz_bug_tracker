@@ -1,49 +1,30 @@
 # Major issue 
 
 
-
-# Unit Maintaince by admin
-maintaince card list handle which unit and community have the problem 
-
-maintaince list while status updating , reload not triggering
-maintainence list pagination 
-
-maintanance approved but remark assign to not reflected in card while listing that also important
-
-approved status can again change to approved need to fix that issue
-
-
-
-
-
-
-# Unit details page 
-
--- maintaince crud operation missing in unit details page
-
-
-# Add lease
-
-
-
--- Hide tabs for drafted lease
--- lease description missing in lease details 
-
-
-
--- lease crud operation missing 
--- active lease ontap not working
-
-
-
-
-
--- while selecting resident only need to show onboarding proitry one , and exited
-
-
 ## Check last
 -- while adding start date it should be start from today only , no past date allowed
 -- lease number of check vaildation need to verify properly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -92,3 +73,22 @@ search not working
 -- unit all details need to show properly thats the point of unit 
 -- remove view all in lease history title
 -- empty state text need to update
+
+
+# Lease
+-- Hide tabs for drafted lease
+-- lease crud operation missing 
+-- active lease ontap not working
+-- lease description missing in lease details 
+
+-- while selecting resident only need to show onboarding proitry one , and exited
+
+
+# Maintainance
+
+maintaince card list handle which unit and community have the problem 
+maintainence list pagination 
+maintaince crud operation missing in unit details page
+maintaince list while status updating , reload not triggering
+maintanance approved but remark assign to not reflected in card while listing that also important
+approved status can again change to approved need to fix that issue

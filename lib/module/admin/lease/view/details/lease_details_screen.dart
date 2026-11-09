@@ -9,6 +9,8 @@ import 'package:naseem/routes/args/add_payment_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../../core/core.dart';
+import '../../../../../core/enum/lease_status.dart';
+import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../unit/model/unit.dart';
 import 'tab/lease_payment_tab.dart';
 
@@ -60,6 +62,8 @@ class _LeaseDetailsScreenState extends State<LeaseDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDraft = widget.lease.status == LeaseStatus.draft;
+
     return Scaffold(
       appBar: CustomAppBar(
         leadingOnTap: () => Navigator.pop(context),
@@ -72,32 +76,42 @@ class _LeaseDetailsScreenState extends State<LeaseDetailsScreen>
             unit: widget.unit,
             community: widget.community,
           ),
-          TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: 'History'),
-              Tab(text: 'Payments'),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
+
+          if (isDraft)
+            const Expanded(
+              child: EmptyStateView(
+                message:
+                    'Lease history and payments will be available once this lease is activated.',
+              ),
+            )
+          else ...[
+            TabBar(
               controller: _tabController,
-              children: [
-                LeaseHistoryStepper(
-                  lease: widget.lease,
-                  currentUserId: authentication.profile?.id ?? '',
-                  isFromResident: false,
-                ),
-                LeasePaymentsTab(
-                  orgId: authentication.profile?.orgId ?? '',
-                  leaseId: widget.lease.id,
-                ),
+              tabs: const [
+                Tab(text: 'History'),
+                Tab(text: 'Payments'),
               ],
             ),
-          ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  LeaseHistoryStepper(
+                    lease: widget.lease,
+                    currentUserId: authentication.profile?.id ?? '',
+                    isFromResident: false,
+                  ),
+                  LeasePaymentsTab(
+                    orgId: authentication.profile?.orgId ?? '',
+                    leaseId: widget.lease.id,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
-      floatingActionButton: _selectedIndex == 1
+      floatingActionButton: !isDraft && _selectedIndex == 1
           ? FloatingAddButton(
               title: "Add Payment",
               onTap: () {

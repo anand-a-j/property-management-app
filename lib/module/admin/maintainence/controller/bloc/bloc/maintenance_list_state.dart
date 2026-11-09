@@ -9,6 +9,9 @@ abstract class MaintenanceListState extends Equatable {
 
 class MaintenanceListInitial extends MaintenanceListState {
   const MaintenanceListInitial();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class MaintenanceListLoading extends MaintenanceListState {
@@ -17,8 +20,16 @@ class MaintenanceListLoading extends MaintenanceListState {
 
 class MaintenanceListSuccess extends MaintenanceListState {
   final List<MaintenanceRequest> maintenanceList;
+  final bool hasMore;
+  final bool isLoadingMore;
+  final String? loadMoreError;
 
-  const MaintenanceListSuccess({required this.maintenanceList});
+  const MaintenanceListSuccess({
+    required this.maintenanceList,
+    required this.hasMore,
+    required this.isLoadingMore,
+    this.loadMoreError,
+  });
 
   @override
   List<Object?> get props => [maintenanceList];
