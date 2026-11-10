@@ -12,6 +12,8 @@ abstract class CreateVisitor with _$CreateVisitor {
 
     String? phone,
 
+    required String status,
+
     // Visit schedule
     @JsonKey(name: 'visit_start_at') DateTime? visitStartAt,
 

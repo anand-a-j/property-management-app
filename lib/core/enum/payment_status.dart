@@ -52,7 +52,12 @@ extension PaymentStatusX on PaymentStatus {
   List<PaymentStatus> nextStatuses() {
     switch (this) {
       case PaymentStatus.draft:
-        return [PaymentStatus.pending, PaymentStatus.cancelled];
+        return [
+          PaymentStatus.pending,
+          PaymentStatus.cancelled,
+          PaymentStatus.paid,
+          PaymentStatus.bounced,
+        ];
 
       case PaymentStatus.pending:
         return [

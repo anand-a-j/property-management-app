@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateVisitor {
 
-@JsonKey(name: 'org_id') String get orgId; String get name; String? get phone;// Visit schedule
+@JsonKey(name: 'org_id') String get orgId; String get name; String? get phone; String get status;// Visit schedule
 @JsonKey(name: 'visit_start_at') DateTime? get visitStartAt;@JsonKey(name: 'visit_end_at') DateTime? get visitEndAt;@JsonKey(name: 'checked_in_at') DateTime? get checkedInAt;@JsonKey(name: 'checked_out_at') DateTime? get checkedOutAt;// Visit classification
 @JsonKey(name: 'visit_type') String get visitType; String? get purpose;// Associations
 @JsonKey(name: 'unit_id') String? get unitId;@JsonKey(name: 'resident_id') String? get residentId;@JsonKey(name: 'lease_id') String? get leaseId;// Parking and optional document
@@ -34,16 +34,16 @@ $CreateVisitorCopyWith<CreateVisitor> get copyWith => _$CreateVisitorCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateVisitor&&(identical(other.orgId, orgId) || other.orgId == orgId)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.visitStartAt, visitStartAt) || other.visitStartAt == visitStartAt)&&(identical(other.visitEndAt, visitEndAt) || other.visitEndAt == visitEndAt)&&(identical(other.checkedInAt, checkedInAt) || other.checkedInAt == checkedInAt)&&(identical(other.checkedOutAt, checkedOutAt) || other.checkedOutAt == checkedOutAt)&&(identical(other.visitType, visitType) || other.visitType == visitType)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.parkingRequired, parkingRequired) || other.parkingRequired == parkingRequired)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateVisitor&&(identical(other.orgId, orgId) || other.orgId == orgId)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.status, status) || other.status == status)&&(identical(other.visitStartAt, visitStartAt) || other.visitStartAt == visitStartAt)&&(identical(other.visitEndAt, visitEndAt) || other.visitEndAt == visitEndAt)&&(identical(other.checkedInAt, checkedInAt) || other.checkedInAt == checkedInAt)&&(identical(other.checkedOutAt, checkedOutAt) || other.checkedOutAt == checkedOutAt)&&(identical(other.visitType, visitType) || other.visitType == visitType)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.parkingRequired, parkingRequired) || other.parkingRequired == parkingRequired)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,orgId,name,phone,visitStartAt,visitEndAt,checkedInAt,checkedOutAt,visitType,purpose,unitId,residentId,leaseId,parkingRequired,createdBy);
+int get hashCode => Object.hash(runtimeType,orgId,name,phone,status,visitStartAt,visitEndAt,checkedInAt,checkedOutAt,visitType,purpose,unitId,residentId,leaseId,parkingRequired,createdBy);
 
 @override
 String toString() {
-  return 'CreateVisitor(orgId: $orgId, name: $name, phone: $phone, visitStartAt: $visitStartAt, visitEndAt: $visitEndAt, checkedInAt: $checkedInAt, checkedOutAt: $checkedOutAt, visitType: $visitType, purpose: $purpose, unitId: $unitId, residentId: $residentId, leaseId: $leaseId, parkingRequired: $parkingRequired, createdBy: $createdBy)';
+  return 'CreateVisitor(orgId: $orgId, name: $name, phone: $phone, status: $status, visitStartAt: $visitStartAt, visitEndAt: $visitEndAt, checkedInAt: $checkedInAt, checkedOutAt: $checkedOutAt, visitType: $visitType, purpose: $purpose, unitId: $unitId, residentId: $residentId, leaseId: $leaseId, parkingRequired: $parkingRequired, createdBy: $createdBy)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $CreateVisitorCopyWith<$Res>  {
   factory $CreateVisitorCopyWith(CreateVisitor value, $Res Function(CreateVisitor) _then) = _$CreateVisitorCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'org_id') String orgId, String name, String? phone,@JsonKey(name: 'visit_start_at') DateTime? visitStartAt,@JsonKey(name: 'visit_end_at') DateTime? visitEndAt,@JsonKey(name: 'checked_in_at') DateTime? checkedInAt,@JsonKey(name: 'checked_out_at') DateTime? checkedOutAt,@JsonKey(name: 'visit_type') String visitType, String? purpose,@JsonKey(name: 'unit_id') String? unitId,@JsonKey(name: 'resident_id') String? residentId,@JsonKey(name: 'lease_id') String? leaseId,@JsonKey(name: 'parking_required') bool parkingRequired,@JsonKey(name: 'created_by') String createdBy
+@JsonKey(name: 'org_id') String orgId, String name, String? phone, String status,@JsonKey(name: 'visit_start_at') DateTime? visitStartAt,@JsonKey(name: 'visit_end_at') DateTime? visitEndAt,@JsonKey(name: 'checked_in_at') DateTime? checkedInAt,@JsonKey(name: 'checked_out_at') DateTime? checkedOutAt,@JsonKey(name: 'visit_type') String visitType, String? purpose,@JsonKey(name: 'unit_id') String? unitId,@JsonKey(name: 'resident_id') String? residentId,@JsonKey(name: 'lease_id') String? leaseId,@JsonKey(name: 'parking_required') bool parkingRequired,@JsonKey(name: 'created_by') String createdBy
 });
 
 
@@ -71,12 +71,13 @@ class _$CreateVisitorCopyWithImpl<$Res>
 
 /// Create a copy of CreateVisitor
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? orgId = null,Object? name = null,Object? phone = freezed,Object? visitStartAt = freezed,Object? visitEndAt = freezed,Object? checkedInAt = freezed,Object? checkedOutAt = freezed,Object? visitType = null,Object? purpose = freezed,Object? unitId = freezed,Object? residentId = freezed,Object? leaseId = freezed,Object? parkingRequired = null,Object? createdBy = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? orgId = null,Object? name = null,Object? phone = freezed,Object? status = null,Object? visitStartAt = freezed,Object? visitEndAt = freezed,Object? checkedInAt = freezed,Object? checkedOutAt = freezed,Object? visitType = null,Object? purpose = freezed,Object? unitId = freezed,Object? residentId = freezed,Object? leaseId = freezed,Object? parkingRequired = null,Object? createdBy = null,}) {
   return _then(_self.copyWith(
 orgId: null == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String?,visitStartAt: freezed == visitStartAt ? _self.visitStartAt : visitStartAt // ignore: cast_nullable_to_non_nullable
+as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,visitStartAt: freezed == visitStartAt ? _self.visitStartAt : visitStartAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,visitEndAt: freezed == visitEndAt ? _self.visitEndAt : visitEndAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,checkedInAt: freezed == checkedInAt ? _self.checkedInAt : checkedInAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,checkedOutAt: freezed == checkedOutAt ? _self.checkedOutAt : checkedOutAt // ignore: cast_nullable_to_non_nullable
@@ -172,10 +173,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'org_id')  String orgId,  String name,  String? phone, @JsonKey(name: 'visit_start_at')  DateTime? visitStartAt, @JsonKey(name: 'visit_end_at')  DateTime? visitEndAt, @JsonKey(name: 'checked_in_at')  DateTime? checkedInAt, @JsonKey(name: 'checked_out_at')  DateTime? checkedOutAt, @JsonKey(name: 'visit_type')  String visitType,  String? purpose, @JsonKey(name: 'unit_id')  String? unitId, @JsonKey(name: 'resident_id')  String? residentId, @JsonKey(name: 'lease_id')  String? leaseId, @JsonKey(name: 'parking_required')  bool parkingRequired, @JsonKey(name: 'created_by')  String createdBy)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'org_id')  String orgId,  String name,  String? phone,  String status, @JsonKey(name: 'visit_start_at')  DateTime? visitStartAt, @JsonKey(name: 'visit_end_at')  DateTime? visitEndAt, @JsonKey(name: 'checked_in_at')  DateTime? checkedInAt, @JsonKey(name: 'checked_out_at')  DateTime? checkedOutAt, @JsonKey(name: 'visit_type')  String visitType,  String? purpose, @JsonKey(name: 'unit_id')  String? unitId, @JsonKey(name: 'resident_id')  String? residentId, @JsonKey(name: 'lease_id')  String? leaseId, @JsonKey(name: 'parking_required')  bool parkingRequired, @JsonKey(name: 'created_by')  String createdBy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateVisitor() when $default != null:
-return $default(_that.orgId,_that.name,_that.phone,_that.visitStartAt,_that.visitEndAt,_that.checkedInAt,_that.checkedOutAt,_that.visitType,_that.purpose,_that.unitId,_that.residentId,_that.leaseId,_that.parkingRequired,_that.createdBy);case _:
+return $default(_that.orgId,_that.name,_that.phone,_that.status,_that.visitStartAt,_that.visitEndAt,_that.checkedInAt,_that.checkedOutAt,_that.visitType,_that.purpose,_that.unitId,_that.residentId,_that.leaseId,_that.parkingRequired,_that.createdBy);case _:
   return orElse();
 
 }
@@ -193,10 +194,10 @@ return $default(_that.orgId,_that.name,_that.phone,_that.visitStartAt,_that.visi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'org_id')  String orgId,  String name,  String? phone, @JsonKey(name: 'visit_start_at')  DateTime? visitStartAt, @JsonKey(name: 'visit_end_at')  DateTime? visitEndAt, @JsonKey(name: 'checked_in_at')  DateTime? checkedInAt, @JsonKey(name: 'checked_out_at')  DateTime? checkedOutAt, @JsonKey(name: 'visit_type')  String visitType,  String? purpose, @JsonKey(name: 'unit_id')  String? unitId, @JsonKey(name: 'resident_id')  String? residentId, @JsonKey(name: 'lease_id')  String? leaseId, @JsonKey(name: 'parking_required')  bool parkingRequired, @JsonKey(name: 'created_by')  String createdBy)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'org_id')  String orgId,  String name,  String? phone,  String status, @JsonKey(name: 'visit_start_at')  DateTime? visitStartAt, @JsonKey(name: 'visit_end_at')  DateTime? visitEndAt, @JsonKey(name: 'checked_in_at')  DateTime? checkedInAt, @JsonKey(name: 'checked_out_at')  DateTime? checkedOutAt, @JsonKey(name: 'visit_type')  String visitType,  String? purpose, @JsonKey(name: 'unit_id')  String? unitId, @JsonKey(name: 'resident_id')  String? residentId, @JsonKey(name: 'lease_id')  String? leaseId, @JsonKey(name: 'parking_required')  bool parkingRequired, @JsonKey(name: 'created_by')  String createdBy)  $default,) {final _that = this;
 switch (_that) {
 case _CreateVisitor():
-return $default(_that.orgId,_that.name,_that.phone,_that.visitStartAt,_that.visitEndAt,_that.checkedInAt,_that.checkedOutAt,_that.visitType,_that.purpose,_that.unitId,_that.residentId,_that.leaseId,_that.parkingRequired,_that.createdBy);case _:
+return $default(_that.orgId,_that.name,_that.phone,_that.status,_that.visitStartAt,_that.visitEndAt,_that.checkedInAt,_that.checkedOutAt,_that.visitType,_that.purpose,_that.unitId,_that.residentId,_that.leaseId,_that.parkingRequired,_that.createdBy);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +214,10 @@ return $default(_that.orgId,_that.name,_that.phone,_that.visitStartAt,_that.visi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'org_id')  String orgId,  String name,  String? phone, @JsonKey(name: 'visit_start_at')  DateTime? visitStartAt, @JsonKey(name: 'visit_end_at')  DateTime? visitEndAt, @JsonKey(name: 'checked_in_at')  DateTime? checkedInAt, @JsonKey(name: 'checked_out_at')  DateTime? checkedOutAt, @JsonKey(name: 'visit_type')  String visitType,  String? purpose, @JsonKey(name: 'unit_id')  String? unitId, @JsonKey(name: 'resident_id')  String? residentId, @JsonKey(name: 'lease_id')  String? leaseId, @JsonKey(name: 'parking_required')  bool parkingRequired, @JsonKey(name: 'created_by')  String createdBy)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'org_id')  String orgId,  String name,  String? phone,  String status, @JsonKey(name: 'visit_start_at')  DateTime? visitStartAt, @JsonKey(name: 'visit_end_at')  DateTime? visitEndAt, @JsonKey(name: 'checked_in_at')  DateTime? checkedInAt, @JsonKey(name: 'checked_out_at')  DateTime? checkedOutAt, @JsonKey(name: 'visit_type')  String visitType,  String? purpose, @JsonKey(name: 'unit_id')  String? unitId, @JsonKey(name: 'resident_id')  String? residentId, @JsonKey(name: 'lease_id')  String? leaseId, @JsonKey(name: 'parking_required')  bool parkingRequired, @JsonKey(name: 'created_by')  String createdBy)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateVisitor() when $default != null:
-return $default(_that.orgId,_that.name,_that.phone,_that.visitStartAt,_that.visitEndAt,_that.checkedInAt,_that.checkedOutAt,_that.visitType,_that.purpose,_that.unitId,_that.residentId,_that.leaseId,_that.parkingRequired,_that.createdBy);case _:
+return $default(_that.orgId,_that.name,_that.phone,_that.status,_that.visitStartAt,_that.visitEndAt,_that.checkedInAt,_that.checkedOutAt,_that.visitType,_that.purpose,_that.unitId,_that.residentId,_that.leaseId,_that.parkingRequired,_that.createdBy);case _:
   return null;
 
 }
@@ -228,12 +229,13 @@ return $default(_that.orgId,_that.name,_that.phone,_that.visitStartAt,_that.visi
 @JsonSerializable()
 
 class _CreateVisitor implements CreateVisitor {
-  const _CreateVisitor({@JsonKey(name: 'org_id') required this.orgId, required this.name, this.phone, @JsonKey(name: 'visit_start_at') this.visitStartAt, @JsonKey(name: 'visit_end_at') this.visitEndAt, @JsonKey(name: 'checked_in_at') this.checkedInAt, @JsonKey(name: 'checked_out_at') this.checkedOutAt, @JsonKey(name: 'visit_type') required this.visitType, this.purpose, @JsonKey(name: 'unit_id') this.unitId, @JsonKey(name: 'resident_id') this.residentId, @JsonKey(name: 'lease_id') this.leaseId, @JsonKey(name: 'parking_required') this.parkingRequired = false, @JsonKey(name: 'created_by') required this.createdBy});
+  const _CreateVisitor({@JsonKey(name: 'org_id') required this.orgId, required this.name, this.phone, required this.status, @JsonKey(name: 'visit_start_at') this.visitStartAt, @JsonKey(name: 'visit_end_at') this.visitEndAt, @JsonKey(name: 'checked_in_at') this.checkedInAt, @JsonKey(name: 'checked_out_at') this.checkedOutAt, @JsonKey(name: 'visit_type') required this.visitType, this.purpose, @JsonKey(name: 'unit_id') this.unitId, @JsonKey(name: 'resident_id') this.residentId, @JsonKey(name: 'lease_id') this.leaseId, @JsonKey(name: 'parking_required') this.parkingRequired = false, @JsonKey(name: 'created_by') required this.createdBy});
   factory _CreateVisitor.fromJson(Map<String, dynamic> json) => _$CreateVisitorFromJson(json);
 
 @override@JsonKey(name: 'org_id') final  String orgId;
 @override final  String name;
 @override final  String? phone;
+@override final  String status;
 // Visit schedule
 @override@JsonKey(name: 'visit_start_at') final  DateTime? visitStartAt;
 @override@JsonKey(name: 'visit_end_at') final  DateTime? visitEndAt;
@@ -265,16 +267,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateVisitor&&(identical(other.orgId, orgId) || other.orgId == orgId)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.visitStartAt, visitStartAt) || other.visitStartAt == visitStartAt)&&(identical(other.visitEndAt, visitEndAt) || other.visitEndAt == visitEndAt)&&(identical(other.checkedInAt, checkedInAt) || other.checkedInAt == checkedInAt)&&(identical(other.checkedOutAt, checkedOutAt) || other.checkedOutAt == checkedOutAt)&&(identical(other.visitType, visitType) || other.visitType == visitType)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.parkingRequired, parkingRequired) || other.parkingRequired == parkingRequired)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateVisitor&&(identical(other.orgId, orgId) || other.orgId == orgId)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.status, status) || other.status == status)&&(identical(other.visitStartAt, visitStartAt) || other.visitStartAt == visitStartAt)&&(identical(other.visitEndAt, visitEndAt) || other.visitEndAt == visitEndAt)&&(identical(other.checkedInAt, checkedInAt) || other.checkedInAt == checkedInAt)&&(identical(other.checkedOutAt, checkedOutAt) || other.checkedOutAt == checkedOutAt)&&(identical(other.visitType, visitType) || other.visitType == visitType)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.unitId, unitId) || other.unitId == unitId)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.leaseId, leaseId) || other.leaseId == leaseId)&&(identical(other.parkingRequired, parkingRequired) || other.parkingRequired == parkingRequired)&&(identical(other.createdBy, createdBy) || other.createdBy == createdBy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,orgId,name,phone,visitStartAt,visitEndAt,checkedInAt,checkedOutAt,visitType,purpose,unitId,residentId,leaseId,parkingRequired,createdBy);
+int get hashCode => Object.hash(runtimeType,orgId,name,phone,status,visitStartAt,visitEndAt,checkedInAt,checkedOutAt,visitType,purpose,unitId,residentId,leaseId,parkingRequired,createdBy);
 
 @override
 String toString() {
-  return 'CreateVisitor(orgId: $orgId, name: $name, phone: $phone, visitStartAt: $visitStartAt, visitEndAt: $visitEndAt, checkedInAt: $checkedInAt, checkedOutAt: $checkedOutAt, visitType: $visitType, purpose: $purpose, unitId: $unitId, residentId: $residentId, leaseId: $leaseId, parkingRequired: $parkingRequired, createdBy: $createdBy)';
+  return 'CreateVisitor(orgId: $orgId, name: $name, phone: $phone, status: $status, visitStartAt: $visitStartAt, visitEndAt: $visitEndAt, checkedInAt: $checkedInAt, checkedOutAt: $checkedOutAt, visitType: $visitType, purpose: $purpose, unitId: $unitId, residentId: $residentId, leaseId: $leaseId, parkingRequired: $parkingRequired, createdBy: $createdBy)';
 }
 
 
@@ -285,7 +287,7 @@ abstract mixin class _$CreateVisitorCopyWith<$Res> implements $CreateVisitorCopy
   factory _$CreateVisitorCopyWith(_CreateVisitor value, $Res Function(_CreateVisitor) _then) = __$CreateVisitorCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'org_id') String orgId, String name, String? phone,@JsonKey(name: 'visit_start_at') DateTime? visitStartAt,@JsonKey(name: 'visit_end_at') DateTime? visitEndAt,@JsonKey(name: 'checked_in_at') DateTime? checkedInAt,@JsonKey(name: 'checked_out_at') DateTime? checkedOutAt,@JsonKey(name: 'visit_type') String visitType, String? purpose,@JsonKey(name: 'unit_id') String? unitId,@JsonKey(name: 'resident_id') String? residentId,@JsonKey(name: 'lease_id') String? leaseId,@JsonKey(name: 'parking_required') bool parkingRequired,@JsonKey(name: 'created_by') String createdBy
+@JsonKey(name: 'org_id') String orgId, String name, String? phone, String status,@JsonKey(name: 'visit_start_at') DateTime? visitStartAt,@JsonKey(name: 'visit_end_at') DateTime? visitEndAt,@JsonKey(name: 'checked_in_at') DateTime? checkedInAt,@JsonKey(name: 'checked_out_at') DateTime? checkedOutAt,@JsonKey(name: 'visit_type') String visitType, String? purpose,@JsonKey(name: 'unit_id') String? unitId,@JsonKey(name: 'resident_id') String? residentId,@JsonKey(name: 'lease_id') String? leaseId,@JsonKey(name: 'parking_required') bool parkingRequired,@JsonKey(name: 'created_by') String createdBy
 });
 
 
@@ -302,12 +304,13 @@ class __$CreateVisitorCopyWithImpl<$Res>
 
 /// Create a copy of CreateVisitor
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? orgId = null,Object? name = null,Object? phone = freezed,Object? visitStartAt = freezed,Object? visitEndAt = freezed,Object? checkedInAt = freezed,Object? checkedOutAt = freezed,Object? visitType = null,Object? purpose = freezed,Object? unitId = freezed,Object? residentId = freezed,Object? leaseId = freezed,Object? parkingRequired = null,Object? createdBy = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? orgId = null,Object? name = null,Object? phone = freezed,Object? status = null,Object? visitStartAt = freezed,Object? visitEndAt = freezed,Object? checkedInAt = freezed,Object? checkedOutAt = freezed,Object? visitType = null,Object? purpose = freezed,Object? unitId = freezed,Object? residentId = freezed,Object? leaseId = freezed,Object? parkingRequired = null,Object? createdBy = null,}) {
   return _then(_CreateVisitor(
 orgId: null == orgId ? _self.orgId : orgId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String?,visitStartAt: freezed == visitStartAt ? _self.visitStartAt : visitStartAt // ignore: cast_nullable_to_non_nullable
+as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,visitStartAt: freezed == visitStartAt ? _self.visitStartAt : visitStartAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,visitEndAt: freezed == visitEndAt ? _self.visitEndAt : visitEndAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,checkedInAt: freezed == checkedInAt ? _self.checkedInAt : checkedInAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,checkedOutAt: freezed == checkedOutAt ? _self.checkedOutAt : checkedOutAt // ignore: cast_nullable_to_non_nullable

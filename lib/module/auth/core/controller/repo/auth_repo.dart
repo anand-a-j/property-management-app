@@ -254,4 +254,16 @@ class AuthRepo {
       return DataResponse(error: errorlog(fn, e, stack));
     }
   }
+
+  Future<DataResponse<String?>> changePassword({
+    required String newPassword,
+  }) async {
+    try {
+      await _client.auth.updateUser(UserAttributes(password: newPassword));
+
+      return DataResponse(data: "successs");
+    } catch (e, stack) {
+      return DataResponse(error: errorlog('AuthRepo.changePassword', e, stack));
+    }
+  }
 }

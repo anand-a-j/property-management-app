@@ -30,6 +30,8 @@ import 'package:naseem/module/admin/visitor/controller/bloc/visitor_bloc.dart';
 import 'package:naseem/module/admin/visitor/controller/repo/visitor_repo.dart';
 import 'package:naseem/module/auth/core/controller/bloc/auth_bloc.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
+import 'package:naseem/module/auth/profile/bloc/profile_bloc.dart';
+import 'package:naseem/module/auth/profile/controller/profile_repo.dart';
 import 'package:naseem/module/platform_admin/controller/bloc/manager_bloc.dart';
 import 'package:naseem/module/platform_admin/controller/repo/manager_repo.dart';
 import 'package:naseem/module/resident/home/controller/repo/resident_details_repo.dart';
@@ -150,6 +152,9 @@ void main() async {
         BlocProvider<RecentActivityBloc>(
           create: (context) =>
               RecentActivityBloc(recentActivityRepo: RecentActivityRepo()),
+        ),
+        BlocProvider<ProfileBloc>(
+          create: (context) => ProfileBloc(profileRepo: ProfileRepo()),
         ),
       ],
       child: const MyApp(),

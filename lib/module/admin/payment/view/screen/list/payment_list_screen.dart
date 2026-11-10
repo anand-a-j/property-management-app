@@ -7,6 +7,7 @@ import 'package:naseem/core/core.dart';
 import 'package:naseem/module/admin/payment/view/dialog/payment_status_update_dialog.dart';
 import 'package:naseem/module/auth/core/controller/service/auth_service.dart';
 
+import '../../../../../../core/enum/payment_status.dart';
 import '../../../../../../core/utils/snackbar_manager.dart';
 import '../../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../../core/widgets/error_state_view.dart';
@@ -178,12 +179,25 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                           payment: payment,
                           onTap: () {
                             if (!widget.isFromResident) {
-                              MoreOptionsBottomSheet.show(
-                                context: context,
-                                items: [
+                              final canEdit =
+                                  payment.status == PaymentStatus.draft ||
+                                  payment.status == PaymentStatus.pending ||
+                                  payment.status == PaymentStatus.bounced;
+
+                              final canUpdateStatus = payment.status
+                                  .nextStatuses()
+                                  .isNotEmpty;
+
+                              final canDelete =
+                                  payment.status != PaymentStatus.paid &&
+                                  payment.status != PaymentStatus.cancelled;
+
+                              final items = <MoreOptionItem>[];
+
+                              if (canEdit) {
+                                items.add(
                                   MoreOptionItem(
                                     title: 'Edit Payment',
-
                                     icon: Icons.edit_outlined,
                                     onTap: () {
                                       context.push(
@@ -195,9 +209,13 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                       );
                                     },
                                   ),
+                                );
+                              }
+
+                              if (canUpdateStatus) {
+                                items.add(
                                   MoreOptionItem(
                                     title: 'Update Payment Status',
-
                                     icon: Icons.sync_outlined,
                                     onTap: () {
                                       showPaymentStatusUpdateDialog(
@@ -206,9 +224,13 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                       );
                                     },
                                   ),
+                                );
+                              }
+
+                              if (canDelete) {
+                                items.add(
                                   MoreOptionItem(
                                     title: 'Delete Payment',
-
                                     icon: Icons.delete_outline_rounded,
                                     isDestructive: true,
                                     confirmTitle: 'Delete Payment?',
@@ -223,8 +245,15 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                       );
                                     },
                                   ),
-                                ],
-                              );
+                                );
+                              }
+
+                              if (items.isNotEmpty) {
+                                MoreOptionsBottomSheet.show(
+                                  context: context,
+                                  items: items,
+                                );
+                              }
                             }
                           },
                         );

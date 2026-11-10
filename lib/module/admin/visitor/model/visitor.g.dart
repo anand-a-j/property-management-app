@@ -92,8 +92,6 @@ const _$VisitTypeEnumMap = {
 
 const _$VisitorStatusEnumMap = {
   VisitorStatus.pending: 'pending',
-  VisitorStatus.approved: 'approved',
-  VisitorStatus.rejected: 'rejected',
   VisitorStatus.checkedIn: 'checked_in',
   VisitorStatus.checkedOut: 'checked_out',
   VisitorStatus.cancelled: 'cancelled',

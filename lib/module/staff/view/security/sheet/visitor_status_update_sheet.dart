@@ -12,8 +12,9 @@ void showVisitorStatusUpdateSheet(
   BuildContext context,
   Visitor visitor,
   bool isManager,
+
 ) {
-  final nextStatuses = visitor.status.nextStatuses(isManager: isManager);
+  final nextStatuses = visitor.status.nextStatuses();
 
   if (nextStatuses.isEmpty) return;
 

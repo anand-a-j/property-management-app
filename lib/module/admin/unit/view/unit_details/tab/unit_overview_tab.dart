@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:naseem/core/widgets/error_state_view.dart';
 import 'package:naseem/module/admin/lease/controller/blocs/bloc/active_lease_bloc.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/current_resident_card.dart';
@@ -7,8 +8,15 @@ import 'package:naseem/module/admin/unit/view/unit_details/widgets/no_active_lea
 import 'package:naseem/module/admin/unit/view/unit_details/widgets/unit_lease_history_list_view.dart';
 
 import '../../../../../../core/core.dart';
+import '../../../../../../core/widgets/more_options/more_option_item.dart';
+import '../../../../../../core/widgets/more_options/more_options_sheet.dart';
+import '../../../../../../routes/args/add_lease_args.dart';
+import '../../../../../../routes/args/lease_details_args.dart'
+    show LeaseDetailsArgs;
+import '../../../../../../routes/router_path.dart';
 import '../../../../community/model/community.dart';
 
+import '../../../../lease/model/lease.dart';
 import '../../../model/unit.dart';
 
 class UnitOverviewTab extends StatelessWidget {
@@ -35,7 +43,7 @@ class UnitOverviewTab extends StatelessWidget {
 
           const SizedBox(height: AppConsts.pMedium),
 
-          _ActiveLeaseBody(unit: unit),
+          _ActiveLeaseBody(unit: unit, community: community),
 
           const SizedBox(height: AppConsts.pSide),
 
@@ -54,9 +62,10 @@ class UnitOverviewTab extends StatelessWidget {
 }
 
 class _ActiveLeaseBody extends StatelessWidget {
-  const _ActiveLeaseBody({required this.unit});
+  const _ActiveLeaseBody({required this.unit, required this.community});
 
   final Unit unit;
+  final Community community;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +82,47 @@ class _ActiveLeaseBody extends StatelessWidget {
           if (state.lease == null) {
             return NoActiveLeaseCard(unit: unit);
           } else {
-            return CurrentResidentCard(lease: state.lease!);
+            return GestureDetector(
+              onTap: () {
+                MoreOptionsBottomSheet.show(
+                  context: context,
+                  items: [
+                    MoreOptionItem(
+                      title: 'View Details',
+                      icon: Icons.visibility_outlined,
+                      onTap: () {
+                        context.push(
+                          RouterPath.leaseDetails,
+                          extra: LeaseDetailsArgs(
+                            lease: state.lease!,
+                            unit: unit,
+                            community: community,
+                          ),
+                        );
+                      },
+                    ),
+                    if (state.lease?.canEdit ?? false)
+                      MoreOptionItem(
+                        title: 'Edit Lease',
+                        icon: Icons.edit_outlined,
+                        onTap: () {
+                          context.push(
+                            RouterPath.addLease,
+                            extra: AddLeaseArgs(
+                              lease: state.lease,
+                              unit: unit,
+                              community: community,
+                              isEdit: true,
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                );
+              },
+
+              child: CurrentResidentCard(lease: state.lease!),
+            );
           }
 
           // final lease = Lease(

@@ -12,6 +12,34 @@ class VisitorCard extends StatelessWidget {
 
   final Visitor visitor;
 
+  static const Duration _deliveryStayLimit = Duration(minutes: 30);
+
+  bool get _isLongDeliveryStay {
+    if (visitor.visitType != VisitType.delivery) return false;
+
+    if (visitor.status != VisitorStatus.checkedIn) return false;
+
+    final checkedInAt = visitor.checkedInAt;
+    if (checkedInAt == null) return false;
+
+    return DateTime.now().difference(checkedInAt.toLocal()) >
+        _deliveryStayLimit;
+  }
+
+  String _deliveryStayText() {
+    final checkedInAt = visitor.checkedInAt!.toLocal();
+    final duration = DateTime.now().difference(checkedInAt);
+
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+
+    final stayDuration = hours > 0
+        ? '${hours}h ${minutes}m'
+        : '${duration.inMinutes} minutes';
+
+    return 'Delivery visitor has been inside for $stayDuration';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isCancelled = visitor.status == VisitorStatus.cancelled;
@@ -148,6 +176,13 @@ class VisitorCard extends StatelessWidget {
                   time: visitor.updatedAt,
                 ),
                 color: visitor.status.color,
+              ),
+
+            if (_isLongDeliveryStay)
+              _VisitorInfoRow(
+                icon: Icons.warning_amber_rounded,
+                text: _deliveryStayText(),
+                color: Colors.red,
               ),
           ],
         ),

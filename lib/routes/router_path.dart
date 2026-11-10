@@ -2,6 +2,10 @@ class RouterPath {
   static const String welcome = "/welcome";
   static const String signIn = "/signin";
 
+  static const String changePassword = "/change-password";
+
+    static const String editProfile = "/edit-profile";
+
   // Sign Up Flow
   static const String signUp = "/signup";
 

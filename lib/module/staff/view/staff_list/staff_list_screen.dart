@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:naseem/core/enum/sign_up_type.dart';
+import 'package:naseem/core/utils/snackbar_manager.dart';
 
 import '../../../../core/core.dart';
 import '../../../../core/widgets/empty_state_view.dart';
 import '../../../../core/widgets/error_state_view.dart';
+import '../../../../core/widgets/more_options/more_option_item.dart';
+import '../../../../core/widgets/more_options/more_options_sheet.dart';
+import '../../../../routes/args/edit_profile_args.dart';
 import '../../../../routes/router_path.dart';
 import '../../../auth/core/controller/service/auth_service.dart';
+import '../../../auth/profile/bloc/profile_bloc.dart';
 import '../../controller/stafff_bloc/staff_bloc.dart';
 import 'widgets/staff_card.dart';
 
@@ -48,72 +53,127 @@ class _StaffListScreenState extends State<StaffListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Staffs', leadingOnTap: () => context.pop()),
-      body: Column(
-        children: [
-          SearchTextField(title: 'Search Staffs', onChanged: (query) {}),
+    return BlocListener<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        if (state is ProfileSuccess) {
+          _retry();
+        } else if (state is ProfileFailed) {
+          Snack.error(state.message);
+        }
+      },
+      child: ColoredBox(
+        color: context.onPrimary,
+        child: SafeArea(
+          child: Scaffold(
+            appBar: CustomAppBar(
+              title: 'Staffs',
+              leadingOnTap: () => context.pop(),
+            ),
+            body: Column(
+              children: [
+                SearchTextField(title: 'Search Staffs', onChanged: (query) {}),
 
-          const SizedBox(height: AppConsts.pMedium),
+                Expanded(
+                  child: BlocBuilder<StaffBloc, StaffState>(
+                    builder: (context, state) {
+                      if (state is StaffLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-          Expanded(
-            child: BlocBuilder<StaffBloc, StaffState>(
-              builder: (context, state) {
-                if (state is StaffLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                      if (state is StaffSuccess) {
+                        if (state.staffs.isEmpty) {
+                          return const EmptyStateView(
+                            message: 'No staff members found.',
+                          );
+                        }
 
-                if (state is StaffSuccess) {
-                  if (state.staffs.isEmpty) {
-                    return const EmptyStateView(
-                      message: 'No staff members found.',
-                    );
-                  }
+                        return ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppConsts.pSide,
+                          ),
+                          itemCount: state.staffs.length,
+                          itemBuilder: (context, index) {
+                            final staff = state.staffs[index];
 
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppConsts.pSide,
-                    ),
-                    itemCount: state.staffs.length,
-                    itemBuilder: (context, index) {
-                      final staff = state.staffs[index];
+                            return GestureDetector(
+                              onTap: () {
+                                if (widget.isSelectionMode) {
+                                  context.pop(staff);
+                                  return;
+                                }
 
-                      return GestureDetector(
-                        onTap: () {
-                          if (widget.isSelectionMode) {
-                            context.pop(staff);
-                          }
-                        },
-                        child: StaffCard(profile: staff, index: index),
+                                MoreOptionsBottomSheet.show(
+                                  context: context,
+                                  items: [
+                                    // EDIT STAFF
+                                    MoreOptionItem(
+                                      title: 'Edit Staff',
+                                      icon: Icons.edit_outlined,
+                                      onTap: () {
+                                        context.push(
+                                          RouterPath.editProfile,
+                                          extra: EditProfileArgs(
+                                            role: staff.role,
+                                            initialName: staff.name,
+                                            initialPhone: staff.phone,
+                                            initialEmail: staff.email,
+                                          ),
+                                        );
+                                      },
+                                    ),
+
+                                    // DELETE STAFF
+                                    MoreOptionItem(
+                                      title: 'Delete Staff',
+                                      icon: Icons.delete_outline_rounded,
+                                      isDestructive: true,
+                                      confirmTitle: 'Delete Staff?',
+                                      confirmMessage:
+                                          'Are you sure you want to delete ${staff.name}?',
+                                      onTap: () {
+                                        context.read<ProfileBloc>().add(
+                                          DeleteManagedUserEvent(
+                                            userId: staff.id,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                              child: StaffCard(profile: staff, index: index),
+                            );
+                          },
+                        );
+                      }
+
+                      if (state is StaffFailed) {
+                        return ErrorStateView(
+                          retryOnTap: _retry,
+                          message: state.error,
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+              ],
+            ),
+            floatingActionButton: widget.isSelectionMode
+                ? null
+                : FloatingAddButton(
+                    title: 'Add Staff',
+                    onTap: () {
+                      context.push(
+                        RouterPath.signUp,
+                        extra: {'type': SignUpType.staff},
                       );
                     },
-                  );
-                }
-
-                if (state is StaffFailed) {
-                  return ErrorStateView(
-                    retryOnTap: _retry,
-                    message: state.error,
-                  );
-                }
-
-                return const SizedBox.shrink();
-              },
-            ),
+                  ),
           ),
-        ],
+        ),
       ),
-      floatingActionButton: widget.isSelectionMode
-          ? null
-          : FloatingAddButton(
-              title: 'Add Staff',
-              onTap: () {
-                context.push(
-                  RouterPath.signUp,
-                  extra: {'type': SignUpType.staff},
-                );
-              },
-            ),
     );
   }
 }

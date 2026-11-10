@@ -17,6 +17,8 @@ class PaymentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final secondaryTextColor = context.secondary.withValues(alpha: 0.75);
 
+    final description = payment.description?.trim();
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -30,7 +32,7 @@ class PaymentCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 5,
+            spacing: 7,
             children: [
               // Payment Number & Status
               Row(
@@ -48,9 +50,7 @@ class PaymentCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-
                   const SizedBox(width: 10),
-
                   StatusTag(
                     status: payment.status.label,
                     color: payment.status.color,
@@ -59,26 +59,28 @@ class PaymentCard extends StatelessWidget {
               ),
 
               // Resident Name
-              Text(
-                payment.lease?.resident?.name ?? '',
-                style: context.bodyMedium?.copyWith(
-                  color: context.secondary,
-                  height: 1,
+              if (payment.lease?.resident?.name.trim().isNotEmpty == true)
+                Text(
+                  payment.lease!.resident!.name,
+                  style: context.bodyMedium?.copyWith(
+                    color: context.secondary,
+                    height: 1,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
 
               // Unit Details
-              Text(
-                payment.lease?.unit?.name ?? '',
-                style: context.bodyMedium?.copyWith(
-                  color: secondaryTextColor,
-                  height: 1,
+              if (payment.lease?.unit?.name.trim().isNotEmpty == true)
+                Text(
+                  payment.lease!.unit!.name,
+                  style: context.bodyMedium?.copyWith(
+                    color: secondaryTextColor,
+                    height: 1,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
 
               // Amount & Payment Method
               Text(
@@ -89,15 +91,29 @@ class PaymentCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
 
-              // Due Date
-              Text(
-                'Due: ${StrHelper.formatDate(payment.dueDate)}',
-                style: context.bodyMedium?.copyWith(color: secondaryTextColor),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              // Description
+              if (description != null && description.isNotEmpty)
+                Text(
+                  description,
+                  style: context.bodyMedium?.copyWith(
+                    color: secondaryTextColor,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
 
-              // Paid Date (only when available)
+              // Due Date (hide when paid)
+              if (payment.status != PaymentStatus.paid)
+                Text(
+                  'Due: ${StrHelper.formatDate(payment.dueDate)}',
+                  style: context.bodyMedium?.copyWith(
+                    color: secondaryTextColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+              // Paid Date
               if (payment.paidDate != null)
                 Text(
                   'Paid: ${StrHelper.formatDate(payment.paidDate!)}',

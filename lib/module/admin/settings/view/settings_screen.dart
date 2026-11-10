@@ -9,6 +9,7 @@ import 'package:naseem/routes/args/visitor_list_args.dart';
 import 'package:naseem/routes/router_path.dart';
 
 import '../../../../core/core.dart';
+import '../../../../routes/args/edit_profile_args.dart';
 import '../../../auth/core/controller/bloc/auth_bloc.dart';
 import '../../../auth/core/controller/bloc/auth_event.dart';
 import '../../../auth/core/controller/bloc/auth_state.dart';
@@ -29,12 +30,12 @@ class SettingsScreen extends StatelessWidget {
             bottom: -150,
             child: SvgPicture.asset(Assets.settingsBg, fit: BoxFit.cover),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 15.0,
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 15.0,
+            ),
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -79,7 +80,21 @@ class SettingsScreen extends StatelessWidget {
                       ),
 
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          final profile = authentication.profile;
+
+                          if (profile == null) return;
+
+                          context.push(
+                            RouterPath.editProfile,
+                            extra: EditProfileArgs(
+                              role: profile.role,
+                              initialName: profile.name,
+                              initialPhone: profile.phone,
+                              initialEmail: profile.email,
+                            ),
+                          );
+                        },
                         child: Text(
                           'Edit',
                           style: context.titleSmall?.copyWith(
@@ -91,6 +106,23 @@ class SettingsScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 25),
+                  Text(
+                    'General',
+                    style: context.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  SettingsCard(
+                    icon: Icons.lock_outline,
+                    title: 'Change Password',
+                    onTap: () {
+                      context.push(RouterPath.changePassword);
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
                   if (!isFromResident) ...[
                     Text(
                       'Management',
@@ -148,7 +180,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ],
 
-                  const Spacer(),
+                  const SizedBox(height: 150),
                 ],
               ),
             ),

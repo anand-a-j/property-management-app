@@ -57,7 +57,10 @@ class _LeasePaymentsTabState extends State<LeasePaymentsTab> {
   Widget build(BuildContext context) {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
-        if (state is PaymentStatusUpdated) {
+        if (state is PaymentSuccess) {
+          Snack.success("Payment added successfully");
+          _fetchPayments();
+        } else if (state is PaymentStatusUpdated) {
           Snack.success("Payment status updated");
           _fetchPayments();
         } else if (state is PaymentFailed) {

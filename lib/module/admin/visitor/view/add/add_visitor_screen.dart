@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide DateUtils;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:naseem/core/enum/visitor_status.dart';
 import 'package:naseem/core/enum/visitor_type.dart';
 import 'package:naseem/module/admin/visitor/model/create_visitor.dart';
 
@@ -160,7 +161,6 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
 
                     _visitTypeField(),
                     const SizedBox(height: AppConsts.pSide),
-
                     if (widget.isResident) ...[
                       _visitStartField(),
                       const SizedBox(height: AppConsts.pSide),
@@ -508,6 +508,9 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
       unitId: widget.isResident ? widget.unitId : null,
       leaseId: widget.isResident ? widget.leaseId : null,
       residentId: widget.isResident ? widget.residentId : null,
+      status: widget.isResident
+          ? VisitorStatus.pending.dbValue
+          : VisitorStatus.checkedIn.dbValue,
     );
 
     context.read<VisitorBloc>().add(CreateVisitorEvent(visitor: newVisitor));

@@ -313,6 +313,27 @@ class AuthService {
 
     await _profileDB.deleteProfile();
   }
+
+  // ---------------------------------------------------------------------------
+  // UPDATE LOCAL PROFILE
+  // Updates in-memory profile and Hive cache.
+  // ---------------------------------------------------------------------------
+
+  Future<void> updateLocalProfile({
+    String? name,
+    String? phone,
+    ProfileDetails? profileDetails,
+  }) async {
+    if (_profile == null) return;
+
+    _profile = _profile!.copyWith(
+      name: name ?? "",
+      phone: phone,
+      profileDetails: profileDetails ?? _profile!.profileDetails,
+    );
+
+    await _profileDB.saveProfile(_profile!);
+  }
 }
 
 final authentication = AuthService.instance;

@@ -95,11 +95,17 @@ class _VisitorStatusUpdateSheetBodyState
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: CircleAvatar(
+                      backgroundColor: context.secondaryContainer,
+                      radius: 18,
+                      child: Icon(
+                        Icons.close,
+                        size: 18,
+                        color: context.secondary,
+                      ),
+                    ),
                   ),
                 ],
               ),

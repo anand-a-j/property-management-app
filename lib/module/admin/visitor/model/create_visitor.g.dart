@@ -11,6 +11,7 @@ _CreateVisitor _$CreateVisitorFromJson(Map<String, dynamic> json) =>
       orgId: json['org_id'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String?,
+      status: json['status'] as String,
       visitStartAt: json['visit_start_at'] == null
           ? null
           : DateTime.parse(json['visit_start_at'] as String),
@@ -37,6 +38,7 @@ Map<String, dynamic> _$CreateVisitorToJson(_CreateVisitor instance) =>
       'org_id': instance.orgId,
       'name': instance.name,
       'phone': instance.phone,
+      'status': instance.status,
       'visit_start_at': instance.visitStartAt?.toIso8601String(),
       'visit_end_at': instance.visitEndAt?.toIso8601String(),
       'checked_in_at': instance.checkedInAt?.toIso8601String(),

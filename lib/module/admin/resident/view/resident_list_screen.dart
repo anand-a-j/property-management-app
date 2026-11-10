@@ -46,47 +46,47 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
     });
   }
 
- void _fetchResidents() {
-  context.read<ResidentListBloc>().add(
-    FetchResidents(
-      orgId: authentication.profile?.orgId ?? '',
-      isSelectionMode: widget.isSelectionMode,
-    ),
-  );
-}
+  void _fetchResidents() {
+    context.read<ResidentListBloc>().add(
+      FetchResidents(
+        orgId: authentication.profile?.orgId ?? '',
+        isSelectionMode: widget.isSelectionMode,
+      ),
+    );
+  }
 
- void _onSearchChanged(String query) {
-  _debounceTimer?.cancel();
+  void _onSearchChanged(String query) {
+    _debounceTimer?.cancel();
 
-  _debounceTimer = Timer(_debounceDuration, () {
-    if (!mounted) return;
+    _debounceTimer = Timer(_debounceDuration, () {
+      if (!mounted) return;
+
+      context.read<ResidentListBloc>().add(
+        SearchResidents(
+          orgId: authentication.profile?.orgId ?? '',
+          searchQuery: query.trim(),
+          isSelectionMode: widget.isSelectionMode,
+        ),
+      );
+    });
+  }
+
+  void _retry() {
+    final query = _searchController.text.trim();
+
+    if (query.isEmpty) {
+      _fetchResidents();
+      return;
+    }
 
     context.read<ResidentListBloc>().add(
       SearchResidents(
         orgId: authentication.profile?.orgId ?? '',
-        searchQuery: query.trim(),
+        searchQuery: query,
         isSelectionMode: widget.isSelectionMode,
       ),
     );
-  });
-}
-
- void _retry() {
-  final query = _searchController.text.trim();
-
-  if (query.isEmpty) {
-    _fetchResidents();
-    return;
   }
-
-  context.read<ResidentListBloc>().add(
-    SearchResidents(
-      orgId: authentication.profile?.orgId ?? '',
-      searchQuery: query,
-      isSelectionMode: widget.isSelectionMode,
-    ),
-  );
-}
 
   void _loadMore() {
     context.read<ResidentListBloc>().add(LoadMoreResidents());
@@ -131,8 +131,6 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
             title: 'Search Residents',
             onChanged: _onSearchChanged,
           ),
-
-          const SizedBox(height: AppConsts.pMedium),
 
           Expanded(
             child: BlocConsumer<ResidentListBloc, ResidentListState>(

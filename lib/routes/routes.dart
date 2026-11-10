@@ -6,6 +6,8 @@ import 'package:naseem/module/admin/community/view/add_community_screen.dart';
 
 import 'package:naseem/module/admin/unit/view/add_unit/add_unit_screen.dart';
 import 'package:naseem/module/admin/unit/view/unit_details/unit_details_screen.dart';
+import 'package:naseem/module/auth/core/controller/repo/auth_repo.dart';
+import 'package:naseem/module/auth/password/controller/bloc/change_password_bloc.dart';
 import 'package:naseem/module/platform_admin/view/platform_dashboard_screen.dart';
 import 'package:naseem/module/staff/view/staff_list/staff_list_screen.dart';
 import 'package:naseem/routes/args/resident_lease_details_args.dart';
@@ -30,6 +32,10 @@ import '../module/admin/resident/view/resident_list_screen.dart';
 import '../module/admin/unit/view/unit_list/unit_list_screen.dart';
 import '../module/admin/visitor/view/add/add_visitor_screen.dart';
 import '../module/admin/visitor/view/list/visitor_list_screen.dart';
+import '../module/auth/password/view/change_password_screen.dart';
+import '../module/auth/profile/bloc/profile_bloc.dart';
+import '../module/auth/profile/controller/profile_repo.dart';
+import '../module/auth/profile/view/edit_profile_screen.dart';
 import '../module/auth/sign_in/view/screen/sign_in_screen.dart';
 import '../module/auth/sign_up/view/screen/sign_up_screen.dart';
 import '../module/auth/splash/splash_screen.dart';
@@ -44,6 +50,7 @@ import 'args/add_maintenance_args.dart';
 import 'args/add_payment_args.dart';
 import 'args/add_unit_args.dart';
 import 'args/add_visitor_args.dart';
+import 'args/edit_profile_args.dart';
 import 'args/lease_details_args.dart';
 import 'args/maintenance_list_args.dart';
 import 'args/resident_details_args.dart';
@@ -105,6 +112,20 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
+      path: RouterPath.changePassword,
+      name: 'change-password-screen',
+      pageBuilder: (context, state) {
+        return SlideTransitionPage(
+          beginOffset: const Offset(0, 1),
+          page: BlocProvider<ChangePasswordBloc>(
+            create: (context) => ChangePasswordBloc(authRepo: AuthRepo()),
+            child: const ChangePasswordScreen(),
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
       path: RouterPath.signUp,
       name: 'signup-screen',
       pageBuilder: (context, state) {
@@ -115,6 +136,31 @@ final GoRouter router = GoRouter(
         return SlideTransitionPage(
           beginOffset: Offset(0, -1),
           page: SignUpScreen(type: type),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouterPath.editProfile,
+      name: 'edit-profile-screen',
+      pageBuilder: (context, state) {
+        final args = state.extra as EditProfileArgs;
+
+        return SlideTransitionPage(
+          beginOffset: const Offset(0, 1),
+          page: BlocProvider<ProfileBloc>(
+            create: (context) => ProfileBloc(profileRepo: ProfileRepo()),
+            child: EditProfileScreen(
+              role: args.role,
+              initialName: args.initialName,
+              initialPhone: args.initialPhone,
+              initialEmail: args.initialEmail,
+              initialFirstName: args.initialFirstName,
+              initialLastName: args.initialLastName,
+              initialNickname: args.initialNickname,
+              initialEmiratesId: args.initialEmiratesId,
+            ),
+          ),
         );
       },
     ),

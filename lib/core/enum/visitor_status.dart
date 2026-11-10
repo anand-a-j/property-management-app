@@ -5,12 +5,6 @@ enum VisitorStatus {
   @JsonValue('pending')
   pending,
 
-  @JsonValue('approved')
-  approved,
-
-  @JsonValue('rejected')
-  rejected,
-
   @JsonValue('checked_in')
   checkedIn,
 
@@ -26,10 +20,6 @@ extension VisitorStatusExtension on VisitorStatus {
     switch (this) {
       case VisitorStatus.pending:
         return 'pending';
-      case VisitorStatus.approved:
-        return 'approved';
-      case VisitorStatus.rejected:
-        return 'rejected';
       case VisitorStatus.checkedIn:
         return 'checked_in';
       case VisitorStatus.checkedOut:
@@ -43,10 +33,6 @@ extension VisitorStatusExtension on VisitorStatus {
     switch (this) {
       case VisitorStatus.pending:
         return 'Pending';
-      case VisitorStatus.approved:
-        return 'Approved';
-      case VisitorStatus.rejected:
-        return 'Rejected';
       case VisitorStatus.checkedIn:
         return 'Checked In';
       case VisitorStatus.checkedOut:
@@ -60,12 +46,8 @@ extension VisitorStatusExtension on VisitorStatus {
     switch (this) {
       case VisitorStatus.pending:
         return Colors.orange;
-      case VisitorStatus.approved:
-        return Colors.green;
-      case VisitorStatus.rejected:
-        return Colors.red;
       case VisitorStatus.checkedIn:
-        return Colors.blue;
+        return Colors.green;
       case VisitorStatus.checkedOut:
         return Colors.teal;
       case VisitorStatus.cancelled:
@@ -73,31 +55,21 @@ extension VisitorStatusExtension on VisitorStatus {
     }
   }
 
-  List<VisitorStatus> nextStatuses({required bool isManager}) {
-    switch (this) {
-      case VisitorStatus.pending:
-        return isManager
-            ? [
-                VisitorStatus.approved,
-                VisitorStatus.rejected,
-                VisitorStatus.cancelled,
-              ]
-            : [];
+  List<VisitorStatus> nextStatuses() {
+   
+      switch (this) {
+        case VisitorStatus.pending:
+          return [VisitorStatus.checkedIn];
 
-      case VisitorStatus.approved:
-        return isManager
-            ? [VisitorStatus.cancelled]
-            : [VisitorStatus.checkedIn, VisitorStatus.cancelled];
+        case VisitorStatus.checkedIn:
+          return [VisitorStatus.checkedOut];
 
-      case VisitorStatus.rejected:
-      case VisitorStatus.checkedOut:
-      case VisitorStatus.cancelled:
-        return [];
+        case VisitorStatus.checkedOut:
+        case VisitorStatus.cancelled:
+          return [];
+      }
 
-      case VisitorStatus.checkedIn:
-        return isManager
-            ? [VisitorStatus.cancelled]
-            : [VisitorStatus.checkedOut];
-    }
+
+
   }
 }
