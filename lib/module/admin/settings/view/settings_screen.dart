@@ -92,6 +92,7 @@ class SettingsScreen extends StatelessWidget {
                               initialName: profile.name,
                               initialPhone: profile.phone,
                               initialEmail: profile.email,
+                              id: profile.id,
                             ),
                           );
                         },

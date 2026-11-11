@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -26,6 +28,10 @@ class StaffListScreen extends StatefulWidget {
 }
 
 class _StaffListScreenState extends State<StaffListScreen> {
+  Timer? _debounce;
+
+  String _searchQuery = '';
+
   List<String> get _staffRoles {
     return widget.isSelectionMode
         ? ['maintenance']
@@ -37,8 +43,24 @@ class _StaffListScreenState extends State<StaffListScreen> {
       FetchStaffs(
         orgId: authentication.profile?.orgId ?? '',
         roles: _staffRoles,
+        searchQuery: _searchQuery,
       ),
     );
+  }
+
+  void _onSearchChanged(String query) {
+    _searchQuery = query;
+
+    _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+      _fetchStaffs();
+    });
+  }
+
+  void _retry() {
+    _fetchStaffs();
   }
 
   @override
@@ -47,8 +69,10 @@ class _StaffListScreenState extends State<StaffListScreen> {
     _fetchStaffs();
   }
 
-  void _retry() {
-    _fetchStaffs();
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -71,7 +95,10 @@ class _StaffListScreenState extends State<StaffListScreen> {
             ),
             body: Column(
               children: [
-                SearchTextField(title: 'Search Staffs', onChanged: (query) {}),
+                SearchTextField(
+                  title: 'Search Staffs',
+                  onChanged: _onSearchChanged,
+                ),
 
                 Expanded(
                   child: BlocBuilder<StaffBloc, StaffState>(
@@ -117,6 +144,7 @@ class _StaffListScreenState extends State<StaffListScreen> {
                                             initialName: staff.name,
                                             initialPhone: staff.phone,
                                             initialEmail: staff.email,
+                                            id: staff.id,
                                           ),
                                         );
                                       },

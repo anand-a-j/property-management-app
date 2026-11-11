@@ -2,6 +2,7 @@ import '../../core/enum/user_role.dart';
 
 class EditProfileArgs {
   const EditProfileArgs({
+    required this.id,
     required this.role,
     required this.initialName,
     required this.initialPhone,
@@ -11,6 +12,8 @@ class EditProfileArgs {
     this.initialNickname,
     this.initialEmiratesId,
   });
+
+  final String id;
 
   final UserRole role;
 

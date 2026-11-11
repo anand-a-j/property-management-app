@@ -159,6 +159,7 @@ final GoRouter router = GoRouter(
               initialLastName: args.initialLastName,
               initialNickname: args.initialNickname,
               initialEmiratesId: args.initialEmiratesId,
+              id: args.id,
             ),
           ),
         );

@@ -24,6 +24,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
     final response = await _repo.fetchStaffs(
       orgId: event.orgId,
       roles: event.roles,
+      searchQuery: event.searchQuery,
     );
 
     if (response.hasData) {

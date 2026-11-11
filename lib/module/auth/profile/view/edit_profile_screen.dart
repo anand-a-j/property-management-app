@@ -10,6 +10,7 @@ import '../bloc/profile_bloc.dart';
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
     super.key,
+    required this.id,
     required this.role,
     required this.initialName,
     required this.initialPhone,
@@ -19,6 +20,9 @@ class EditProfileScreen extends StatefulWidget {
     this.initialNickname,
     this.initialEmiratesId,
   });
+
+
+  final String id;
 
   final UserRole role;
 
@@ -199,6 +203,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             phone: _phoneController.text.trim().isEmpty
                 ? null
                 : _phoneController.text.trim(),
+            id: widget.id,
           ),
         );
 
@@ -321,6 +326,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         UpdateProfileEvent(
           name: _nameController.text.trim(),
           phone: phone.isEmpty ? null : phone,
+          id: widget.id,
         ),
       );
     }

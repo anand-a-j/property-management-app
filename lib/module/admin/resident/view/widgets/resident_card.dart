@@ -13,6 +13,12 @@ class ResidentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firstName = resident.profileDetails?.firstName?.trim() ?? '';
+    final lastName = resident.profileDetails?.lastName?.trim() ?? '';
+
+    final residentDisplayName = (firstName.isEmpty && lastName.isEmpty)
+        ? resident.residentName
+        : '$firstName $lastName'.trim();
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(top: AppConsts.pMedium),
@@ -43,7 +49,7 @@ class ResidentCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${resident.profileDetails?.firstName ?? ""} ${resident.profileDetails?.lastName}",
+                      residentDisplayName,
                       style: context.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),

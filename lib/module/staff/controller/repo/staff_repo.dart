@@ -10,14 +10,24 @@ class StaffRepo {
   Future<DataResponse<List<Profile>>> fetchStaffs({
     required String orgId,
     required List<String> roles,
+    String? searchQuery,
   }) async {
     try {
-      final data = await _client
+      var query = _client
           .from('profiles')
           .select()
           .eq('org_id', orgId)
-          .inFilter('role', roles)
-          .limit(20);
+          .inFilter('role', roles);
+
+      final search = searchQuery?.trim();
+
+      if (search != null && search.isNotEmpty) {
+        query = query.or(
+          'name.ilike.%$search%,email.ilike.%$search%,phone.ilike.%$search%',
+        );
+      }
+
+      final data = await query.limit(20);
 
       final staffs = (data as List)
           .map((e) => Profile.fromJson(e as Map<String, dynamic>))
@@ -25,7 +35,7 @@ class StaffRepo {
 
       return DataResponse<List<Profile>>(data: staffs);
     } catch (e, stack) {
-      return DataResponse(error: errorlog("StaffRepo.fetchStaffs", e, stack));
+      return DataResponse(error: errorlog('StaffRepo.fetchStaffs', e, stack));
     }
   }
 }

@@ -15,8 +15,8 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
   final VisitorRepo _visitorRepo;
 
   VisitorBloc({required VisitorRepo visitorRepo})
-      : _visitorRepo = visitorRepo,
-        super(const VisitorInitial()) {
+    : _visitorRepo = visitorRepo,
+      super(const VisitorInitial()) {
     on<CreateVisitorEvent>(_onCreateVisitor);
     on<UpdateVisitorEvent>(_onUpdateVisitor);
     on<DeleteVisitorEvent>(_onDeleteVisitor);
@@ -30,9 +30,7 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
   ) async {
     emit(const VisitorLoading());
 
-    final response = await _visitorRepo.createVisitor(
-      visitor: event.visitor,
-    );
+    final response = await _visitorRepo.createVisitor(visitor: event.visitor);
 
     if (response.hasError) {
       emit(
@@ -55,14 +53,14 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
 
     final response = await _visitorRepo.updateVisitor(
       id: event.id,
-      orgId: event.orgId,
+
       name: event.name,
       phone: event.phone,
       visitStartAt: event.visitStartAt,
       visitEndAt: event.visitEndAt,
       visitType: event.visitType,
       purpose: event.purpose,
-      parkingRequired: event.parkingRequired??false,
+      parkingRequired: event.parkingRequired ?? false,
       unitId: event.unitId,
       residentId: event.residentId,
       leaseId: event.leaseId,
@@ -87,10 +85,7 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
   ) async {
     emit(const VisitorLoading());
 
-    final response = await _visitorRepo.deleteVisitor(
-      id: event.id,
-      orgId: event.orgId,
-    );
+    final response = await _visitorRepo.deleteVisitor(id: event.id);
 
     if (response.hasError) {
       emit(
@@ -119,8 +114,8 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
     if (response.hasError) {
       emit(
         VisitorFailed(
-          message: response.error?.toString() ??
-              'Failed to update visitor status',
+          message:
+              response.error?.toString() ?? 'Failed to update visitor status',
         ),
       );
       return;

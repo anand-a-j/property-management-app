@@ -30,41 +30,24 @@ class ResidentRepo {
 
       final normalizedSearch = searchQuery?.trim();
 
-      final data = await (() {
-        final baseQuery = _client
-            .from('resident_list_view')
-            .select()
-            .eq('org_id', normalizedOrgId);
+      final baseQuery = _client
+          .from('resident_list_view')
+          .select()
+          .eq('org_id', normalizedOrgId);
 
-        if (normalizedSearch != null && normalizedSearch.isNotEmpty) {
-          final filteredQuery = baseQuery.ilike(
-            'resident_name',
-            '%$normalizedSearch%',
-          );
+      final filteredQuery =
+          normalizedSearch != null && normalizedSearch.isNotEmpty
+          ? baseQuery.ilike('resident_name', '%$normalizedSearch%')
+          : baseQuery;
 
-          if (isSelectionMode) {
-            return filteredQuery
+      final data = isSelectionMode
+          ? await filteredQuery
                 .order('resident_status_priority', ascending: true)
                 .order('resident_created_at', ascending: false)
+                .range(from, to)
+          : await filteredQuery
+                .order('resident_created_at', ascending: false)
                 .range(from, to);
-          }
-
-          return filteredQuery
-              .order('resident_name', ascending: true)
-              .range(from, to);
-        }
-
-        if (isSelectionMode) {
-          return baseQuery
-              .order('resident_status_priority', ascending: true)
-              .order('resident_created_at', ascending: false)
-              .range(from, to);
-        }
-
-        return baseQuery
-            .order('resident_name', ascending: true)
-            .range(from, to);
-      })();
 
       final residents = data
           .map(

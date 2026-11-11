@@ -14,13 +14,14 @@ import '../../../unit/model/unit.dart';
 import '../../controller/bloc/bloc/maintenance_list_bloc.dart';
 import '../../controller/bloc/maintenance_bloc.dart';
 import '../../model/add_maintenance.dart';
-import '../../model/maintenance_request.dart';
 
 class AddMaintenanceScreen extends StatefulWidget {
   const AddMaintenanceScreen({
     super.key,
     required this.unit,
-    required this.community, required this.isEdit, this.maintenance,
+    required this.community,
+    required this.isEdit,
+    this.maintenance,
   });
 
   final Unit? unit;
@@ -51,6 +52,26 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
   MaintenancePriority _selectedPriority = MaintenancePriority.medium;
 
   @override
+  void initState() {
+    super.initState();
+
+    _initializeForm();
+  }
+
+  void _initializeForm() {
+    if (!widget.isEdit || widget.maintenance == null) return;
+
+    final maintenance = widget.maintenance!;
+
+    _issueTitleController.text = maintenance.issueTitle ?? '';
+    _descriptionController.text = maintenance.description ?? '';
+
+    _selectedIssueType = maintenance.issueType;
+
+    _selectedPriority = maintenance.priority ?? MaintenancePriority.medium;
+  }
+
+  @override
   void dispose() {
     _issueTitleController.dispose();
     _descriptionController.dispose();
@@ -62,7 +83,12 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
     return BlocListener<MaintenanceBloc, MaintenanceState>(
       listener: (context, state) {
         if (state is MaintenanceAddSuccess) {
-          Snack.success('Maintenance request added successfully');
+          Snack.success(
+            widget.isEdit
+                ? 'Maintenance request updated successfully'
+                : 'Maintenance request added successfully',
+          );
+
           context.read<MaintenanceListBloc>().add(
             GetMaintenanceListEvent(
               orgId: authentication.profile?.orgId ?? '',
@@ -79,7 +105,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       },
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Add Maintenance",
+          title: widget.isEdit ? 'Edit Maintenance' : 'Add Maintenance',
           leadingOnTap: () => context.pop(),
         ),
         body: SafeArea(
@@ -91,16 +117,23 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'New Maintenance Request',
+                    widget.isEdit
+                        ? 'Update Maintenance Request'
+                        : 'New Maintenance Request',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   const SizedBox(height: 8),
+
                   Text(
-                    'Enter the issue details to create a maintenance request.',
+                    widget.isEdit
+                        ? 'Update the issue details below.'
+                        : 'Enter the issue details to create a maintenance request.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
+
                   const SizedBox(height: 24),
 
                   _unitDetailsCard(),
@@ -127,21 +160,20 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
             ),
           ),
         ),
+
         bottomNavigationBar: SafeArea(
           child: BlocBuilder<MaintenanceBloc, MaintenanceState>(
             builder: (context, state) {
               final isLoading = state is MaintenanceLoading;
 
               return CustomButton(
-                label: "Create",
+                label: widget.isEdit ? 'Update' : 'Create',
                 padding: const EdgeInsetsGeometry.symmetric(
                   horizontal: AppConsts.pSide,
                   vertical: AppConsts.pSide,
                 ),
                 isLoading: isLoading,
-                onPressed: () {
-                  _submit();
-                },
+                onPressed: _submit,
               );
             },
           ),
@@ -149,6 +181,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       ),
     );
   }
+
+  // --------------------------------------------------
+  // UNIT DETAILS
+  // --------------------------------------------------
 
   Widget _unitDetailsCard() {
     return Container(
@@ -167,10 +203,20 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
               context,
             ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
+
           const SizedBox(height: 12),
-          _detailRow('Unit', widget.unit?.name ?? ""),
+
+          _detailRow(
+            'Unit',
+            widget.unit?.name ?? widget.maintenance?.unitName ?? '',
+          ),
+
           const SizedBox(height: 8),
-          _detailRow('Community', widget.community?.name ?? ""),
+
+          _detailRow(
+            'Community',
+            widget.community?.name ?? widget.maintenance?.communityName ?? '',
+          ),
         ],
       ),
     );
@@ -189,6 +235,7 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
             ),
           ),
         ),
+
         Expanded(
           child: Text(
             value,
@@ -200,6 +247,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       ],
     );
   }
+
+  // --------------------------------------------------
+  // ISSUE TITLE
+  // --------------------------------------------------
 
   Widget _issueTitleField() {
     return CustomTextField(
@@ -222,6 +273,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
     );
   }
 
+  // --------------------------------------------------
+  // ISSUE TYPE
+  // --------------------------------------------------
+
   Widget _issueTypeField() {
     return CustomDropdownField<String>(
       initialValue: _selectedIssueType,
@@ -243,6 +298,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
       },
     );
   }
+
+  // --------------------------------------------------
+  // PRIORITY
+  // --------------------------------------------------
 
   Widget _priorityField() {
     return CustomDropdownField<MaintenancePriority>(
@@ -268,12 +327,15 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
     );
   }
 
+  // --------------------------------------------------
+  // DESCRIPTION
+  // --------------------------------------------------
+
   Widget _descriptionField() {
     return CustomTextField(
       controller: _descriptionController,
       labelText: 'Description',
       hintText: 'Describe the issue and where it occurred...',
-
       maxLines: 6,
       validator: (value) {
         final requiredError = InputVaildator.required(value);
@@ -291,6 +353,10 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
     );
   }
 
+  // --------------------------------------------------
+  // SUBMIT
+  // --------------------------------------------------
+
   void _submit() {
     FocusScope.of(context).unfocus();
 
@@ -305,13 +371,56 @@ class _AddMaintenanceScreenState extends State<AddMaintenanceScreen> {
         profile.orgId == null ||
         profile.orgId!.isEmpty) {
       Snack.error('Unable to identify the current user or organization');
+      return;
+    }
+
+    // --------------------------------------------------
+    // EDIT MAINTENANCE
+    // --------------------------------------------------
+
+    if (widget.isEdit) {
+      final existingMaintenance = widget.maintenance;
+
+      if (existingMaintenance == null ||
+          existingMaintenance.id == null ||
+          existingMaintenance.id!.isEmpty) {
+        Snack.error('Unable to identify maintenance request');
+        return;
+      }
+
+      final maintenance = AddMaintenance(
+        orgId: existingMaintenance.orgId,
+        unitId: existingMaintenance.unitId,
+        unitName: existingMaintenance.unitName,
+        communityId: existingMaintenance.communityId,
+        communityName: existingMaintenance.communityName,
+        createdBy: existingMaintenance.createdBy,
+        residentId: existingMaintenance.residentId,
+        issueTitle: _issueTitleController.text.trim(),
+        issueType: _selectedIssueType!,
+        description: _descriptionController.text.trim(),
+        priority: _selectedPriority,
+        status: existingMaintenance.status,
+        ticketNumber: existingMaintenance.ticketNumber,
+      );
+
+      context.read<MaintenanceBloc>().add(
+        UpdateMaintenanceEvent(
+          maintenanceId: existingMaintenance.id!,
+          maintenance: maintenance,
+        ),
+      );
 
       return;
     }
 
+    // --------------------------------------------------
+    // ADD MAINTENANCE
+    // --------------------------------------------------
+
     final maintenance = AddMaintenance(
       orgId: profile.orgId!,
-      unitId: widget.unit?.id ?? "",
+      unitId: widget.unit?.id ?? '',
       unitName: widget.unit?.name,
       communityId: widget.community?.id,
       communityName: widget.community?.name,

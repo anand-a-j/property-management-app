@@ -8,13 +8,18 @@
 
 
 
-## Pending
 
 
-payment lease flow
 
-visitor flow fixes needed
 
+
+# Resident
+edit not working
+delete not working 
+
+
+# Dashboard 
+unit counts logic need to fix
 
 
 
@@ -97,3 +102,19 @@ maintaince crud operation missing in unit details page
 maintaince list while status updating , reload not triggering
 maintanance approved but remark assign to not reflected in card while listing that also important
 approved status can again change to approved need to fix that issue
+edit maintaince initial values all empty
+
+
+# Staff
+staff search not working 
+edit not working 
+delete not working
+
+# Visitor 
+
+Status not updating in real time
+edit not working
+delete not working 
+
+# Resident 
+name difference issue handling needed

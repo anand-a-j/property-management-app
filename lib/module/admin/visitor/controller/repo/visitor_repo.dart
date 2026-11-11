@@ -93,10 +93,8 @@ class VisitorRepo {
     }
   }
 
-  // EDIT VISITOR DETAILS
   Future<DataResponse<void>> updateVisitor({
     required String id,
-    required String orgId,
     required String name,
     String? phone,
     DateTime? visitStartAt,
@@ -109,7 +107,6 @@ class VisitorRepo {
     String? leaseId,
   }) async {
     try {
-      // Validate required fields.
       if (name.trim().isEmpty) {
         throw ArgumentError('Visitor name is required.');
       }
@@ -118,7 +115,6 @@ class VisitorRepo {
         throw ArgumentError('Visit type is required.');
       }
 
-      // Validate dates only when both are provided.
       if (visitStartAt != null &&
           visitEndAt != null &&
           !visitEndAt.isAfter(visitStartAt)) {
@@ -145,14 +141,11 @@ class VisitorRepo {
           .from('visitor')
           .update(updates)
           .eq('id', id)
-          .eq('org_id', orgId)
-          .eq('status', 'pending')
-          .select('id')
-          .maybeSingle();
+          .select('id');
 
-      if (result == null) {
+      if (result.isEmpty) {
         return DataResponse(
-          error: 'Visitor not found or cannot be edited in its current status.',
+          error: 'Visitor not found or could not be updated.',
         );
       }
 
@@ -170,25 +163,17 @@ class VisitorRepo {
     return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
   }
 
-  // DELETE VISITOR
-  Future<DataResponse<void>> deleteVisitor({
-    required String id,
-    required String orgId,
-  }) async {
+  Future<DataResponse<void>> deleteVisitor({required String id}) async {
     try {
       final result = await _client
           .from('visitor')
           .delete()
           .eq('id', id)
-          .eq('org_id', orgId)
-          .inFilter('status', ['pending', 'cancelled'])
-          .select('id')
-          .maybeSingle();
+          .select('id');
 
-      if (result == null) {
+      if (result.isEmpty) {
         return DataResponse(
-          error:
-              'Visitor not found or cannot be deleted in its current status.',
+          error: 'Visitor not found or could not be deleted.',
         );
       }
 

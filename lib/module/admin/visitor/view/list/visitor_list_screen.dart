@@ -98,7 +98,9 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
   Widget build(BuildContext context) {
     return BlocListener<VisitorBloc, VisitorState>(
       listener: (context, state) {
-        if (state is VisitorStatusUpdated) {
+        if (state is VisitorSuccess) {
+          _getVisitors();
+        } else if (state is VisitorStatusUpdated) {
           Snack.success('Visitor status updated successfully!');
 
           // Preserve the active organization and filters.

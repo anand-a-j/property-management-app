@@ -12,17 +12,12 @@ class ProfileRepo {
   // Users can update only their own profile.
   // --------------------------------------------------x
 
-  Future<DataResponse<void>> updateProfile({
+  Future<DataResponse<String>> updateProfile({
+    required String userId,
     required String name,
     String? phone,
   }) async {
     try {
-      final user = _client.auth.currentUser;
-
-      if (user == null) {
-        return DataResponse(error: 'User is not logged in.');
-      }
-
       final normalizedName = name.trim();
 
       if (normalizedName.isEmpty) {
@@ -36,9 +31,9 @@ class ProfileRepo {
             'phone': phone?.trim().isNotEmpty == true ? phone!.trim() : null,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           })
-          .eq('id', user.id);
+          .eq('id', userId);
 
-      return DataResponse(data: null);
+      return DataResponse(data: 'success');
     } catch (e, stack) {
       return DataResponse(
         error: errorlog('ProfileRepo.updateProfile', e, stack),
@@ -111,18 +106,9 @@ class ProfileRepo {
   // Permanently deletes Auth user and related profile.
   // --------------------------------------------------
 
-  Future<DataResponse<void>> deleteManagedUser({required String userId}) async {
+  Future<DataResponse<String>> deleteManagedUser({required String userId}) async {
     try {
-      final currentUser = _client.auth.currentUser;
-
-      if (currentUser == null) {
-        return DataResponse(error: 'User is not logged in.');
-      }
-
-      if (currentUser.id == userId) {
-        return DataResponse(error: 'You cannot delete your own account.');
-      }
-
+  
       final response = await _client.functions.invoke(
         'delete-managed-user',
         body: {'user_id': userId},
@@ -136,7 +122,7 @@ class ProfileRepo {
         return DataResponse(error: message ?? 'Failed to delete user.');
       }
 
-      return DataResponse(data: null);
+      return DataResponse(data: "success");
     } catch (e, stack) {
       return DataResponse(
         error: errorlog('ProfileRepo.deleteManagedUser', e, stack),

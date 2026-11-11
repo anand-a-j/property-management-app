@@ -158,8 +158,10 @@ class _ResidentListScreenState extends State<ResidentListScreen> {
                     children: [
                       Expanded(
                         child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppConsts.pSide,
+                          padding: const EdgeInsets.only(
+                            bottom: 80,
+                            left: AppConsts.pSide,
+                            right: AppConsts.pSide,
                           ),
                           itemCount:
                               state.residents.length +

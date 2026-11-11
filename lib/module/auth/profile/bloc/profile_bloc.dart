@@ -24,6 +24,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final response = await profileRepo.updateProfile(
       name: event.name.trim(),
       phone: event.phone?.trim(),
+      userId: event.id,
     );
 
     if (response.hasData) {
