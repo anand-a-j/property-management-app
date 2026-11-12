@@ -125,9 +125,12 @@ class AuthService {
     required UserRole role,
     required SignUpType signUpType,
     required bool isManagedCreation,
-    String? orgId,
+    required String orgId,
     ProfileDetails? profileDetails,
   }) async {
+    log(
+      "auth service : isManagedCreation : ${isManagedCreation} ${role.toString()} org id : ${orgId} signUpType : ${signUpType}",
+    );
     if (isManagedCreation) {
       // Managed accounts must never use auth.signUp().
       if (role == UserRole.platformAdmin || orgId == null || orgId.isEmpty) {
@@ -135,6 +138,8 @@ class AuthService {
           error: 'Invalid role or organization for account creation.',
         );
       }
+
+      log(" managed creation is working");
 
       return _authRepo.createManagedUser(
         email: email,
@@ -147,28 +152,27 @@ class AuthService {
     }
 
     // Self-signup only.
-    final response = await _authRepo.signUp(
+    final response = await _authRepo.createManager(
       email: email,
       password: password,
       name: name,
       phone: phone,
-      role: role,
-      orgId: orgId,
-      profileDetails: profileDetails,
+
+
     );
 
     if (response.error != null) {
       return response;
     }
 
-    // Only self-signup should load the newly authenticated user's profile.
-    if (role != UserRole.platformAdmin) {
-      final profileResponse = await refreshProfile();
+    // // Only self-signup should load the newly authenticated user's profile.
+    // if (role != UserRole.manager) {
+    //   final profileResponse = await refreshProfile();
 
-      if (profileResponse.error != null) {
-        return DataResponse(error: profileResponse.error);
-      }
-    }
+    //   if (profileResponse.error != null) {
+    //     return DataResponse(error: profileResponse.error);
+    //   }
+    // }
 
     return DataResponse(data: null);
   }

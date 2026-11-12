@@ -129,45 +129,45 @@ class _StaffListScreenState extends State<StaffListScreen> {
                                   return;
                                 }
 
-                                MoreOptionsBottomSheet.show(
-                                  context: context,
-                                  items: [
-                                    // EDIT STAFF
-                                    MoreOptionItem(
-                                      title: 'Edit Staff',
-                                      icon: Icons.edit_outlined,
-                                      onTap: () {
-                                        context.push(
-                                          RouterPath.editProfile,
-                                          extra: EditProfileArgs(
-                                            role: staff.role,
-                                            initialName: staff.name,
-                                            initialPhone: staff.phone,
-                                            initialEmail: staff.email,
-                                            id: staff.id,
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                // MoreOptionsBottomSheet.show(
+                                //   context: context,
+                                //   items: [
+                                //     // EDIT STAFF
+                                //     MoreOptionItem(
+                                //       title: 'Edit Staff',
+                                //       icon: Icons.edit_outlined,
+                                //       onTap: () {
+                                //         context.push(
+                                //           RouterPath.editProfile,
+                                //           extra: EditProfileArgs(
+                                //             role: staff.role,
+                                //             initialName: staff.name,
+                                //             initialPhone: staff.phone,
+                                //             initialEmail: staff.email,
+                                //             id: staff.id,
+                                //           ),
+                                //         );
+                                //       },
+                                //     ),
 
-                                    // DELETE STAFF
-                                    MoreOptionItem(
-                                      title: 'Delete Staff',
-                                      icon: Icons.delete_outline_rounded,
-                                      isDestructive: true,
-                                      confirmTitle: 'Delete Staff?',
-                                      confirmMessage:
-                                          'Are you sure you want to delete ${staff.name}?',
-                                      onTap: () {
-                                        context.read<ProfileBloc>().add(
-                                          DeleteManagedUserEvent(
-                                            userId: staff.id,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
+                                //     // DELETE STAFF
+                                //     MoreOptionItem(
+                                //       title: 'Delete Staff',
+                                //       icon: Icons.delete_outline_rounded,
+                                //       isDestructive: true,
+                                //       confirmTitle: 'Delete Staff?',
+                                //       confirmMessage:
+                                //           'Are you sure you want to delete ${staff.name}?',
+                                //       onTap: () {
+                                //         context.read<ProfileBloc>().add(
+                                //           DeleteManagedUserEvent(
+                                //             userId: staff.id,
+                                //           ),
+                                //         );
+                                //       },
+                                //     ),
+                                //   ],
+                                // );
                               },
                               child: StaffCard(profile: staff, index: index),
                             );

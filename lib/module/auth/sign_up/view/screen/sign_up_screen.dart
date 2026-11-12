@@ -531,7 +531,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         phone: phone.isNotEmpty ? phone : null,
         role: role,
         signUpType: widget.type,
-        orgId: orgId,
+        orgId: orgId??"",
         isManagedCreation: isManagedCreation,
         profileDetails: profileDetails,
       ),

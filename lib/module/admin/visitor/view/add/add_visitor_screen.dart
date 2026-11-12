@@ -231,7 +231,7 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
       initialValue: _visitType,
       labelText: 'Visit Type',
       hintText: 'Select visit type',
-      items: VisitType.values,
+      items: widget.isResident ? [VisitType.resident] : VisitType.values,
       itemLabel: (item) => item.label,
       onChanged: (value) {
         setState(() {

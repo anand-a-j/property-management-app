@@ -14,7 +14,9 @@ class MaintenanceRepo {
     required AddMaintenance maintenance,
   }) async {
     try {
-      await _client.from('maintenance_requests').insert(maintenance.toJson());
+      await _client
+          .from('maintenance_requests')
+          .insert(maintenance.toJson()..remove('id'));
 
       return DataResponse(data: null);
     } catch (e, stack) {

@@ -11,46 +11,112 @@ import '../../model/profile_details.dart';
 class AuthRepo {
   final SupabaseClient _client = Supabase.instance.client;
 
-  // SIGN UP
-  Future<DataResponse<void>> signUp({
+  // // // SIGN UP
+  // Future<DataResponse<void>> signUp({
+  //   required String email,
+  //   required String password,
+  //   required String name,
+  //   String? phone,
+  //   required UserRole role,
+  //   String? orgId,
+  //   ProfileDetails? profileDetails,
+  // }) async {
+  //   try {
+  //     log("sign up repo fun : role : ${role.toString()} email : ${email}");
+  //     final response = await _client.auth.signUp(
+  //       email: email.trim(),
+  //       password: password,
+  //       data: {
+  //         'name': name.trim(),
+  //         'role': role.value,
+  //         if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
+  //         if (orgId != null && orgId.isNotEmpty) 'org_id': orgId,
+
+  //         // Additional resident details
+  //         if (role == UserRole.resident && profileDetails != null) ...{
+  //           'first_name': profileDetails.firstName.trim(),
+  //           'last_name': profileDetails.lastName.trim(),
+  //           if (profileDetails.nickname?.trim().isNotEmpty == true)
+  //             'nickname': profileDetails.nickname!.trim(),
+  //           if (profileDetails.emiratesId?.trim().isNotEmpty == true)
+  //             'emirates_id': profileDetails.emiratesId!.trim(),
+  //         },
+  //       },
+  //     );
+
+  //     if (response.user == null) {
+  //       return DataResponse(error: globalError('Signup failed'));
+  //     }
+
+  //     // Profile and profile_details are created by handle_new_user().
+  //     return DataResponse(data: null);
+  //   } catch (e, stack) {
+  //     return DataResponse(error: errorlog('AuthRepo.signUp', e, stack));
+  //   }
+  // }
+
+  Future<DataResponse<void>> createManager({
     required String email,
     required String password,
     required String name,
     String? phone,
-    required UserRole role,
-    String? orgId,
-    ProfileDetails? profileDetails,
   }) async {
     try {
-      final response = await _client.auth.signUp(
-        email: email.trim(),
-        password: password,
-        data: {
-          'name': name.trim(),
-          'role': role.value,
-          if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
-          if (orgId != null && orgId.isNotEmpty) 'org_id': orgId,
+      log("create manager repo fun : email : $email");
 
-          // Additional resident details
-          if (role == UserRole.resident && profileDetails != null) ...{
-            'first_name': profileDetails.firstName.trim(),
-            'last_name': profileDetails.lastName.trim(),
-            if (profileDetails.nickname?.trim().isNotEmpty == true)
-              'nickname': profileDetails.nickname!.trim(),
-            if (profileDetails.emiratesId?.trim().isNotEmpty == true)
-              'emirates_id': profileDetails.emiratesId!.trim(),
-          },
+      final response = await _client.functions.invoke(
+        'create-manager',
+        body: {
+          'email': email.trim(),
+          'password': password,
+          'name': name.trim(),
+          if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
         },
       );
 
-      if (response.user == null) {
-        return DataResponse(error: globalError('Signup failed'));
+      // --------------------------------------------------
+      // RESPONSE STATUS VALIDATION
+      // --------------------------------------------------
+
+      if (response.status != 200) {
+        final errorMessage = response.data is Map
+            ? response.data['error']?.toString()
+            : null;
+
+        return DataResponse(
+          error: errorMessage ?? globalError('Manager creation failed'),
+        );
       }
 
-      // Profile and profile_details are created by handle_new_user().
+      // --------------------------------------------------
+      // RESPONSE DATA VALIDATION
+      // --------------------------------------------------
+
+      final data = response.data;
+
+      if (data is! Map || data['success'] != true) {
+        return DataResponse(error: globalError('Manager creation failed'));
+      }
+
+      // --------------------------------------------------
+      // SUCCESS LOG
+      // --------------------------------------------------
+
+      log(
+        "Manager created successfully : "
+        "userId : ${data['userId']} "
+        "role : ${data['role']} "
+        "orgId : ${data['orgId']}",
+      );
+
+      // IMPORTANT:
+      // Do not refresh profile.
+      // Do not update current Auth user.
+      // Do not change the current Supabase Auth session.
+
       return DataResponse(data: null);
     } catch (e, stack) {
-      return DataResponse(error: errorlog('AuthRepo.signUp', e, stack));
+      return DataResponse(error: errorlog('AuthRepo.createManager', e, stack));
     }
   }
 

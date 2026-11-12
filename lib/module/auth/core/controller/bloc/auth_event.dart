@@ -20,7 +20,7 @@ class AuthSignUp extends AuthEvent {
   final UserRole role;
 
   final SignUpType signUpType;
-  final String? orgId;
+  final String orgId;
   final bool isManagedCreation;
   final ProfileDetails? profileDetails;
 
@@ -31,7 +31,7 @@ class AuthSignUp extends AuthEvent {
     this.phone,
     required this.role,
     required this.signUpType,
-    this.orgId, required this.isManagedCreation,
+    required this.orgId, required this.isManagedCreation,
     this.profileDetails,
   });
 

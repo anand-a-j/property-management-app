@@ -6,7 +6,6 @@ import '../../../../../core/widgets/empty_state_view.dart';
 import '../../../../../core/widgets/error_state_view.dart';
 import '../../../../../core/widgets/load_more_button.dart';
 import '../../../../admin/visitor/controller/bloc/bloc/visitor_list_bloc.dart';
-import '../../../../admin/visitor/controller/bloc/visitor_bloc.dart';
 import '../../../../admin/visitor/view/list/widgets/visitor_card.dart';
 import '../sheet/visitor_status_update_sheet.dart';
 

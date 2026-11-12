@@ -78,32 +78,32 @@ class SettingsScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                      const SizedBox.shrink(),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     final profile = authentication.profile;
 
-                      GestureDetector(
-                        onTap: () {
-                          final profile = authentication.profile;
+                      //     if (profile == null) return;
 
-                          if (profile == null) return;
-
-                          context.push(
-                            RouterPath.editProfile,
-                            extra: EditProfileArgs(
-                              role: profile.role,
-                              initialName: profile.name,
-                              initialPhone: profile.phone,
-                              initialEmail: profile.email,
-                              id: profile.id,
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Edit',
-                          style: context.titleSmall?.copyWith(
-                            color: context.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                      //     context.push(
+                      //       RouterPath.editProfile,
+                      //       extra: EditProfileArgs(
+                      //         role: profile.role,
+                      //         initialName: profile.name,
+                      //         initialPhone: profile.phone,
+                      //         initialEmail: profile.email,
+                      //         id: profile.id,
+                      //       ),
+                      //     );
+                      //   },
+                      //   child: Text(
+                      //     'Edit',
+                      //     style: context.titleSmall?.copyWith(
+                      //       color: context.primary,
+                      //       fontWeight: FontWeight.w600,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 25),

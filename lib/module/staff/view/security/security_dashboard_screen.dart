@@ -17,7 +17,8 @@ import '../../../admin/visitor/controller/bloc/visitor_bloc.dart'
         VisitorBloc,
         VisitorState,
         VisitorStatusUpdateFailed,
-        VisitorStatusUpdated;
+        VisitorStatusUpdated,
+        VisitorSuccess;
 import '../../../auth/core/controller/bloc/auth_bloc.dart';
 import '../../../auth/core/controller/bloc/auth_event.dart';
 import '../../../auth/core/controller/bloc/auth_state.dart';
@@ -45,7 +46,11 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
         ),
         BlocListener<VisitorBloc, VisitorState>(
           listener: (context, state) {
-            if (state is VisitorStatusUpdated) {
+            if (state is VisitorSuccess) {
+              context.read<VisitorListBloc>().add(
+                GetVisitorsEvent(orgId: authentication.profile?.orgId ?? ""),
+              );
+            } else if (state is VisitorStatusUpdated) {
               Snack.success("Update status successfully!!!");
 
               context.read<VisitorListBloc>().add(
@@ -141,6 +146,7 @@ class _SecurityDashboardScreenState extends State<SecurityDashboardScreen> {
                   GetVisitorsEvent(
                     orgId: authentication.profile?.orgId ?? '',
                     unitId: null,
+                    
                   ),
                 );
               }
